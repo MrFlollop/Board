@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <title>🟢 BOARD (alpha)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#111111">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="BOARD">
@@ -12,11 +13,12 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9F%A2%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
-/* BOARD alpha 0.2. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. */
+/* BOARD alpha 0.3. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
 :root {
+  color-scheme: light;
   --stp: #FF50BD; --stp-hover: #D93EA6; --stp-light: #FFE8F7; --stp-alpha: rgba(255,80,189,0.12);
   --black: #111111;
   --color-background-primary: #FFFFFF;
@@ -30,21 +32,6 @@
   --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-pill: 9999px;
   --safe-b: env(safe-area-inset-bottom, 0px); --safe-t: env(safe-area-inset-top, 0px);
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-background-primary: #111111; --color-background-secondary: #1A1A1D; --color-background-tertiary: #26262A;
-    --color-border-tertiary: rgba(255,255,255,0.16); --color-text-primary: #F5F5F7; --color-text-secondary: #A2A2AD;
-    --ok-bg: rgba(22,163,74,0.22); --warn-bg: rgba(217,119,6,0.24); --bad-bg: rgba(220,38,38,0.24);
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --color-background-primary: #111111; --color-background-secondary: #1A1A1D; --color-background-tertiary: #26262A;
-  --color-border-tertiary: rgba(255,255,255,0.16); --color-text-primary: #F5F5F7; --color-text-secondary: #A2A2AD;
-  --ok-bg: rgba(22,163,74,0.22); --warn-bg: rgba(217,119,6,0.24); --bad-bg: rgba(220,38,38,0.24);
-  color-scheme: dark;
-}
-
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
 body {
@@ -64,6 +51,7 @@ a { color: var(--stp); }
 .strong { font-weight: 600; }
 h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; }
 .tagline { font-size: 11px; color: var(--color-text-secondary); line-height: 1.4; }
+.tagline-i { font-style: italic; }
 
 /* ---------- buttons ---------- */
 .btn {
@@ -77,12 +65,12 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .btn-secondary:hover { background: var(--stp-alpha); }
 .btn-ghost { background: var(--stp-alpha); color: var(--stp); }
 .btn-ghost:hover { background: var(--stp-light); }
-:root[data-theme="dark"] .btn-ghost:hover { background: rgba(255,80,189,.22); }
 .btn-plain { border-color: var(--color-border-tertiary); color: var(--color-text-primary); background: var(--color-background-primary); }
 .btn-plain:hover { background: var(--color-background-tertiary); }
 .btn-danger { border-color: var(--color-text-danger); color: var(--color-text-danger); }
 .btn-danger:hover { background: var(--bad-bg); }
 .btn-sm { padding: 5px 12px; min-height: 28px; font-size: 11px; }
+.btn-lg { padding: 12px 26px; min-height: 48px; font-size: 14px; }
 .btn[disabled] { opacity: .45; cursor: not-allowed; }
 .icon-btn { border: 0; background: transparent; border-radius: var(--r-pill); width: 30px; height: 30px; display: inline-grid; place-items: center; color: var(--color-text-secondary); flex: none; }
 .icon-btn:hover { background: var(--color-background-tertiary); color: var(--color-text-primary); }
@@ -105,15 +93,18 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); font-size: 15px; pointer-events: none; }
 .search .inp { padding-left: 34px; border-radius: var(--r-pill); min-height: 32px; font-size: 12px; }
 
-/* ---------- avatars ---------- */
-.av { --s: 28px; width: var(--s); height: var(--s); border-radius: 50%; display: inline-grid; place-items: center; flex: none; font-size: calc(var(--s) * .38); font-weight: 700; letter-spacing: .3px; line-height: 1; user-select: none; }
-.av-sm { --s: 22px; } .av-lg { --s: 34px; } .av-xl { --s: 44px; }
-.av-stack { display: inline-flex; gap: 3px; flex-wrap: nowrap; }
+/* ---------- avatars (white initials on every colour) ---------- */
+.av { --s: 28px; width: var(--s); height: var(--s); border-radius: 50%; display: inline-grid; place-items: center; flex: none; font-size: calc(var(--s) * .38); font-weight: 700; letter-spacing: .3px; line-height: 1; user-select: none; color: #fff; }
+.av-sm { --s: 24px; } .av-lg { --s: 34px; } .av-xl { --s: 44px; }
+.av-stack { display: inline-flex; flex-wrap: nowrap; }
+.av-stack .av + .av { margin-left: -3px; box-shadow: -2px 0 0 var(--color-background-primary); }
 .av-more { background: var(--color-background-tertiary); color: var(--color-text-secondary); }
+.av-empty { background: transparent; color: var(--color-text-secondary); border: 1.5px solid var(--color-border-tertiary); }
+.av-empty i { font-size: 15px; vertical-align: 0; }
 
 /* ---------- chips ---------- */
 .chip { display: inline-flex; align-items: center; gap: 5px; border-radius: var(--r-sm); padding: 2px 8px; font-size: 11px; font-weight: 600; background: var(--color-background-tertiary); white-space: nowrap; max-width: 100%; }
-.chip .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.lchip { display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r-sm); padding: 3px 10px; font-size: 11px; font-weight: 700; color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.14); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .pill { display: inline-flex; align-items: center; border-radius: var(--r-pill); padding: 2px 9px; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
 .pill-alpha { background: var(--stp-alpha); color: var(--stp); }
 .pill-ro { background: var(--color-background-tertiary); color: var(--color-text-secondary); }
@@ -121,15 +112,14 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 
 /* ---------- layout ---------- */
 #app { position: fixed; inset: 0; display: flex; background: var(--color-background-primary); }
+#app > .skeleton, #app > .login { flex: 1 1 auto; width: 100%; }
 .side {
   width: 236px; flex: none; background: var(--color-background-secondary); border-right: 0.5px solid var(--color-border-tertiary);
   display: flex; flex-direction: column; padding: 16px 12px 12px; gap: 4px; overflow-y: auto;
 }
 .brand { display: flex; align-items: center; gap: 10px; padding: 2px 8px 14px; min-height: 46px; }
-.brand-logo { display: inline-flex; align-items: center; height: 26px; flex: none; }
-.brand-logo img { height: 26px; width: auto; display: block; }
-:root[data-theme="dark"] .brand-logo img { filter: invert(1); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .brand-logo img { filter: invert(1); } }
+.brand-logo { display: inline-flex; align-items: center; height: 28px; flex: none; }
+.brand-logo img { height: 28px; width: auto; display: block; }
 .brand-logo .wordmark { display: none; font-weight: 800; letter-spacing: 1.2px; font-size: 12px; text-transform: uppercase; line-height: 1.05; }
 .brand-logo.no-logo img { display: none !important; } .brand-logo.no-logo .wordmark { display: block; }
 .brand-name { margin-left: auto; font-weight: 800; letter-spacing: 1.2px; font-size: 13px; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
@@ -155,11 +145,16 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .topbar .spacer { flex: 1; }
 .topbar .brand-logo { display: none; }
 .sync { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-.sync .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-text-success); flex: none; }
+.sync .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-text-success); flex: none; transition: background .2s; }
 .sync.saving .dot { background: var(--color-text-warning); } .sync.error .dot, .sync.offline .dot { background: var(--color-text-danger); }
 .sync.error, .sync.offline { color: var(--color-text-danger); }
+.sync-short { display: none; }
 .content-wrap { position: relative; flex: 1; min-height: 0; }
 .content { position: absolute; inset: 0; overflow: auto; -webkit-overflow-scrolling: touch; }
+.content.fixed { display: flex; flex-direction: column; overflow: hidden; }
+.content.fixed > #vb { flex: 1; min-height: 0; overflow: auto; position: relative; -webkit-overflow-scrolling: touch; }
+.content.fixed > .toolbar { position: static; flex: none; }
+.content.fixed > .tabs { flex: none; padding-bottom: 8px; }
 .pad { padding: 16px 20px 40px; }
 .toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 20px; border-bottom: 0.5px solid var(--color-border-tertiary); position: sticky; left: 0; top: 0; background: var(--color-background-primary); z-index: 8; }
 .toolbar .spacer { flex: 1; }
@@ -174,7 +169,7 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .empty { text-align: center; color: var(--color-text-secondary); padding: 48px 20px; }
 .empty i { font-size: 30px; display: block; margin-bottom: 8px; }
 
-/* ---------- tables (project board, out processing, archive) ---------- */
+/* ---------- tables ---------- */
 table.tv { border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .tv th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--color-text-secondary); padding: 0; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; background: var(--color-background-primary); position: sticky; top: 0; z-index: 4; height: 36px; }
 .tv th.sticky { z-index: 6; }
@@ -186,52 +181,107 @@ table.tv { border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .tv th .rs:hover::after, .tv th .rs.on::after { background: var(--stp); width: 2px; left: 2px; }
 .tv td { padding: 3px 6px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: middle; overflow: hidden; white-space: nowrap; height: 40px; background: var(--color-background-primary); }
 .tv td.sticky, .tv th.sticky { position: sticky; z-index: 3; }
-.tv td.s0, .tv th.s0 { left: 0; }
-.tv td.s1, .tv th.s1 { left: 30px; box-shadow: 1px 0 0 var(--color-border-tertiary); }
-.tv th.s1 { z-index: 6; }
 .tv tr.prow:hover td { background: var(--color-background-secondary); }
 .tv td.hd { padding: 0; text-align: center; }
+.tv td.cc { text-align: center; }
+.tv td.zp { padding: 0; }
 .drag-h { display: inline-grid; place-items: center; width: 28px; height: 32px; color: var(--color-text-secondary); cursor: grab; opacity: .55; }
 .drag-h:hover { opacity: 1; color: var(--color-text-primary); }
 tr.prow.dragging td { opacity: .35; }
 tr.prow.drop-before td { box-shadow: inset 0 2px 0 var(--stp); }
 tr.prow.drop-after td { box-shadow: inset 0 -2px 0 var(--stp); }
-tr.stage-row.drop-hdr .stage-bar { outline: 2px solid var(--stp); outline-offset: -2px; border-radius: var(--r-md); }
+tr.stage-row.drop-hdr .stage-banner, tr.stage-empty.drop-hdr td { outline: 2px solid var(--stp); outline-offset: -2px; }
 .tv td.act { text-align: right; padding-right: 4px; }
 .cell-inp { width: 100%; border: 0; background: transparent; padding: 6px 7px; border-radius: 6px; min-height: 30px; font-size: 13px; text-overflow: ellipsis; }
 .cell-inp:hover { background: var(--color-background-tertiary); }
 .cell-inp:focus { outline: 2px solid var(--stp); background: var(--color-background-primary); }
 .cell-inp.nm-inp { font-weight: 600; }
 .cell-inp.num { text-align: right; font-variant-numeric: tabular-nums; }
-.cell-inp[type=date] { font-size: 12px; padding-right: 2px; }
 .cell-txt { display: block; padding: 6px 7px; overflow: hidden; text-overflow: ellipsis; }
 .cell-txt.nm-txt { font-weight: 600; }
-.cell-btn { border: 0; background: transparent; border-radius: 8px; padding: 4px 6px; min-height: 30px; display: inline-flex; align-items: center; gap: 7px; max-width: 100%; text-align: left; font-size: 12px; font-weight: 600; }
+.cell-btn { border: 0; background: transparent; border-radius: 8px; padding: 4px 6px; min-height: 30px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; max-width: 100%; font-size: 12px; font-weight: 600; }
 .cell-btn:hover { background: var(--color-background-tertiary); }
-.cell-btn .nmx { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cell-plain { display: inline-flex; align-items: center; gap: 7px; padding: 4px 6px; font-size: 12px; font-weight: 600; max-width: 100%; }
-.cell-plain .nmx { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.stage-row td { padding: 0; border-bottom: 0; height: auto; background: var(--color-background-primary); overflow: visible; }
-.stage-bar { display: flex; align-items: center; gap: 12px; padding: 20px 14px 10px 8px; position: sticky; left: 0; width: max-content; max-width: 100vw; cursor: pointer; user-select: none; }
-.stage-line { height: 3px; }
-.stage-pill { font-size: 17px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; padding: 6px 18px; border-radius: var(--r-pill); display: inline-flex; align-items: center; gap: 8px; line-height: 1.2; }
-.stage-chev { font-size: 18px; transition: transform .12s; color: var(--color-text-secondary); }
+.cell-btn.empty-l { color: var(--color-text-secondary); font-weight: 400; }
+.pct-wrap { display: flex; align-items: center; justify-content: flex-end; gap: 2px; }
+.pct-wrap .cell-inp { text-align: right; }
+.pct-wrap span { color: var(--color-text-secondary); font-size: 12px; padding-right: 8px; }
+
+/* Monday style label cells: the whole cell is the colour */
+.lab-cell { display: flex; align-items: center; justify-content: center; width: 100%; height: 40px; border: 0; color: #fff; font-weight: 700; font-size: 12px; padding: 0 8px; text-shadow: 0 1px 1px rgba(0,0,0,.14); }
+button.lab-cell:hover { filter: brightness(.94); }
+.lab-cell span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 6px; min-width: 330px; }
+.lab-grid .lab-opt { border: 0; border-radius: 4px; min-height: 36px; color: #fff; font-weight: 700; font-size: 12px; padding: 4px 8px; text-shadow: 0 1px 1px rgba(0,0,0,.14); display: flex; align-items: center; justify-content: center; text-align: center; }
+.lab-grid .lab-opt:hover { filter: brightness(.92); }
+.lab-grid .lab-opt.cur, .lab-grid .lab-opt.cur:hover { color: #fff; }
+.lab-grid .lab-opt.cur { box-shadow: 0 0 0 2px var(--color-background-primary), 0 0 0 4px var(--stp); }
+.pop .lab-grid button { display: flex; width: auto; }
+
+/* timeline pill (project board) */
+.tl-pill { border: 0; background: var(--color-text-primary); color: #fff; border-radius: var(--r-pill); padding: 4px 14px; font-size: 12px; font-weight: 600; min-height: 26px; }
+.tl-pill:hover { background: #333; }
+.tl-pill.none { background: var(--color-background-tertiary); color: var(--color-text-secondary); font-weight: 400; }
+
+/* stage banners */
+.stage-row td { padding: 0; border-bottom: 0; height: auto; overflow: visible; }
+.stage-row td.stage-td { padding: 0; }
+.stage-row.first td.stage-td { border-top: 0; }
+.stage-spacer td { height: 14px; background: var(--color-background-primary); border-bottom: 0; padding: 0; }
+.stage-banner { display: flex; align-items: center; gap: 12px; padding: 0 14px 0 8px; height: 46px; color: #fff; cursor: pointer; user-select: none; position: sticky; left: 0; width: var(--vw, 100vw); max-width: 100%; }
+.stage-banner .stage-title { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.4px; }
+.stage-banner .count { background: rgba(255,255,255,.22); color: #fff; }
+.stage-banner .stage-chev { font-size: 18px; transition: transform .12s; color: #fff; }
 .stage-row.collapsed .stage-chev { transform: rotate(-90deg); }
-.stage-add { margin-left: 4px; }
+.stage-banner .btn-ghost { background: rgba(255,255,255,.2); color: #fff; }
+.stage-banner .btn-ghost:hover { background: rgba(255,255,255,.32); }
+.stage-banner .sub { margin-left: auto; font-size: 12px; font-weight: 600; opacity: .92; }
 .stage-empty td { color: var(--color-text-secondary); font-size: 12px; padding: 10px 14px; height: 36px; }
 .tv tr.rowlink { cursor: pointer; }
 .tv tr.rowlink:hover td { background: var(--color-background-secondary); }
 .tv .nm { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
 .tv .num { text-align: right; font-variant-numeric: tabular-nums; }
 
-/* ---------- closeout ---------- */
+/* ---------- out processing ---------- */
 .co-sel { min-height: 28px; padding: 3px 24px 3px 9px; font-size: 11px; font-weight: 600; border-radius: var(--r-pill); width: 100%; background-position: right 8px center; }
 .co-ok { background-color: var(--ok-bg); border-color: transparent; }
 .co-warn { background-color: var(--warn-bg); border-color: transparent; }
 .co-bad { background-color: var(--bad-bg); border-color: transparent; }
 .co-na { color: var(--color-text-secondary); }
 .bar { height: 6px; background: var(--color-background-tertiary); border-radius: 6px; overflow: hidden; min-width: 40px; flex: 1; }
-.bar > i { display: block; height: 100%; background: var(--stp); border-radius: 6px; }
+.bar > i { display: block; height: 100%; background: var(--stp); border-radius: 6px; transition: width .2s; }
+.btn.is-locked { opacity: .5; }
+
+/* walkthrough */
+.wt { margin: 16px 20px 8px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-lg); background: var(--color-background-secondary); position: sticky; left: 20px; width: calc(var(--vw, 100vw) - 40px); max-width: calc(100vw - 40px); }
+.wt-idle { display: flex; align-items: center; gap: 18px; padding: 22px 26px; flex-wrap: wrap; }
+.wt-idle .big { font-size: 20px; font-weight: 800; letter-spacing: .3px; }
+.wt-top { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 0.5px solid var(--color-border-tertiary); flex-wrap: wrap; }
+.wt-dots { display: flex; gap: 4px; flex: 1; min-width: 80px; max-width: 420px; }
+.wt-dots i { flex: 1; height: 6px; border-radius: 6px; background: var(--color-background-tertiary); min-width: 4px; }
+.wt-dots i.done { background: var(--color-text-success); } .wt-dots i.now { background: var(--stp); }
+.wt-body { padding: 22px 26px 10px; }
+.wt-title { font-size: 34px; font-weight: 900; letter-spacing: .2px; line-height: 1.15; margin: 4px 0 6px; word-break: break-word; }
+.wt-sub { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 14px; font-weight: 600; color: var(--color-text-secondary); }
+.wt-sub .bar { max-width: 220px; height: 8px; }
+.wt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; padding: 14px 26px 6px; }
+.wt-q { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.wt-q.todo { border: 2px solid var(--stp); padding: 13px 15px 15px; }
+.wt-q.done { background: var(--color-background-secondary); }
+.wt-q .qh { display: flex; align-items: center; gap: 8px; }
+.wt-q .qn { font-size: 16px; font-weight: 800; letter-spacing: .2px; }
+.wt-q .qs { margin-left: auto; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+.wt-q.todo .qs { color: var(--stp); } .wt-q.done .qs { color: var(--color-text-success); }
+.wt-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.wt-opt { border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); border-radius: var(--r-pill); padding: 10px 16px; min-height: 44px; font-size: 14px; font-weight: 700; }
+.wt-opt:hover { background: var(--color-background-tertiary); }
+.wt-opt.sel { color: #fff; border-color: transparent; }
+.wt-opt.sel.ok { background: var(--color-text-success); } .wt-opt.sel.warn { background: var(--color-text-warning); } .wt-opt.sel.bad { background: var(--color-text-danger); } .wt-opt.sel.na { background: #8A8A94; }
+.wt-foot { display: flex; align-items: center; gap: 10px; padding: 14px 26px 22px; flex-wrap: wrap; }
+.wt-ready { display: flex; align-items: center; gap: 10px; background: var(--ok-bg); color: var(--color-text-success); border-radius: var(--r-md); padding: 10px 14px; font-weight: 700; font-size: 13px; }
+.wt-end { padding: 36px 26px; text-align: center; }
+.wt-end .big { font-size: 26px; font-weight: 900; margin-bottom: 6px; }
+.wt-size { display: flex; align-items: center; gap: 10px; padding: 4px 26px 0; }
+.wt-size .inp { max-width: 420px; }
 
 /* ---------- edit capacity ---------- */
 .tl { position: relative; min-width: max-content; }
@@ -257,9 +307,34 @@ tr.stage-row.drop-hdr .stage-bar { outline: 2px solid var(--stp); outline-offset
 .tl-cell { flex: none; font-size: 11px; font-weight: 600; color: var(--color-text-secondary); text-align: center; line-height: 28px; border-left: 0.5px solid var(--color-border-tertiary); overflow: hidden; white-space: nowrap; }
 .tl-cell.now { background: var(--stp); color: #fff; border-radius: var(--r-pill); line-height: 22px; margin-top: 3px; height: 22px; border-left: 0; }
 .tl-today { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--stp); z-index: 3; pointer-events: none; }
+.tl-heat { position: absolute; top: 0; bottom: 0; opacity: .22; pointer-events: none; }
 .legend { display: flex; gap: 8px 16px; flex-wrap: wrap; padding: 14px 20px 24px; font-size: 12px; position: sticky; left: 0; width: max-content; max-width: calc(100vw - 280px); }
 .legend span { display: inline-flex; align-items: center; gap: 7px; }
 .legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+/* ---------- finance + pods ---------- */
+.fin-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; padding: 16px 20px 4px; position: sticky; left: 0; width: var(--vw, auto); }
+.fin-tile { border-radius: var(--r-md); padding: 12px 14px; color: #fff; display: flex; flex-direction: column; gap: 2px; text-shadow: 0 1px 1px rgba(0,0,0,.12); }
+.fin-tile .t1 { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; opacity: .95; }
+.fin-tile .t2 { font-size: 24px; font-weight: 900; line-height: 1.15; }
+.fin-tile .t3 { font-size: 12px; font-weight: 600; opacity: .95; }
+.fin-tile.plain { background: var(--color-background-secondary); color: var(--color-text-primary); text-shadow: none; border: 0.5px solid var(--color-border-tertiary); }
+.fin-tile.plain .t1 { color: var(--color-text-secondary); }
+.pods { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; padding: 16px 20px 40px; }
+.pod { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-lg); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.pod-h { display: flex; align-items: center; gap: 12px; }
+.pod-n { font-size: 30px; font-weight: 900; line-height: 1; margin-left: auto; text-align: right; }
+.pod-n small { display: block; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--color-text-secondary); margin-top: 3px; }
+.pod-names { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); }
+.pod-list { display: flex; flex-direction: column; gap: 4px; }
+.pod-item { display: flex; align-items: center; gap: 8px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); padding: 6px 10px; cursor: pointer; font-size: 12px; }
+.pod-item:hover { border-color: var(--stp); }
+.pod-item .nm { font-weight: 600; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pod-item .lchip { font-size: 10px; padding: 2px 8px; }
+.pod-builder { margin: 16px 20px 0; padding: 14px 16px; position: sticky; left: 20px; width: calc(var(--vw, 100vw) - 40px); }
+.pod-pick { display: flex; flex-wrap: wrap; gap: 6px; }
+.pod-pick button { display: inline-flex; align-items: center; gap: 6px; border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); border-radius: var(--r-pill); padding: 3px 12px 3px 4px; font-size: 12px; font-weight: 600; }
+.pod-pick button.on { border-color: var(--stp); background: var(--stp-alpha); color: var(--stp); }
 
 /* ---------- drawer & modal ---------- */
 .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 50; }
@@ -276,6 +351,9 @@ tr.stage-row.drop-hdr .stage-bar { outline: 2px solid var(--stp); outline-offset
 .picks { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .pickchip { display: inline-flex; align-items: center; gap: 6px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-pill); padding: 2px 4px 2px 3px; font-size: 12px; font-weight: 600; }
 .pickchip button { border: 0; background: transparent; padding: 0 4px; color: var(--color-text-secondary); }
+.pickchip button i { font-size: 14px; vertical-align: -2px; }
+.is-lead { border-color: var(--stp); }
+.lead-tag { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--stp); padding: 0 6px 0 0; }
 .modal { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(480px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-lg); z-index: 61; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
 .modal.wide { width: min(640px, calc(100vw - 24px)); }
 .modal h3 { margin: 0; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; }
@@ -283,26 +361,53 @@ tr.stage-row.drop-hdr .stage-bar { outline: 2px solid var(--stp); outline-offset
 .modal ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
 .modal .errline { color: var(--color-text-danger); font-size: 12px; font-weight: 600; min-height: 16px; }
 .scrim.m { z-index: 60; }
-.pop { position: fixed; z-index: 70; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); padding: 6px; min-width: 190px; max-height: 60vh; overflow: auto; box-shadow: 0 8px 28px rgba(0,0,0,.18); }
-.pop button { display: flex; width: 100%; align-items: center; gap: 8px; text-align: left; border: 0; background: transparent; border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 600; }
-.pop button:hover { background: var(--color-background-tertiary); }
+.pop { position: fixed; z-index: 70; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); padding: 6px; min-width: 190px; max-height: 70vh; overflow: auto; box-shadow: 0 8px 28px rgba(0,0,0,.18); }
+.pop > button { display: flex; width: 100%; align-items: center; gap: 8px; text-align: left; border: 0; background: transparent; border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 600; }
+.pop > button:hover { background: var(--color-background-tertiary); }
 .pop .cur { color: var(--stp); }
 .pop .sep { height: 0.5px; background: var(--color-border-tertiary); margin: 4px 2px; }
 .pop .sub { font-size: 10px; color: var(--color-text-secondary); margin-left: auto; font-weight: 600; }
+.pop .grp-lbl { padding: 6px 10px 2px; }
+.pop .tick { width: 16px; display: inline-grid; place-items: center; color: var(--stp); }
 .toasts { position: fixed; z-index: 90; left: 50%; transform: translateX(-50%); bottom: calc(22px + var(--safe-b)); display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
 .toast { background: var(--black); color: #fff; padding: 9px 16px; border-radius: var(--r-pill); font-size: 12px; font-weight: 600; border: 0.5px solid rgba(255,255,255,.2); max-width: 92vw; }
 .toast.err { background: var(--color-text-danger); }
 
+/* ---------- date range picker ---------- */
+.rp { width: 308px; padding: 10px 10px 8px; }
+.rp-h { display: flex; align-items: center; justify-content: space-between; padding: 2px 4px 8px; font-weight: 700; font-size: 13px; }
+.rp-h span { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); }
+.rp-in { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.rp-in .inp { min-height: 34px; font-size: 13px; text-align: center; }
+.rp-in .inp.act { outline: 2px solid var(--stp); }
+.rp-nav { display: flex; align-items: center; gap: 6px; padding: 10px 0 4px; }
+.rp-nav .sel { min-height: 30px; padding: 3px 24px 3px 8px; font-size: 12px; width: auto; }
+.rp-cal { width: 100%; border-collapse: separate; border-spacing: 0 2px; table-layout: fixed; }
+.rp-cal th { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); height: 28px; text-align: center; }
+.rp-cal td { height: 34px; text-align: center; padding: 0; }
+.rp-cal td.wk { font-size: 11px; color: var(--color-text-secondary); font-weight: 600; background: var(--color-background-tertiary); }
+.rp-cal tr:first-child td.wk { border-radius: 8px 8px 0 0; } .rp-cal tr:last-child td.wk { border-radius: 0 0 8px 8px; }
+.rp-d { width: 100%; height: 32px; border: 0; background: transparent; font-size: 13px; font-weight: 600; border-radius: 0; position: relative; }
+.rp-d:hover { background: var(--color-background-tertiary); }
+.rp-d.out { color: var(--color-text-secondary); opacity: .5; font-weight: 400; }
+.rp-d.we { color: var(--color-text-secondary); }
+.rp-d.in { background: var(--stp-alpha); }
+.rp-d.ends { background: var(--stp); color: #fff; border-radius: 8px; }
+.rp-d.today::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 2px; background: currentColor; border-radius: 2px; }
+.rp-f { display: flex; align-items: center; gap: 8px; padding: 8px 2px 0; }
+
 /* ---------- login ---------- */
 .login { position: fixed; inset: 0; display: grid; place-items: center; padding: 20px; background: var(--color-background-secondary); overflow: auto; }
-.login-card { width: min(400px, 100%); background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-lg); padding: 32px 28px 22px; display: flex; flex-direction: column; gap: 16px; }
-.login-card .brand-logo { height: 34px; } .login-card .brand-logo img { height: 34px; }
-.login-title { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 900; letter-spacing: 1.2px; }
-.login-title .emoji { font-size: 22px; }
+.login-card { width: min(400px, 100%); background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-lg); padding: 34px 28px 24px; display: flex; flex-direction: column; gap: 16px; }
+.login-card .brand-logo { height: 40px; align-self: center; } .login-card .brand-logo img { height: 40px; }
+.login-card .brand-logo .wordmark { font-size: 14px; text-align: center; }
+.login-title { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 26px; font-weight: 900; letter-spacing: 1.2px; }
+.login-title .emoji { font-size: 26px; }
+.login-tag { text-align: center; font-size: 13px; font-weight: 600; color: var(--color-text-primary); margin-top: -8px; }
 .login-err { color: var(--color-text-danger); font-size: 12px; font-weight: 600; min-height: 16px; }
 .alpha-note { background: var(--stp-alpha); border-radius: var(--r-md); padding: 10px 12px; font-size: 12px; line-height: 1.5; }
 .alpha-note b { color: var(--stp); }
-.login-card .tagline { text-align: center; padding-top: 4px; }
+.login-card .love { text-align: center; padding-top: 4px; }
 
 /* ---------- misc ---------- */
 .row { display: flex; align-items: center; gap: 8px; }
@@ -315,38 +420,24 @@ tr.stage-row.drop-hdr .stage-bar { outline: 2px solid var(--stp); outline-offset
 .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--color-text-secondary); transition: transform .12s, background .12s; }
 .toggle:checked { background: var(--stp-alpha); border-color: var(--stp); } .toggle:checked::after { transform: translateX(16px); background: var(--stp); }
 input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); background: var(--color-background-primary); }
-.skeleton { display: grid; place-items: center; height: 100%; color: var(--color-text-secondary); font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; font-size: 11px; gap: 10px; }
+.skeleton { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%; color: var(--color-text-secondary); font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; font-size: 11px; gap: 14px; }
+.skeleton .brand-logo { height: 36px; } .skeleton .brand-logo img { height: 36px; }
+.skeleton .brand-logo .wordmark { text-align: center; font-size: 14px; }
 .ro-banner { padding: 6px 20px; background: var(--stp-alpha); color: var(--stp); font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
-.page-foot { padding: 18px 20px 26px; position: sticky; left: 0; }
 .mine-head { display: flex; align-items: center; gap: 12px; padding: 14px 20px 0; flex-wrap: wrap; }
-.tbl-note { padding: 8px 20px 0; font-size: 12px; color: var(--color-text-secondary); }
 .sub-tbl { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 720px; }
 .sub-tbl th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--color-text-secondary); padding: 10px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; }
 .sub-tbl td { padding: 8px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: middle; }
 .tbl-wrap { overflow-x: auto; }
-
-/* ---------- fixed-toolbar views, 0.2 additions ---------- */
-.content.fixed { display: flex; flex-direction: column; overflow: hidden; }
-.content.fixed > #vb { flex: 1; min-height: 0; overflow: auto; position: relative; -webkit-overflow-scrolling: touch; }
-.content.fixed > .toolbar { position: static; flex: none; }
-.content.fixed > .tabs { flex: none; padding-bottom: 8px; }
-.sync-short { display: none; }
-.sync .dot { transition: background .2s; }
-.cell-sel { appearance: auto; -webkit-appearance: menulist; cursor: pointer; padding-left: 11px; font-size: 12px; font-weight: 600; }
-.cell-sel option { font-weight: 400; }
-.lead-btn { max-width: 100%; }
-.lead-btn.empty-l { color: var(--color-text-secondary); font-weight: 400; }
-.is-lead { border-color: var(--stp); }
-.lead-tag { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--stp); padding: 0 6px 0 0; }
-.pickchip button i { font-size: 14px; vertical-align: -2px; }
-.btn.is-locked { opacity: .5; }
 .sort-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; background: var(--stp-alpha); color: var(--stp); border-radius: var(--r-pill); padding: 3px 4px 3px 10px; }
 .sort-chip button { border: 0; background: transparent; color: inherit; width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; padding: 0; }
-.tl-heat { position: absolute; top: 0; bottom: 0; opacity: .22; pointer-events: none; }
 .note-bar { padding: 8px 20px; font-size: 12px; color: var(--color-text-secondary); background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); position: sticky; left: 0; }
-.co-name { max-width: 100%; }
-.arch-fy { color: var(--color-text-primary); background: var(--color-background-tertiary); }
-.pop .grp-lbl { padding: 6px 10px 2px; }
+.page-end { height: 40px; }
+
+.pct-good { color: var(--color-text-success); } .pct-mid { color: var(--color-text-warning); } .pct-low { color: var(--color-text-danger); }
+.av-lead { --s: 28px; }
+.tv td.cc .av, .tv td.cc .cell-btn { margin: 0 auto; }
+.nm-sub { font-size: 11px; color: var(--color-text-secondary); overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- mobile ---------- */
 @media (max-width: 860px) {
@@ -369,9 +460,13 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
   .tl-label { width: 150px; } .tl-label .dt { display: none; }
   .search { max-width: none; }
   .kv { grid-template-columns: 1fr; }
-  .stage-pill { font-size: 14px; padding: 5px 14px; }
+  .stage-banner .stage-title { font-size: 13px; }
   .sync { font-size: 10px; }
-  .content-pad-b { height: 80px; }
+  .page-end { height: 90px; }
+  .wt { margin: 12px 14px 8px; left: 14px; width: calc(var(--vw, 100vw) - 28px); max-width: calc(100vw - 28px); }
+  .wt-title { font-size: 24px; } .wt-body, .wt-grid, .wt-foot, .wt-size { padding-left: 16px; padding-right: 16px; }
+  .wt-grid { grid-template-columns: 1fr; }
+  .fin-tiles { padding: 12px 14px 4px; } .pods { padding: 12px 14px 90px; grid-template-columns: 1fr; } .pod-builder { margin: 12px 14px 0; left: 14px; }
 }
 @media (min-width: 861px) { .only-m { display: none !important; } }
 @media print { .side, .tabbar, .toolbar { display: none; } }
@@ -379,20 +474,22 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 </style>
 </head>
 <body>
-<div id="app"><div class="skeleton">Loading BOARD</div></div>
+<div id="app"><div class="skeleton"><span class="brand-logo"><img src="assets/logo-colour.png" alt="Sunday Treat" onerror="this.parentNode.classList.add('no-logo')"><span class="wordmark">Sunday<br>Treat</span></span><div>Loading BOARD</div></div></div>
 <script>
 (function () {
 'use strict';
 /* ================================================================
-   BOARD alpha 0.2. Core: config, state, API, queue, shell, login, routing
+   BOARD alpha 0.3. Core: config, state, colours, API, queue, shell, login, routing
    ================================================================ */
 
 /* ---- CONFIG: your Apps Script web app URL ---- */
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '0.2.0-alpha';
-const TAGLINE = 'Built with love by Mr Follop for Sunday Treat \u{1F9E1}';
+const APP_VERSION = '0.3.0-alpha';
+const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
+const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
+const LOGO_SRC = 'assets/logo-colour.png';
 const POLL_MS = 20000;
 const LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
 const API = (LOCAL && new URLSearchParams(location.search).get('api')) || API_URL;
@@ -409,17 +506,28 @@ const S = {
   projects: [], version: 0, readonly: false, readonlyKey: '', alphaOpen: false, adminKey: '',
   view: 'pipeline',
   f: { q: '', person: '', status: '' },
-  ec: { zoom: 1, internal: false, person: '' },
+  ec: { weeks: 2, internal: false, person: '' },
   co: { q: '', stage: '', incomplete: false },
+  wt: { on: false, ids: [], i: 0 },
+  fin: { q: '', inv: '' },
+  pod: { solo: false, sel: [], name: '' },
   ar: { q: '', fy: '', client: '', rows: [], total: 0, fys: [], clients: [], loaded: false, loading: false, offset: 0 },
   mine: { q: '' },
   clients: null, codes: { mode: 'existing', client: '', title: '', newName: '', newCode: '' },
   settingsTab: 'people', health: null,
   drawer: null, dragging: false, stale: false, syncState: 'saved', lastSync: null,
   ui: Object.assign({ widths: {}, sort: {}, collapsed: {} }, jparse(store.get('board_ui'), {})),
-  ep: jparse(store.get('board_ep'), {})
+  fx: jparse(store.get('board_fx'), {}),
+  pods: (jparse(store.get('board_pods'), { list: [] }).list) || []
 };
+/* carry 0.2 edit periods (kept in this browser) over to the new Timeline field */
+(function () {
+  const ep = jparse(store.get('board_ep'), {});
+  Object.keys(ep).forEach(id => { const o = S.fx[id] = S.fx[id] || {}; if (o.edit_start == null && o.edit_end == null) { o.edit_start = ep[id].s || ''; o.edit_end = ep[id].e || ''; } });
+})();
 function saveUI() { store.set('board_ui', JSON.stringify(S.ui)); }
+function saveFx() { store.set('board_fx', JSON.stringify(S.fx)); }
+function savePods() { store.set('board_pods', JSON.stringify({ list: S.pods })); }
 
 /* ---------------- tiny utils ---------------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -441,45 +549,57 @@ function frange(a, b) {
   return fdate(a || b) || '';
 }
 const gbp = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 });
-const fmoney = n => (n === '' || n == null ? '' : gbp.format(n));
+const fmoney = n => (n === '' || n == null || isNaN(n) ? '' : gbp.format(n));
+const numOf = v => (v === '' || v == null || isNaN(Number(v)) ? null : Number(v));
 
-function textOn(hex) {
-  const m = /^#?([0-9a-f]{6})$/i.exec(hex || ''); if (!m) return '#111';
-  const n = parseInt(m[1], 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
-  return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#111111' : '#FFFFFF';
+/* ---------------- colour: everything is white text, so shades are pulled down until they read ---------------- */
+function lumOf(hex) {
+  const n = parseInt(hex.slice(1), 16), c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+const toHex = (r, g, b) => '#' + [r, g, b].map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+const legMemo = {};
+function legible(hex, min = 3) {
+  if (!/^#[0-9a-f]{6}$/i.test(hex || '')) return hex || '#797E91';
+  const key = hex + min; if (legMemo[key]) return legMemo[key];
+  const n = parseInt(hex.slice(1), 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  let f = 1, out = hex;
+  while (1.05 / (lumOf(out) + 0.05) < min && f > 0.35) { f -= 0.02; out = toHex(r * f, g * f, b * f); }
+  return (legMemo[key] = out);
 }
 
-/* ---------------- colours: departments + stages ---------------- */
-/* Sunday Treat defaults: used when a department has no colour and as the fallback for stage headers */
+/* Departments (circles + stage banners). Defaults chosen to sit well under white text. */
 const DEPT_DEFAULTS = [
-  [/tender/i, '#57AEFF'], [/pre[\s-]?prod/i, '#F9CD48'], [/post|edit/i, '#8B5DDF'],
-  [/client|account/i, '#34AD6C'], [/admin/i, '#D3454A'], [/freelanc/i, '#F28C28']
+  [/tender/i, '#2F8FE0'], [/pre[\s-]?prod/i, '#CC8400'], [/post|edit/i, '#7B4FD0'],
+  [/client|account/i, '#1F9D5C'], [/admin/i, '#D03F4B'], [/freelanc/i, '#E06A10']
 ];
-const NEUTRAL = '#9AA0A6';
+const OLD_DEPT = { '#57aeff': '#2F8FE0', '#f9cd48': '#CC8400', '#8b5ddf': '#7B4FD0', '#34ad6c': '#1F9D5C', '#d3454a': '#D03F4B', '#f28c28': '#E06A10' };
+const NEUTRAL = '#6F7787';
 function defaultColourFor(name) { const hit = DEPT_DEFAULTS.find(([re]) => re.test(name || '')); return hit ? hit[1] : null; }
 const squash = s => String(s || '').toLowerCase().replace(/[^a-z]/g, '');
-const STAGE_PALETTE = ['#57AEFF', '#F9CD48', '#8B5DDF', '#34AD6C', '#D3454A', '#F28C28'];
+const STAGE_PALETTE = ['#2F8FE0', '#CC8400', '#7B4FD0', '#1F9D5C', '#D03F4B', '#E06A10'];
+const fixDept = c => legible(OLD_DEPT[String(c || '').toLowerCase()] || c || NEUTRAL, 3);
 function stageColour(stage) {
+  if (/archive/i.test(stage || '')) return '#5F6672';
+  if (/out[\s-]?proc|closeout|handover/i.test(stage || '')) return '#D03F4B';
   const k = squash(stage);
   const d = S.depts.find(x => { const n = squash(x.name); return n && (n === k || n.startsWith(k) || k.startsWith(n)); });
-  if (d && d.colour) return d.colour;
+  if (d && d.colour) return fixDept(d.colour);
   const def = defaultColourFor(stage); if (def) return def;
-  if (/closeout|out[\s-]?proc|archive|handover/i.test(stage)) return '#D3454A';
   const i = S.cfg.stages.indexOf(stage); return STAGE_PALETTE[(i < 0 ? 0 : i) % STAGE_PALETTE.length];
 }
 const isPreStage = s => /pre[\s-]?prod/i.test(s || '');
 const isPostStage = s => /post/i.test(s || '');
 
-/* ---------------- people / departments / status ---------------- */
+/* ---------------- people / departments ---------------- */
 const personById = id => S.people.find(p => p.id === id) || null;
 const deptById = id => S.depts.find(d => d.id === id) || null;
-const deptColour = id => (deptById(id) || {}).colour || NEUTRAL;
+const deptColour = id => fixDept((deptById(id) || {}).colour);
 const activePeople = () => S.people.filter(p => p.active !== false);
 function av(id, size = '') {
   const p = personById(id);
-  if (!p) return `<span class="av ${size}" style="background:var(--color-background-tertiary);color:var(--color-text-secondary)" title="Unknown">?</span>`;
-  const c = deptColour(p.department);
-  return `<span class="av ${size}" style="background:${c};color:${textOn(c)}" title="${esc(p.name)}">${esc(p.initials)}</span>`;
+  if (!p) return `<span class="av av-empty ${size}" title="Unknown">?</span>`;
+  return `<span class="av ${size}" style="background:${deptColour(p.department)}" title="${esc(p.name)}">${esc(p.initials)}</span>`;
 }
 function avStack(ids, size = 'av-sm', max = 4) {
   ids = uniq(ids.filter(Boolean)); if (!ids.length) return '';
@@ -488,30 +608,72 @@ function avStack(ids, size = 'av-sm', max = 4) {
 }
 const teamOf = p => uniq([p.lead].concat(p.creative || [], p.production || [], p.edit || []).filter(Boolean));
 /* Leads: account lead is the existing "lead" field. Creative / production / edit lead is the first person in that list. */
-const LEAD_ROLES = [['lead', 'Account lead'], ['creative', 'Creative lead'], ['production', 'Production lead'], ['edit', 'Edit lead']];
+const LEAD_ROLES = [['lead', 'Account lead', 'Account'], ['creative', 'Creative lead', 'Creative'], ['production', 'Production lead', 'Production'], ['edit', 'Edit lead', 'Edit']];
 const leadOf = (p, role) => (role === 'lead' ? (p.lead || '') : ((p[role] || [])[0] || ''));
+
+/* ---------------- status + invoicing labels (Monday colours) ---------------- */
 const EXTRA_STATUSES = ['Awaiting Handover', 'Archive'];
 const statusList = () => S.cfg.statuses.concat(EXTRA_STATUSES.filter(s => !S.cfg.statuses.includes(s)));
-const STATUS_COL = { 'Tendering': '#7A8699', 'Awaiting KO': '#FF50BD', 'Pre Production': '#F2B705', 'Edit': '#7C4DFF', 'Awaiting Client Feedback': '#2FB36D', 'To Be Archived': '#9AA0A6', 'Awaiting Handover': '#F97316', 'Archive': '#6B6B75' };
-const STATUS_FALLBACK = ['#0EA5E9', '#14B8A6', '#B45309', '#6366F1', '#84CC16'];
+const STATUS_COL = {
+  'complete': '#BADB66', 'awaiting client feedback': '#70CE92', 'writing pitch': '#F1B7F1', 'tendering': '#99D4FC', 'failed pitch': '#D9707F',
+  'awaiting ko': '#EB559F', 'to be archived': '#D789B9', 'pre production': '#F8D756', 'cancelled project': '#F09695', 'edit': '#6146A3',
+  'awaiting handover': '#E8873A', 'archive': '#797E91'
+};
+const LABEL_FALLBACK = ['#549DCA', '#87D4CC', '#F4BF73', '#9B7FD4', '#69D196'];
 function statusColour(s) {
-  if (!s) return null; if (STATUS_COL[s]) return STATUS_COL[s];
-  const i = statusList().indexOf(s);
-  return STATUS_FALLBACK[(i < 0 ? 0 : i) % STATUS_FALLBACK.length];
+  if (!s) return null;
+  const c = STATUS_COL[norm(s)]; if (c) return legible(c, 2);
+  const i = statusList().indexOf(s); return legible(LABEL_FALLBACK[(i < 0 ? 0 : i) % LABEL_FALLBACK.length], 2);
 }
-function statusChip(s) {
-  if (!s) return '';
-  return `<span class="chip"><span class="dot" style="background:${statusColour(s)}"></span>${esc(s)}</span>`;
+const INV_LABELS = ['Not invoiced', 'No Estimate', 'Estimate Pending', 'Estimate Accepted', 'Partially invoiced', 'Sent but not portal uploaded', 'Invoiced', 'Paid', 'n/a'];
+const INV_COL = { 'Not invoiced': '#F4BF73', 'No Estimate': '#797E91', 'n/a': '#999999', 'Estimate Accepted': '#549DCA', 'Partially invoiced': '#F7C1C1', 'Estimate Pending': '#F08A62', 'Sent but not portal uploaded': '#F19596', 'Invoiced': '#87D4CC', 'Paid': '#69D196' };
+const invColour = v => (v ? legible(INV_COL[v] || '#797E91', 2) : '#9AA0AB');
+/* a label that fills its whole cell, Monday style */
+function labCell(label, col, attrs, ed, blank) {
+  if (!label) return ed ? `<button class="lab-cell" style="background:var(--color-background-tertiary);color:var(--color-text-secondary);text-shadow:none" ${attrs}><span>${esc(blank || '-')}</span></button>` : '';
+  return ed ? `<button class="lab-cell" style="background:${col}" ${attrs}><span>${esc(label)}</span></button>` : `<div class="lab-cell" style="background:${col}"><span>${esc(label)}</span></div>`;
 }
+/* a smaller label for places that are not table cells */
+const lchip = (label, col) => (label ? `<span class="lchip" style="background:${col}">${esc(label)}</span>` : '');
 
 const canEdit = () => !S.readonly && S.me && S.me.rank >= 1;
 const isAdmin = () => !S.readonly && S.me && S.me.rank >= 2;
 const closeoutStages = () => S.cfg.stages.slice(-2);
-const liveStages = () => (S.cfg.public_stages && S.cfg.public_stages.length ? S.cfg.public_stages : S.cfg.stages.slice(0, -2));
+const boardStages = () => { const c = closeoutStages(); return S.cfg.stages.filter(s => !c.includes(s)); };
+const liveStages = () => (S.cfg.public_stages && S.cfg.public_stages.length ? S.cfg.public_stages : boardStages());
 const projectById = id => S.projects.find(p => p.id === id) || null;
-const sortedStage = stage => S.projects.filter(p => p.stage === stage).sort((a, b) => (a.sort === '' ? 1e9 : a.sort) - (b.sort === '' ? 1e9 : b.sort));
-/* The Sunday Treat logo: drop assets/logo-black.png and assets/logo-white.png next to index.html. Until then a wordmark shows. */
-const logoHTML = () => `<span class="brand-logo"><img src="assets/logo-black.png" alt="Sunday Treat" onerror="this.parentNode.classList.add('no-logo')"><span class="wordmark">Sunday<br>Treat</span></span>`;
+const bySort = (a, b) => (a.sort === '' || a.sort == null ? 1e9 : a.sort) - (b.sort === '' || b.sort == null ? 1e9 : b.sort);
+const sortedStage = stage => S.projects.filter(p => p.stage === stage).sort(bySort);
+/* The Sunday Treat colour logo: save it as assets/logo-colour.png next to index.html. Until then a wordmark shows. */
+const logoHTML = () => `<span class="brand-logo"><img src="${LOGO_SRC}" alt="Sunday Treat" onerror="this.parentNode.classList.add('no-logo')"><span class="wordmark">Sunday<br>Treat</span></span>`;
+
+/* ---------------- fields the backend may not have yet (invoicing, profit margin, timeline) ----------------
+   If the sheet has the column, the value is saved there and shared. Otherwise it is kept in this browser. */
+const hasCol = k => S.projects.some(p => k in p);
+function fget(p, k) { if (hasCol(k)) return p[k] == null ? '' : p[k]; const v = (S.fx[p.id] || {})[k]; return v == null ? '' : v; }
+function fsetMany(id, obj) {
+  const be = {}; let loc = false;
+  Object.keys(obj).forEach(k => { if (hasCol(k)) be[k] = obj[k]; else { (S.fx[id] = S.fx[id] || {})[k] = obj[k]; loc = true; } });
+  if (loc) saveFx();
+  if (Object.keys(be).length) saveFields(id, be, null, true); else bgRefresh();
+}
+const fset = (id, k, v) => fsetMany(id, { [k]: v });
+const sharedCols = () => hasCol('invoicing') && hasCol('profit_margin') && hasCol('edit_start');
+
+/* edit period = the Timeline column. Falls back to the old Start / End dates until a timeline is set. */
+function epOf(p) {
+  const s = fget(p, 'edit_start'), e = fget(p, 'edit_end');
+  if (s || e) return { s: s || e, e: e || s, custom: true };
+  return { s: p.start || p.end || '', e: p.end || p.start || '', custom: false };
+}
+function epSet(id, s, e) {
+  fsetMany(id, { edit_start: s, edit_end: e });
+  const p = projectById(id);
+  if (!s && !e && p && (p.start || p.end)) saveFields(id, { start: '', end: '' }, null, true);
+}
+const marginOf = p => numOf(fget(p, 'profit_margin'));
+const profitOf = p => { const b = numOf(p.budget), m = marginOf(p); return b == null || m == null ? null : b * m / 100; };
+const marginCls = m => (m == null ? '' : m >= 30 ? 'pct-good' : m >= 15 ? 'pct-mid' : 'pct-low');
 
 /* ---------------- toasts, modals, popovers ---------------- */
 function toast(msg, kind = '') {
@@ -536,14 +698,17 @@ function confirmBox(msg, ok = 'Confirm', danger = false, title = 'Are you sure?'
     $('#modalScrim').addEventListener('click', () => res(false));
   });
 }
-function openPop(anchor, html) {
-  closePop();
-  const p = document.createElement('div'); p.className = 'pop'; p.id = 'pop'; p.innerHTML = html; document.body.appendChild(p);
+function placePop(p, anchor) {
   const r = anchor.getBoundingClientRect(), pw = p.offsetWidth, ph = p.offsetHeight;
   let x = Math.min(Math.max(8, r.left), innerWidth - pw - 8), y = r.bottom + 4;
   if (r.left + pw > innerWidth - 8) x = Math.max(8, r.right - pw);
-  if (y + ph > innerHeight - 8) y = Math.max(8, r.top - ph - 4);
+  if (y + ph > innerHeight - 8) y = Math.max(8, Math.min(innerHeight - ph - 8, r.top - ph - 4));
   p.style.left = x + 'px'; p.style.top = y + 'px';
+}
+function openPop(anchor, html) {
+  closePop();
+  const p = document.createElement('div'); p.className = 'pop'; p.id = 'pop'; p.innerHTML = html; document.body.appendChild(p);
+  placePop(p, anchor);
   return p;
 }
 function closePop() { $('#pop') && $('#pop').remove(); }
@@ -631,32 +796,28 @@ async function seedDefaults() {
   try {
     const miss = EXTRA_STATUSES.filter(s => !S.cfg.statuses.includes(s));
     if (miss.length) { const r = await write('config_save', { key: 'statuses', value: S.cfg.statuses.concat(miss) }); S.cfg = Object.assign(S.cfg, r.config); }
-    if (!S.depts.some(d => /freelanc/i.test(d.name))) { const r = await write('dept_save', { department: { name: 'Freelancers', colour: '#F28C28' } }); S.depts = r.departments; }
+    if (!S.depts.some(d => /freelanc/i.test(d.name))) { const r = await write('dept_save', { department: { name: 'Freelancers', colour: '#E06A10' } }); S.depts = r.departments; }
     renderView();
   } catch (e) { /* surfaced by write() */ }
 }
 
-/* ---------------- theme ---------------- */
-function applyTheme(t) { if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; }
-function curTheme() { return document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
-function toggleTheme() { const t = curTheme() === 'dark' ? 'light' : 'dark'; applyTheme(t); store.set('board_theme', t); $$('.theme-ic').forEach(i => { i.className = 'ti theme-ic ' + (t === 'dark' ? 'ti-sun' : 'ti-moon'); }); }
-applyTheme(store.get('board_theme'));
-
-/* ---------------- shell ---------------- */
+/* ---------------- shell (light only) ---------------- */
 const NAV = [
   { id: 'mine', label: 'My projects', icon: 'ti-user-circle' },
   { id: 'pipeline', label: 'Project board', icon: 'ti-layout-list' },
-  { id: 'timeline', label: 'Edit capacity', icon: 'ti-calendar-stats' },
   { id: 'closeout', label: 'Out processing', icon: 'ti-checklist' },
+  { id: 'finance', label: 'Finance', icon: 'ti-coin-pound' },
   { id: 'archive', label: 'Archive', icon: 'ti-archive' },
+  { id: 'timeline', label: 'Edit capacity', icon: 'ti-calendar-stats', group: 'Tools' },
+  { id: 'pods', label: 'Pod capacity', icon: 'ti-users-group', group: 'Tools' },
   { id: 'codes', label: 'Code generator', icon: 'ti-barcode', group: 'Tools' },
   { id: 'settings', label: 'Settings', icon: 'ti-settings', admin: true, group: 'Admin' }
 ];
-const TITLES = { mine: 'My projects', pipeline: 'Project board', timeline: 'Edit capacity', closeout: 'Out processing', archive: 'Archive', codes: 'Code generator', settings: 'Settings', board: 'Live projects' };
+const TITLES = { mine: 'My projects', pipeline: 'Project board', closeout: 'Out processing', finance: 'Finance', archive: 'Archive', timeline: 'Edit capacity', pods: 'Pod capacity', codes: 'Code generator', settings: 'Settings', board: 'Live projects' };
 const brandName = () => `<span class="brand-name"><span class="emoji">\u{1F7E2}</span>BOARD</span>`;
 
 function renderShell() {
-  const app = $('#app'); const dark = curTheme() === 'dark';
+  const app = $('#app');
   let nav = '', lastG = '';
   NAV.forEach(n => {
     if (n.admin && !isAdmin()) return;
@@ -669,20 +830,18 @@ function renderShell() {
       ${nav}
       <div class="side-foot">
         <button class="nav-item" data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button>
-        <button class="nav-item" data-act="theme"><i class="ti theme-ic ${dark ? 'ti-sun' : 'ti-moon'}"></i>Light / dark</button>
         <div class="userchip">${av(S.me.id, 'av-lg')}<div><div class="nm">${esc(S.me.name)}</div><div class="rl">${esc(S.me.access)}</div></div>
           <button class="icon-btn" style="margin-left:auto" data-act="signout" title="Sign out"><i class="ti ti-logout"></i></button></div>
         <div class="ver">ALPHA ${APP_VERSION}</div>
-        <div class="tagline">${TAGLINE}</div>
+        <div class="tagline tagline-i">${LOVE}</div>
       </div>
     </nav>
     <div class="main">
-      <div class="topbar">${logoHTML()}<h1 class="page-title" id="pageTitle"></h1><span class="pill pill-alpha">Alpha</span><span class="spacer"></span><span class="sync" id="sync"></span>
-        <button class="icon-btn only-m" data-act="theme" title="Light / dark"><i class="ti theme-ic ${dark ? 'ti-sun' : 'ti-moon'}"></i></button></div>
+      <div class="topbar">${logoHTML()}<h1 class="page-title" id="pageTitle"></h1><span class="pill pill-alpha">Alpha</span><span class="spacer"></span><span class="sync" id="sync"></span></div>
       <div class="content-wrap"><div class="content" id="content"></div></div>
     </div>
     <div class="tabbar">
-      ${[['mine', 'Mine'], ['pipeline', 'Board'], ['timeline', 'Capacity'], ['closeout', 'Out']].map(([id, l]) => { const n = NAV.find(x => x.id === id); return `<button data-act="go" data-v="${id}" data-nav="${id}"><i class="ti ${n.icon}"></i>${l}</button>`; }).join('')}
+      ${[['mine', 'Mine'], ['pipeline', 'Board'], ['closeout', 'Out'], ['finance', 'Finance']].map(([id, l]) => { const n = NAV.find(x => x.id === id); return `<button data-act="go" data-v="${id}" data-nav="${id}"><i class="ti ${n.icon}"></i>${l}</button>`; }).join('')}
       <button data-act="more" data-nav="more"><i class="ti ti-menu-2"></i>More</button>
     </div>`;
   document.title = '\u{1F7E2} BOARD (alpha)';
@@ -709,11 +868,11 @@ function route() {
 }
 addEventListener('hashchange', route);
 
-const FIXED = { pipeline: 1, mine: 1, timeline: 1, closeout: 1, archive: 1, settings: 1, board: 1 };
+const FIXED = { pipeline: 1, mine: 1, timeline: 1, closeout: 1, archive: 1, settings: 1, board: 1, finance: 1, pods: 1 };
 function renderView() {
   const c = $('#content'); if (!c) return;
   const old = $('#vb'), sx = old ? old.scrollLeft : c.scrollLeft, sy = old ? old.scrollTop : c.scrollTop, same = S._lastView === S.view; S._lastView = S.view;
-  const fn = { mine: viewMine, pipeline: viewPipeline, timeline: viewEditCapacity, closeout: viewCloseout, archive: viewArchive, codes: viewCodes, settings: viewSettings, board: viewPipeline }[S.view];
+  const fn = { mine: viewMine, pipeline: viewPipeline, closeout: viewCloseout, finance: viewFinance, archive: viewArchive, timeline: viewEditCapacity, pods: viewPods, codes: viewCodes, settings: viewSettings, board: viewPipeline }[S.view];
   c.className = 'content' + (FIXED[S.view] ? ' fixed' : '');
   c.innerHTML = fn ? fn() : '';
   const nv = $('#vb') || c;
@@ -722,12 +881,15 @@ function renderView() {
   else { nv.scrollLeft = 0; nv.scrollTop = 0; }
   afterRender();
 }
+function setVW() { const vb = $('#vb'); if (vb) vb.style.setProperty('--vw', vb.clientWidth + 'px'); }
 function afterRender() {
+  setVW();
   if (S.view === 'archive' && !S.ar.loaded && !S.ar.loading) loadArchive(true);
   if (S.view === 'codes') { if (!S.clients) loadClients(); updateCodeOut(); }
   if (S.view === 'settings') settingsAfter();
   if ((S.view === 'pipeline' || S.view === 'mine') && !S.readonly && !S.clients && !S._clientsTried) { S._clientsTried = true; loadClients(); }
 }
+addEventListener('resize', debounce(() => { if (!$('#vb')) return; setVW(); if (S.view === 'timeline' && !S.dragging) { rerenderBody(); setVW(); } }, 150));
 
 /* ---------------- global events ---------------- */
 const ACT = {}, INP = {};
@@ -741,20 +903,20 @@ document.addEventListener('input', e => { const t = e.target.closest('[data-inp]
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { if ($('#modal')) closeModal(); else if ($('#pop')) closePop(); else if (S.drawer) closeDrawer(); else if (document.activeElement && document.activeElement.classList.contains('cell-inp')) { document.activeElement.value = document.activeElement.defaultValue; document.activeElement.blur(); } }
   else if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('cell-inp') && e.target.tagName === 'INPUT') e.target.blur();
+  else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && S.view === 'closeout' && S.wt.on && !typing() && !$('#modal') && !S.drawer) { e.preventDefault(); wtGo(e.key === 'ArrowRight' ? 1 : -1); }
 });
 
 ACT.go = el => { closePop(); go(el.dataset.v); };
-ACT.theme = () => toggleTheme();
 ACT.signout = () => signOut();
 ACT.more = el => {
-  const items = NAV.filter(n => ['archive', 'codes', 'settings'].includes(n.id) && (!n.admin || isAdmin()));
+  const items = NAV.filter(n => ['timeline', 'pods', 'archive', 'codes', 'settings'].includes(n.id) && (!n.admin || isAdmin()));
   openPop(el, items.map(n => `<button data-act="go" data-v="${n.id}"><i class="ti ${n.icon}"></i>${n.label}</button>`).join('') +
-    `<button data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button><button data-act="signout"><i class="ti ti-logout"></i>Sign out</button><div class="sep"></div><div class="tagline" style="padding:6px 10px">${TAGLINE}</div>`);
+    `<div class="sep"></div><button data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button><button data-act="signout"><i class="ti ti-logout"></i>Sign out</button><div class="sep"></div><div class="tagline tagline-i" style="padding:6px 10px">${LOVE}</div>`);
 };
 
 /* ---------------- auth ---------------- */
 function onAuthLost() { if (!S.token) return; S.token = null; S.me = null; store.del('board_token'); showLogin('Your session has ended. Please sign in again.'); }
-function signOut() { S.token = null; S.me = null; store.del('board_token'); S._tlScrolled = false; seeded = false; closeDrawer(true); showLogin(''); }
+function signOut() { S.token = null; S.me = null; store.del('board_token'); S._tlScrolled = false; seeded = false; S.wt = { on: false, ids: [], i: 0 }; closeDrawer(true); showLogin(''); }
 
 async function showLogin(msg) {
   closeModal(); closePop();
@@ -762,12 +924,13 @@ async function showLogin(msg) {
     <div class="login"><form class="login-card" id="loginForm" autocomplete="off">
       ${logoHTML()}
       <div class="login-title"><span class="emoji">\u{1F7E2}</span>BOARD <span class="pill pill-alpha">Alpha</span></div>
+      <div class="login-tag">${SLOGAN}</div>
       <div class="alpha-note" id="alphaNote"><b>Alpha build ${APP_VERSION}.</b> Things will change and break. Data is a test copy while we trial it.</div>
       <div class="field"><span class="lbl">Name</span><input class="inp" id="lgUser" name="user" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
       <div class="field"><span class="lbl">Passcode</span><input class="inp" id="lgPass" name="pass" type="password" autocomplete="new-password"></div>
       <div class="login-err" id="lgErr">${esc(msg || '')}</div>
-      <button class="btn btn-primary" type="submit" id="lgBtn">Enter</button>
-      <div class="tagline">${TAGLINE}</div>
+      <button class="btn btn-primary btn-lg" type="submit" id="lgBtn">Enter</button>
+      <div class="tagline tagline-i love">${LOVE}</div>
     </form></div>`;
   document.title = '\u{1F7E2} BOARD (alpha)';
   $('#loginForm').addEventListener('submit', async e => {
@@ -789,7 +952,7 @@ async function fetchLogin(user, pass) {
 }
 
 async function loadApp() {
-  $('#app').innerHTML = `<div class="skeleton"><div>${logoHTML()}</div>Loading BOARD</div>`;
+  $('#app').innerHTML = `<div class="skeleton">${logoHTML()}<div>Loading BOARD</div></div>`;
   const d = await api('bootstrap'); applyBootstrap(d);
   renderShell();
   if (!location.hash || location.hash === '#') location.hash = '#/pipeline';
@@ -807,11 +970,11 @@ async function boot() {
 }
 
 /* ================================================================
-   BOARD alpha 0.2. Views: project board, my projects, edit capacity, out processing, archive, code generator
+   Views: table engine, project board, my projects
    ================================================================ */
 
 const BODY = {};
-function rerenderBody() { const fn = BODY[S.view], vb = $('#vb'); if (fn && vb) vb.innerHTML = fn(); }
+function rerenderBody() { const fn = BODY[S.view], vb = $('#vb'); if (fn && vb) { vb.innerHTML = fn(); setVW(); } }
 const optList = (items, cur, blank) => (blank != null ? `<option value="">${esc(blank)}</option>` : '') + items.map(v => `<option value="${esc(v)}"${v === cur ? ' selected' : ''}>${esc(v)}</option>`).join('');
 const personOpts = (cur, blank, list) => (blank != null ? `<option value="">${esc(blank)}</option>` : '') + (list || activePeople()).map(p => `<option value="${p.id}"${p.id === cur ? ' selected' : ''}>${esc(p.name)}</option>`).join('');
 
@@ -825,7 +988,7 @@ function matches(p) {
 const hasCode = p => !!String(p.project_code || '').trim();
 
 /* ================================================================
-   Table engine: stage groups (collapsible), sortable + resizable columns
+   Table engine: coloured stage banners (collapsible), click-to-sort, resizable columns
    ================================================================ */
 const COLS = {};
 S._groups = {};
@@ -848,16 +1011,18 @@ function tableHTML(tid, colsIn, groups, rowFn, opt = {}) {
   S._groups[tid] = groups.map(g => g.key);
   const head = cols.map(c => {
     const on = st && st.k === c.k, arrow = on ? `<i class="ti ${st.dir === 1 ? 'ti-arrow-up' : 'ti-arrow-down'}" style="color:var(--stp)"></i>` : '';
-    const inner = c.nosort ? `<div class="th-in" style="cursor:default"><span class="th-l">${esc(c.l)}</span></div>` : `<div class="th-in" data-act="colmenu" data-t="${tid}" data-k="${c.k}"><span class="th-l">${esc(c.l)}</span>${arrow}</div>`;
+    const inner = c.nosort ? `<div class="th-in" style="cursor:default"><span class="th-l">${esc(c.l)}</span></div>` : `<div class="th-in" data-act="colsort" data-t="${tid}" data-k="${c.k}" title="${esc(c.tip || c.l)}"><span class="th-l">${esc(c.l)}</span>${arrow}</div>`;
     return `<th class="${c.sticky ? 'sticky' : ''}" style="${c.sticky ? `left:${c.left}px;` : ''}">${inner}${c.noresize ? '' : `<span class="rs" data-t="${tid}" data-k="${c.k}"></span>`}</th>`;
   }).join('');
   let body = '';
-  groups.forEach(g => {
+  groups.forEach((g, gi) => {
     const coll = !!S.ui.collapsed[tid + ':' + g.key];
-    body += `<tr class="stage-row${coll ? ' collapsed' : ''}" data-stage="${esc(g.key)}"><td colspan="${n}"><div class="stage-bar" data-act="stagetoggle" data-t="${tid}" data-g="${esc(g.key)}">
-      <i class="ti ti-chevron-down stage-chev"></i><span class="stage-pill" style="background:${g.colour};color:${textOn(g.colour)}">${esc(g.title)}</span>
+    if (gi > 0) body += `<tr class="stage-spacer"><td colspan="${n}"></td></tr>`;
+    body += `<tr class="stage-row${coll ? ' collapsed' : ''}${gi === 0 ? ' first' : ''}" data-stage="${esc(g.key)}"><td class="stage-td" colspan="${n}" style="background:${g.colour}" data-act="stagetoggle" data-t="${tid}" data-g="${esc(g.key)}"><div class="stage-banner">
+      <i class="ti ti-chevron-down stage-chev"></i><span class="stage-title">${esc(g.title)}</span>
       <span class="count">${g.items.length}${g.total != null && g.total !== g.items.length ? ' / ' + g.total : ''}</span>
-      ${opt.add && canEdit() ? `<button class="btn btn-ghost btn-sm stage-add" data-act="newproject" data-stage="${esc(g.key)}"><i class="ti ti-plus"></i>New</button>` : ''}</div></td></tr>`;
+      ${opt.add && canEdit() ? `<button class="btn btn-ghost btn-sm" data-act="newproject" data-stage="${esc(g.key)}"><i class="ti ti-plus"></i>New</button>` : ''}
+      ${g.sub ? `<span class="sub">${g.sub}</span>` : ''}</div></td></tr>`;
     if (coll) return;
     if (g.items.length) body += g.items.map(p => rowFn(p, g, cols)).join('');
     else body += `<tr class="stage-empty" data-stage="${esc(g.key)}"><td colspan="${n}">${opt.dnd && canEdit() ? 'Drop a project here' : 'Nothing here'}</td></tr>`;
@@ -872,17 +1037,15 @@ function td(c, g, inner, cls = '') {
 }
 const withFirst = cols => cols.map((c, i) => Object.assign({}, c, { first: i === 0 }));
 
-ACT.colmenu = el => {
-  const tid = el.dataset.t, k = el.dataset.k, c = (COLS[tid] || []).find(x => x.k === k) || {}, st = curSort(tid), on = st && st.k === k;
-  const [asc, desc] = c.num ? ['Smallest first', 'Largest first'] : c.date ? ['Earliest first', 'Latest first'] : ['Sort A to Z', 'Sort Z to A'];
-  openPop(el, `<button data-act="colsort" data-t="${tid}" data-k="${k}" data-d="1" class="${on && st.dir === 1 ? 'cur' : ''}"><i class="ti ti-sort-ascending"></i>${asc}</button>
-    <button data-act="colsort" data-t="${tid}" data-k="${k}" data-d="-1" class="${on && st.dir === -1 ? 'cur' : ''}"><i class="ti ti-sort-descending"></i>${desc}</button>
-    ${st ? `<button data-act="colclear" data-t="${tid}"><i class="ti ti-x"></i>Clear sorting</button>` : ''}<div class="sep"></div>
-    <button data-act="colreset" data-t="${tid}" data-k="${k}"><i class="ti ti-arrows-horizontal"></i>Reset column width</button>`);
+/* click a header: A to Z, then Z to A, then back to your own order */
+ACT.colsort = el => {
+  const tid = el.dataset.t, k = el.dataset.k, st = curSort(tid);
+  if (!st || st.k !== k) S.ui.sort[tid] = { k, dir: 1 };
+  else if (st.dir === 1) S.ui.sort[tid] = { k, dir: -1 };
+  else delete S.ui.sort[tid];
+  saveUI(); renderView();
 };
-ACT.colsort = el => { closePop(); S.ui.sort[el.dataset.t] = { k: el.dataset.k, dir: Number(el.dataset.d) }; saveUI(); renderView(); };
-ACT.colclear = el => { closePop(); delete S.ui.sort[el.dataset.t]; saveUI(); renderView(); };
-ACT.colreset = el => { closePop(); const w = S.ui.widths[el.dataset.t]; if (w) delete w[el.dataset.k]; saveUI(); rerenderBody(); };
+ACT.colclear = el => { delete S.ui.sort[el.dataset.t]; saveUI(); renderView(); };
 ACT.stagetoggle = el => { const key = el.dataset.t + ':' + el.dataset.g; if (S.ui.collapsed[key]) delete S.ui.collapsed[key]; else S.ui.collapsed[key] = true; saveUI(); rerenderBody(); };
 ACT.collapseall = el => { const t = el.dataset.t, all = (S._groups[t] || []).every(g => S.ui.collapsed[t + ':' + g]); (S._groups[t] || []).forEach(g => { if (all) delete S.ui.collapsed[t + ':' + g]; else S.ui.collapsed[t + ':' + g] = true; }); saveUI(); rerenderBody(); };
 const sortChip = tid => {
@@ -908,29 +1071,31 @@ document.addEventListener('pointerdown', e => {
 });
 
 /* ================================================================
-   Project board (list, grouped by stage)
+   Project board (list, grouped by lifecycle stage banners)
    ================================================================ */
 const PIPE_COLS = [
   { k: 'hd', l: '', w: 34, min: 34, sticky: 1, nosort: 1, noresize: 1, ed: 1 },
   { k: 'name', l: 'Project', w: 300, min: 140, sticky: 1 },
-  { k: 'client', l: 'Client', w: 180 },
-  { k: 'project_code', l: 'Project code', w: 200, priv: 1 },
+  { k: 'client', l: 'Client', w: 170 },
+  { k: 'project_code', l: 'Project code', w: 190, priv: 1 },
   { k: 'status', l: 'Status', w: 200 },
-  { k: 'lead', l: 'Account lead', w: 160 },
-  { k: 'creative', l: 'Creative lead', w: 160 },
-  { k: 'production', l: 'Production lead', w: 160 },
-  { k: 'edit', l: 'Edit lead', w: 160 },
-  { k: 'team', l: 'Team', w: 140 },
-  { k: 'start', l: 'Start', w: 140, date: 1 },
-  { k: 'end', l: 'End', w: 140, date: 1 },
-  { k: 'budget', l: 'Budget', w: 120, num: 1, priv: 1 },
+  { k: 'lead', l: 'Account', tip: 'Account lead', w: 96, min: 70, cc: 1 },
+  { k: 'creative', l: 'Creative', tip: 'Creative lead', w: 96, min: 70, cc: 1 },
+  { k: 'production', l: 'Production', tip: 'Production lead', w: 110, min: 80, cc: 1 },
+  { k: 'edit', l: 'Edit', tip: 'Edit lead', w: 80, min: 64, cc: 1 },
+  { k: 'timeline', l: 'Timeline', tip: 'Edit timeline', w: 190, date: 1, cc: 1 },
+  { k: 'budget', l: 'Budget', w: 110, num: 1, priv: 1 },
+  { k: 'margin', l: 'Profit margin', tip: 'Profit margin', w: 120, num: 1, priv: 1 },
+  { k: 'invoicing', l: 'Invoicing', w: 210, priv: 1 },
   { k: 'act', l: '', w: 80, min: 80, nosort: 1, noresize: 1 }
 ];
 function pipeCols() { return withFirst(PIPE_COLS.filter(c => (!c.ed || canEdit()) && (!c.priv || !S.readonly))); }
 function pipeVal(p, k) {
   if (LEAD_ROLES.some(r => r[0] === k)) return norm((personById(leadOf(p, k)) || {}).name);
-  if (k === 'team') return teamOf(p).length;
-  if (k === 'budget') return p.budget === '' || p.budget == null ? '' : Number(p.budget);
+  if (k === 'timeline') return epOf(p).s || '';
+  if (k === 'budget') return numOf(p.budget);
+  if (k === 'margin') return marginOf(p);
+  if (k === 'invoicing') { const v = fget(p, 'invoicing'); return v ? INV_LABELS.indexOf(v) + 1 || 99 : ''; }
   return norm(p[k]);
 }
 function roSeg(active) {
@@ -949,18 +1114,32 @@ function viewPipeline() {
 }
 BODY.pipeline = BODY.board = pipeBody;
 function pipeBody() {
-  const stages = S.readonly ? liveStages() : S.cfg.stages;
+  /* Out Processing and To Archive live on their own page, not on the project board */
+  const stages = S.readonly ? liveStages() : boardStages();
   const groups = stages.map(stage => {
     const all = sortedStage(stage), items = sortRows(all.filter(matches), 'pipeline', pipeVal);
     return { key: stage, title: stage, colour: stageColour(stage), items, total: all.length };
   });
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('pipeline');
   return tableHTML('pipeline', pipeCols(), groups, pipeRow, { add: true, dnd: true }) +
-    `<datalist id="dlClients">${clientNames().map(n => `<option value="${esc(n)}">`).join('')}</datalist><div class="page-foot tagline">${TAGLINE}</div>`;
+    `<datalist id="dlClients">${clientNames().map(n => `<option value="${esc(n)}">`).join('')}</datalist><div class="page-end"></div>`;
 }
+/* lead = a circle and nothing else */
 function leadCell(p, role, ed) {
-  const id = leadOf(p, role), inner = id ? `${av(id, 'av-sm')}<span class="nmx">${esc((personById(id) || {}).name || '')}</span>` : `<span class="nmx">${ed ? '+ Add' : ''}</span>`;
-  return ed ? `<button class="cell-btn lead-btn ${id ? '' : 'empty-l'}" data-act="leadpick" data-id="${p.id}" data-role="${role}">${inner}</button>` : `<span class="cell-plain">${inner}</span>`;
+  const id = leadOf(p, role), nm = id ? (personById(id) || {}).name || '' : '';
+  const circle = id ? av(id, 'av-lead') : (ed ? `<span class="av av-lead av-empty"><i class="ti ti-plus"></i></span>` : '');
+  const label = (LEAD_ROLES.find(r => r[0] === role) || [])[1];
+  return ed ? `<button class="cell-btn" data-act="leadpick" data-id="${p.id}" data-role="${role}" title="${esc(label)}${nm ? ': ' + esc(nm) : ''}">${circle}</button>` : circle;
+}
+function timelineCell(p, ed) {
+  const ep = epOf(p), txt = ep.s || ep.e ? frange(ep.s, ep.e) : '';
+  if (ed) return `<button class="tl-pill${txt ? '' : ' none'}" data-act="rpopen" data-id="${p.id}" title="Set the edit timeline">${txt ? esc(txt) : 'Set dates'}</button>`;
+  return txt ? `<span class="tl-pill">${esc(txt)}</span>` : '';
+}
+function marginCell(p, ed) {
+  const m = marginOf(p);
+  return ed ? `<div class="pct-wrap"><input type="number" step="0.1" class="cell-inp num ${marginCls(m)}" data-chg="fin" data-id="${p.id}" data-k="profit_margin" value="${m == null ? '' : esc(m)}" placeholder="0"><span>%</span></div>`
+    : `<span class="cell-txt num ${marginCls(m)}" style="text-align:right">${m == null ? '' : esc(m) + '%'}</span>`;
 }
 function pipeRow(p, g, cols) {
   const ed = canEdit();
@@ -970,11 +1149,12 @@ function pipeRow(p, g, cols) {
       case 'name': return td(c, g, ed ? `<input class="cell-inp nm-inp" data-chg="cell" data-id="${p.id}" data-f="name" value="${esc(p.name)}" placeholder="Project name">` : `<span class="cell-txt nm-txt" data-act="open" data-id="${p.id}" style="cursor:pointer">${esc(p.name)}</span>`);
       case 'client': return td(c, g, ed ? `<input class="cell-inp" list="dlClients" data-chg="cell" data-id="${p.id}" data-f="client" value="${esc(p.client)}" placeholder="Client">` : `<span class="cell-txt">${esc(p.client)}</span>`);
       case 'project_code': return td(c, g, ed ? `<input class="cell-inp" data-chg="cell" data-id="${p.id}" data-f="project_code" value="${esc(p.project_code)}" placeholder="Add code">` : `<span class="cell-txt">${esc(p.project_code)}</span>`);
-      case 'status': return td(c, g, ed ? `<select class="cell-inp cell-sel" data-chg="cellsel" data-id="${p.id}" data-f="status" style="border-left:4px solid ${statusColour(p.status) || 'transparent'};border-radius:0">${optList(statusList().concat(p.status && !statusList().includes(p.status) ? [p.status] : []), p.status, '-')}</select>` : statusChip(p.status));
-      case 'lead': case 'creative': case 'production': case 'edit': return td(c, g, leadCell(p, c.k, ed));
-      case 'team': return td(c, g, avStack(teamOf(p), 'av-sm', 5));
-      case 'start': case 'end': return td(c, g, ed ? `<input type="date" class="cell-inp" data-chg="cell" data-id="${p.id}" data-f="${c.k}" value="${esc(p[c.k])}">` : `<span class="cell-txt">${esc(fdate(p[c.k]))}</span>`);
+      case 'status': return td(c, g, labCell(p.status, statusColour(p.status), `data-act="labpick" data-kind="status" data-id="${p.id}"`, ed), 'zp');
+      case 'lead': case 'creative': case 'production': case 'edit': return td(c, g, leadCell(p, c.k, ed), 'cc');
+      case 'timeline': return td(c, g, timelineCell(p, ed), 'cc');
       case 'budget': return td(c, g, ed ? `<input type="number" min="0" step="1" class="cell-inp num" data-chg="cell" data-id="${p.id}" data-f="budget" value="${p.budget === '' || p.budget == null ? '' : esc(p.budget)}" placeholder="0">` : `<span class="cell-txt num" style="text-align:right">${esc(fmoney(p.budget))}</span>`);
+      case 'margin': return td(c, g, marginCell(p, ed));
+      case 'invoicing': { const v = fget(p, 'invoicing'); return td(c, g, labCell(v, invColour(v), `data-act="labpick" data-kind="invoicing" data-id="${p.id}"`, ed), 'zp'); }
       case 'act': return td(c, g, `<button class="icon-btn" data-act="open" data-id="${p.id}" title="Open details"><i class="ti ti-layout-sidebar-right"></i></button>${ed ? `<button class="icon-btn" data-act="movemenu" data-id="${p.id}" title="Move to stage"><i class="ti ti-dots"></i></button>` : ''}`, 'act');
       default: return td(c, g, '');
     }
@@ -994,11 +1174,33 @@ INP.cell = el => {
   if (p[f] === fields[f] && !fields.client_code) return;
   saveFields(id, fields, null, true);
 };
-INP.cellsel = async el => {
-  const id = el.dataset.id, p = projectById(id), v = el.value; if (!p || !canEdit()) return;
-  if (isPreStage(v) && !hasCode(p)) { el.value = p.status || ''; if (!await requireCode(p)) return; }
-  saveFields(id, { status: v }, null, true);
+/* invoicing + profit margin (shared if the sheet has the columns, otherwise kept in this browser) */
+INP.fin = el => {
+  const id = el.dataset.id, k = el.dataset.k, p = projectById(id); if (!p || !canEdit()) return;
+  let v = el.value; if (k === 'profit_margin') v = v === '' ? '' : Number(v);
+  fset(id, k, v);
 };
+
+/* Monday style label picker (status + invoicing) */
+ACT.labpick = el => {
+  if (!canEdit()) return;
+  const kind = el.dataset.kind, id = el.dataset.id, p = projectById(id); if (!p) return;
+  const list = kind === 'status' ? statusList().concat(p.status && !statusList().includes(p.status) ? [p.status] : []) : INV_LABELS;
+  const cur = kind === 'status' ? p.status : fget(p, 'invoicing');
+  const colOf = kind === 'status' ? statusColour : invColour;
+  openPop(el, `<div class="lab-grid">${list.map(l => `<button class="lab-opt${l === cur ? ' cur' : ''}" style="background:${colOf(l)}" data-act="labset" data-kind="${kind}" data-id="${id}" data-v="${esc(l)}">${esc(l)}</button>`).join('')}</div>` +
+    (cur ? `<div class="sep"></div><button data-act="labset" data-kind="${kind}" data-id="${id}" data-v=""><i class="ti ti-eraser"></i>Clear</button>` : ''));
+};
+ACT.labset = async el => {
+  closePop();
+  const kind = el.dataset.kind, id = el.dataset.id, v = el.dataset.v, p = projectById(id); if (!p || !canEdit()) return;
+  if (kind === 'status') {
+    if (isPreStage(v) && !hasCode(p) && !await requireCode(p)) return;
+    saveFields(id, { status: v }, null, true);
+  } else fset(id, 'invoicing', v);
+  if (S.view === 'finance') rerenderBody();
+};
+
 ACT.leadpick = el => {
   const id = el.dataset.id, role = el.dataset.role, p = projectById(id); if (!p) return;
   const cur = leadOf(p, role), label = (LEAD_ROLES.find(r => r[0] === role) || [])[1];
@@ -1011,9 +1213,71 @@ ACT.leadset = el => {
   else saveFields(p.id, { [role]: pid ? [pid].concat((p[role] || []).filter(x => x !== pid)) : (p[role] || []).slice(1) }, null, true);
 };
 INP['f-q'] = el => { S.f.q = el.value; rerenderBody(); };
-INP['f-person'] = el => { S.f.person = el.value; if (S.view === 'timeline') S.ec.person = ''; rerenderBody(); };
+INP['f-person'] = el => { S.f.person = el.value; rerenderBody(); };
 INP['f-status'] = el => { S.f.status = el.value; rerenderBody(); };
 ACT.open = el => { if (S.dragging || S._noOpen) return; openDrawer(el.dataset.id, el.dataset.from); };
+
+/* ---------------- timeline range picker (Monday style) ---------------- */
+const RP = { id: null, s: '', e: '', step: 's', y: 0, m: 0 };
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const rpFmt = s => { const d = pd(s); return d ? `${String(d.getUTCDate()).padStart(2, '0')}/${String(d.getUTCMonth() + 1).padStart(2, '0')}/${d.getUTCFullYear()}` : ''; };
+function rpParse(t) {
+  t = String(t || '').trim(); let m;
+  if ((m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2}|\d{4})$/.exec(t))) { let y = Number(m[3]); if (y < 100) y += 2000; const d = new Date(Date.UTC(y, Number(m[2]) - 1, Number(m[1]))); return d.getUTCMonth() === Number(m[2]) - 1 ? ymd(d) : ''; }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(t) && pd(t)) return t;
+  return '';
+}
+function rpHTML() {
+  const first = new Date(Date.UTC(RP.y, RP.m, 1)), off = (first.getUTCDay() + 6) % 7, gs = new Date(first.getTime() - off * MS_DAY), today = todayStr();
+  const lo = RP.s && RP.e ? (RP.s <= RP.e ? RP.s : RP.e) : RP.s, hi = RP.s && RP.e ? (RP.s <= RP.e ? RP.e : RP.s) : RP.s;
+  let rows = '';
+  for (let r = 0; r < 6; r++) {
+    const mon = new Date(gs.getTime() + r * 7 * MS_DAY);
+    rows += `<tr><td class="wk">${isoWeek(mon)}</td>`;
+    for (let c = 0; c < 7; c++) {
+      const d = new Date(mon.getTime() + c * MS_DAY), s = ymd(d), out = d.getUTCMonth() !== RP.m;
+      const cls = ['rp-d', out ? 'out' : '', c > 4 ? 'we' : '', s === today ? 'today' : '', lo && s >= lo && s <= hi ? 'in' : '', s === RP.s || (RP.e && s === RP.e) ? 'ends' : ''].filter(Boolean).join(' ');
+      rows += `<td><button class="${cls}" data-act="rpday" data-d="${s}">${d.getUTCDate()}</button></td>`;
+    }
+    rows += '</tr>';
+  }
+  const yr = new Date().getFullYear();
+  return `<div class="rp"><div class="rp-h">Timeline<span>${RP.step === 's' ? 'Pick the first day' : 'Now pick the last day'}</span></div>
+    <div class="rp-in"><input class="inp${RP.step === 's' ? ' act' : ''}" data-chg="rp-in" data-w="s" value="${rpFmt(RP.s)}" placeholder="dd/mm/yyyy"><input class="inp${RP.step === 'e' ? ' act' : ''}" data-chg="rp-in" data-w="e" value="${rpFmt(RP.e)}" placeholder="dd/mm/yyyy"></div>
+    <div class="rp-nav"><button class="icon-btn" data-act="rpnav" data-d="-1"><i class="ti ti-chevron-left"></i></button>
+      <select class="sel" data-chg="rp-m">${MONTHS.map((m, i) => `<option value="${i}"${i === RP.m ? ' selected' : ''}>${m}</option>`).join('')}</select>
+      <select class="sel" data-chg="rp-y">${[...Array(7)].map((_, i) => yr - 2 + i).concat(RP.y < yr - 2 || RP.y > yr + 4 ? [RP.y] : []).sort().map(y => `<option${y === RP.y ? ' selected' : ''}>${y}</option>`).join('')}</select>
+      <span class="sp"></span><button class="icon-btn" data-act="rpnav" data-d="1"><i class="ti ti-chevron-right"></i></button></div>
+    <table class="rp-cal"><thead><tr><th></th>${['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(d => `<th>${d}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>
+    <div class="rp-f"><button class="btn btn-plain btn-sm" data-act="rpclear">Clear</button><span class="sp"></span><button class="btn btn-ghost btn-sm" data-act="rptoday">Today</button></div></div>`;
+}
+const rpDraw = () => { const p = $('#pop'); if (p) p.innerHTML = rpHTML(); };
+ACT.rpopen = el => {
+  const p = projectById(el.dataset.id); if (!p || !canEdit()) return;
+  const ep = epOf(p), base = pd(ep.s) || pd(todayStr());
+  Object.assign(RP, { id: p.id, s: ep.s, e: ep.e, step: 's', y: base.getUTCFullYear(), m: base.getUTCMonth() });
+  openPop(el, rpHTML());
+};
+function rpCommit() {
+  const lo = RP.s <= RP.e ? RP.s : RP.e, hi = RP.s <= RP.e ? RP.e : RP.s;
+  closePop(); epSet(RP.id, lo, hi); if (S.view !== 'closeout') rerenderBody(); if (S.drawer === RP.id) refreshDrawer(true);
+}
+ACT.rpday = el => {
+  const d = el.dataset.d;
+  if (RP.step === 's') { RP.s = d; RP.e = ''; RP.step = 'e'; rpDraw(); }
+  else { RP.e = d; rpCommit(); }
+};
+ACT.rpnav = el => { RP.m += Number(el.dataset.d); if (RP.m < 0) { RP.m = 11; RP.y--; } if (RP.m > 11) { RP.m = 0; RP.y++; } rpDraw(); };
+ACT.rptoday = () => { const d = pd(todayStr()); RP.y = d.getUTCFullYear(); RP.m = d.getUTCMonth(); rpDraw(); };
+ACT.rpclear = () => { closePop(); epSet(RP.id, '', ''); rerenderBody(); if (S.drawer === RP.id) refreshDrawer(true); };
+INP['rp-m'] = el => { RP.m = Number(el.value); rpDraw(); };
+INP['rp-y'] = el => { RP.y = Number(el.value); rpDraw(); };
+INP['rp-in'] = el => {
+  const v = rpParse(el.value), w = el.dataset.w;
+  if (!v) { rpDraw(); return; }
+  RP[w] = v; const d = pd(v); RP.y = d.getUTCFullYear(); RP.m = d.getUTCMonth();
+  if (RP.s && RP.e) rpCommit(); else { RP.step = w === 's' ? 'e' : 's'; rpDraw(); }
+};
 
 /* ---------------- pre-production needs a project code ---------------- */
 async function requireCode(p) {
@@ -1040,7 +1304,7 @@ async function requireCode(p) {
 /* ---------------- move + drag ---------------- */
 ACT.movemenu = el => {
   const p = projectById(el.dataset.id); if (!p) return;
-  openPop(el, `<div class="lbl grp-lbl">Move to</div>` + S.cfg.stages.map(s => `<button data-act="moveto" data-id="${p.id}" data-stage="${esc(s)}" class="${s === p.stage ? 'cur' : ''}">${s === p.stage ? '<i class="ti ti-check"></i>' : `<span class="dot" style="width:9px;height:9px;border-radius:50%;background:${stageColour(s)}"></span>`}${esc(s)}</button>`).join(''));
+  openPop(el, `<div class="lbl grp-lbl">Move to</div>` + S.cfg.stages.map(s => `<button data-act="moveto" data-id="${p.id}" data-stage="${esc(s)}" class="${s === p.stage ? 'cur' : ''}">${s === p.stage ? '<i class="ti ti-check"></i>' : `<span style="width:9px;height:9px;border-radius:50%;flex:none;background:${stageColour(s)}"></span>`}${esc(s)}</button>`).join(''));
 };
 ACT.moveto = el => { closePop(); moveProject(el.dataset.id, el.dataset.stage); };
 async function moveProject(id, stage, beforeId) {
@@ -1083,7 +1347,7 @@ document.addEventListener('dragover', e => {
   if (!S.dragId) return; const t = dropTarget(e); if (!t) return;
   e.preventDefault(); e.dataTransfer.dropEffect = 'move'; clearDrop();
   if (t.self) return;
-  if (t.hdr) { const bar = $('.stage-bar', t.tr); (bar || t.tr).classList.add('drop-hdr'); (t.tr.classList.contains('stage-empty') ? t.tr : t.tr).classList.add('drop-hdr'); }
+  if (t.hdr) t.tr.classList.add('drop-hdr');
   else t.tr.classList.add(t.before ? 'drop-before' : 'drop-after');
 });
 document.addEventListener('drop', e => {
@@ -1100,7 +1364,7 @@ document.addEventListener('drop', e => {
    ================================================================ */
 const MINE_COLS = [
   { k: 'name', l: 'Project', w: 300, min: 140, sticky: 1 }, { k: 'client', l: 'Client', w: 180 }, { k: 'role', l: 'My role', w: 200 },
-  { k: 'status', l: 'Status', w: 200 }, { k: 'start', l: 'Start', w: 130, date: 1 }, { k: 'end', l: 'End', w: 130, date: 1 }, { k: 'team', l: 'Team', w: 150 }
+  { k: 'status', l: 'Status', w: 200 }, { k: 'timeline', l: 'Timeline', w: 190, date: 1 }, { k: 'team', l: 'Team', w: 150 }
 ];
 function rolesOf(p, id) {
   const out = [];
@@ -1117,22 +1381,23 @@ function viewMine() {
 BODY.mine = mineBody;
 function mineBody() {
   const q = norm(S.mine.q), mine = S.projects.filter(p => teamOf(p).includes(S.me.id) && (!q || norm(p.name + ' ' + p.client).includes(q)));
-  const val = (p, k) => k === 'role' ? norm(rolesOf(p, S.me.id)) : k === 'team' ? teamOf(p).length : norm(p[k]);
-  const groups = S.cfg.stages.map(stage => { const items = sortRows(mine.filter(p => p.stage === stage).sort((a, b) => (a.sort === '' ? 1e9 : a.sort) - (b.sort === '' ? 1e9 : b.sort)), 'mine', val); return { key: stage, title: stage, colour: stageColour(stage), items }; }).filter(g => g.items.length);
+  const val = (p, k) => k === 'role' ? norm(rolesOf(p, S.me.id)) : k === 'team' ? teamOf(p).length : k === 'timeline' ? epOf(p).s : norm(p[k]);
+  const groups = S.cfg.stages.map(stage => { const items = sortRows(mine.filter(p => p.stage === stage).sort(bySort), 'mine', val); return { key: stage, title: stage, colour: stageColour(stage), items }; }).filter(g => g.items.length);
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('mine');
   const cnt = $('#mineCount'); if (cnt) cnt.textContent = `${mine.length} project${mine.length === 1 ? '' : 's'} with you on the team`;
   if (!groups.length) return `<div class="empty"><i class="ti ti-mood-smile"></i>Nothing assigned to you yet. Open a project and add yourself to the team.</div>`;
   return tableHTML('mine', withFirst(MINE_COLS), groups, (p, g, cols) => `<tr class="prow rowlink" data-act="open" data-id="${p.id}">${cols.map(c => td(c, g, ({
     name: `<span class="cell-txt nm-txt">${esc(p.name)}</span>`, client: `<span class="cell-txt">${esc(p.client)}</span>`, role: `<span class="cell-txt">${esc(rolesOf(p, S.me.id))}</span>`,
-    status: statusChip(p.status), start: `<span class="cell-txt">${esc(fdate(p.start))}</span>`, end: `<span class="cell-txt">${esc(fdate(p.end))}</span>`, team: avStack(teamOf(p), 'av-sm', 5)
-  })[c.k])).join('')}</tr>`) + `<div class="page-foot tagline">${TAGLINE}</div>`;
+    status: labCell(p.status, statusColour(p.status), '', false), timeline: timelineCell(p, false), team: avStack(teamOf(p), 'av-sm', 5)
+  })[c.k], c.k === 'status' ? 'zp' : '')).join('')}</tr>`) + `<div class="page-end"></div>`;
 }
 INP['mine-q'] = el => { S.mine.q = el.value; rerenderBody(); };
 
 /* ================================================================
-   Edit capacity (post production + freelancers, weekdays only, editable edit periods)
+   Edit capacity (Tools). Post production + freelancers, weekdays only, default view is the next 2 weeks
    ================================================================ */
-const TL_W = [10, 18, 30, 48], TL_LABEL_W = 250, TL_BEFORE = 10, TL_WEEKS = 40;
+const TL_BEFORE = 4, TL_WEEKS = 40, WEEK_OPTS = [2, 4, 8, 12];
+const tlLabelW = () => (innerWidth <= 860 ? 150 : 250);
 function monday(d) { const x = new Date(d.getTime()); const dow = (x.getUTCDay() + 6) % 7; return new Date(x.getTime() - dow * MS_DAY); }
 function isoWeek(d) { const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())); const dn = (t.getUTCDay() + 6) % 7; t.setUTCDate(t.getUTCDate() - dn + 3); const ft = new Date(Date.UTC(t.getUTCFullYear(), 0, 4)); return 1 + Math.round(((t - ft) / MS_DAY - 3 + ((ft.getUTCDay() + 6) % 7)) / 7); }
 function tlStart() { return new Date(monday(pd(todayStr())).getTime() - TL_BEFORE * 7 * MS_DAY); }
@@ -1152,33 +1417,28 @@ function ecStages() {
   return st;
 }
 const ecPeople = () => activePeople().filter(p => /post|freelanc/i.test((deptById(p.department) || {}).name || ''));
-/* edit periods: stored on the project if the backend has edit_start/edit_end columns, otherwise kept in this browser */
-const epBackend = () => S.projects.some(p => 'edit_start' in p);
-function epOf(p) {
-  const own = epBackend() ? { s: p.edit_start || '', e: p.edit_end || '' } : (S.ep[p.id] || { s: '', e: '' });
-  return { s: own.s || p.start || p.end || '', e: own.e || p.end || p.start || '', custom: !!(own.s || own.e) };
-}
-function epSet(id, s, e) {
-  if (epBackend()) saveFields(id, { edit_start: s, edit_end: e }, null, true);
-  else { S.ep[id] = { s, e }; store.set('board_ep', JSON.stringify(S.ep)); }
+function ecDayW() {
+  const cw = ($('#content') || {}).clientWidth || (innerWidth - 236);
+  return Math.max(14, Math.floor((cw - tlLabelW() - 2) / (S.ec.weeks * 5)));
 }
 function viewEditCapacity() {
   const ppl = ecPeople();
   return `<div class="toolbar">
     ${roSeg('timeline')}
     <select class="sel sel-sm" data-chg="ec-person">${personOpts(S.ec.person, 'Everyone in post and freelancers', ppl)}</select>
-    <div class="row"><button class="icon-btn" data-act="tlzoom" data-d="-1" title="Zoom out"><i class="ti ti-minus"></i></button><button class="icon-btn" data-act="tlzoom" data-d="1" title="Zoom in"><i class="ti ti-plus"></i></button></div>
-    <button class="btn btn-plain btn-sm" data-act="tltoday">Today</button>
+    <select class="sel sel-sm" data-chg="ec-weeks" title="How much time fits on screen">${WEEK_OPTS.map(w => `<option value="${w}"${w === S.ec.weeks ? ' selected' : ''}>Next ${w} weeks</option>`).join('')}</select>
+    <button class="btn btn-plain btn-sm" data-act="tltoday">This week</button>
     ${hasInternal() ? `<label class="row muted" style="font-size:12px;gap:6px"><input type="checkbox" class="toggle" data-chg="ec-internal" ${S.ec.internal ? 'checked' : ''}> Include internal post production</label>` : ''}
   </div><div id="vb">${ecBody()}</div>`;
 }
 BODY.timeline = ecBody;
 function ecBody() {
-  const dayW = TL_W[S.ec.zoom], start = tlStart(), totalDays = TL_WEEKS * 5, W = totalDays * dayW, today = todayStr();
+  const LW = tlLabelW(), dayW = ecDayW(), start = tlStart(), totalDays = TL_WEEKS * 5, W = totalDays * dayW, today = todayStr();
+  S._dayW = dayW;
   const stages = ecStages(), people = ecPeople().filter(p => !S.ec.person || p.id === S.ec.person), projs = S.projects.filter(p => stages.includes(p.stage));
   const todayIdx = wdIndex(today, start, 'start'), curWeek = Math.floor(todayIdx / 5);
   let months = '', weeks = '', lastKey = '', span = 0, spanLbl = '';
-  const flush = () => { if (span) months += `<div class="tl-cell" style="width:${span * 5 * dayW}px;font-weight:700;color:var(--color-text-primary)">${spanLbl}</div>`; };
+  const flush = () => { if (span) months += `<div class="tl-cell" style="width:${span * 5 * dayW}px;font-weight:700;color:var(--color-text-primary);text-align:left;overflow:visible"><span style="position:sticky;left:${LW + 10}px;padding-left:0">${spanLbl}</span></div>`; };
   for (let w = 0; w < TL_WEEKS; w++) {
     const m = new Date(start.getTime() + w * 7 * MS_DAY), key = m.getUTCFullYear() + '-' + m.getUTCMonth();
     if (key !== lastKey) { flush(); lastKey = key; span = 0; spanLbl = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(m); }
@@ -1195,7 +1455,7 @@ function ecBody() {
     const sp = span_(p); if (!sp) return '';
     if (sp.e < 0 || sp.s >= totalDays) return '';
     const cs = Math.max(0, sp.s), ce = Math.min(totalDays - 1, sp.e), x = cs * dayW, w = (ce - cs + 1) * dayW, col = statusColour(p.status) || NEUTRAL, left = x + w > W - 220;
-    return `<div class="tl-bar${ed ? '' : ' ro'}" data-act="open" data-id="${p.id}" data-pid="${p.id}" data-i0="${sp.s}" data-i1="${sp.e}" style="left:${x}px;width:${w}px;background:${col};${sp.ep.custom ? '' : 'opacity:.5;'}" title="${esc(p.name)}: edit period ${esc(frange(sp.ep.s, sp.ep.e))}${sp.ep.custom ? '' : ' (using the project dates until you set one)'}">${ed ? '<span class="tl-h l"></span><span class="tl-h r"></span>' : ''}</div>
+    return `<div class="tl-bar${ed ? '' : ' ro'}" data-act="open" data-id="${p.id}" data-pid="${p.id}" data-i0="${sp.s}" data-i1="${sp.e}" style="left:${x}px;width:${w}px;background:${col};${sp.ep.custom ? '' : 'opacity:.5;'}" title="${esc(p.name)}: ${esc(frange(sp.ep.s, sp.ep.e))}${sp.ep.custom ? '' : ' (from the old project dates until you set a timeline)'}">${ed ? '<span class="tl-h l"></span><span class="tl-h r"></span>' : ''}</div>
       <div class="tl-bar-lbl" data-lbl="${p.id}" style="${left ? `right:${W - x}px;padding:0 5px 0 0` : `left:${x + w}px`}">${esc(p.name)}</div>`;
   };
   let rows = '';
@@ -1210,36 +1470,35 @@ function ecBody() {
     items.forEach(p => {
       const ep = epOf(p), none = !span_(p);
       rows += `<div class="tl-row"><div class="tl-label"><span class="nm" data-act="open" data-id="${p.id}" title="${esc(p.name)}">${esc(p.name)}</span><span class="dt">${esc(frange(ep.s, ep.e))}</span></div>
-        <div class="tl-track${none && ed ? ' free' : ''}" data-pid="${p.id}" style="width:${W}px">${bar(p)}${none ? `<span class="tl-free">${ed ? 'No dates yet. Click here to set an edit period.' : 'No dates yet'}</span>` : ''}</div></div>`;
+        <div class="tl-track${none && ed ? ' free' : ''}" data-pid="${p.id}" style="width:${W}px">${bar(p)}${none ? `<span class="tl-free">${ed ? 'No timeline yet. Click here to set one.' : 'No timeline yet'}</span>` : ''}</div></div>`;
     });
   });
   if (!people.length) rows = `<div class="empty" style="position:sticky;left:0"><i class="ti ti-users"></i>No one in the Post or Freelancers departments yet. Add people in Settings and set their department.</div>`;
-  const grid = `<div class="tl-grid" style="left:${TL_LABEL_W}px;right:auto;width:${W}px;background-size:${dayW * 5}px 100%"></div>`;
-  const tx = TL_LABEL_W + todayIdx * dayW + dayW / 2, showToday = todayIdx >= 0 && todayIdx < totalDays;
+  const grid = `<div class="tl-grid" style="left:${LW}px;right:auto;width:${W}px;background-size:${dayW * 5}px 100%"></div>`;
+  const tx = LW + todayIdx * dayW + dayW / 2, showToday = todayIdx >= 0 && todayIdx < totalDays;
   const used = uniq(projs.map(p => p.status).filter(Boolean));
-  const note = ed && !epBackend() ? `<div class="note-bar">Edit periods are saved in this browser for now. Sharing them with the team needs the small backend update (see Settings, System).</div>` : '';
-  return `${note}<div class="tl" style="width:${TL_LABEL_W + W}px">${head}<div style="position:relative">${grid}${showToday ? `<div class="tl-today" style="left:${tx}px"></div>` : ''}${rows}</div>
-    <div class="legend">${used.map(s => `<span><i style="background:${statusColour(s)}"></i>${esc(s)}</span>`).join('')}<span><i style="background:#D97706"></i>2 overlapping</span><span><i style="background:#DC2626"></i>3 or more overlapping</span><span class="muted">Faded bar = using project dates. Drag a bar to move it, drag its ends to resize.</span></div></div>`;
+  const note = ed && !hasCol('edit_start') ? `<div class="note-bar">Timelines are saved in this browser for now. Sharing them with the whole team needs the small backend update (see Settings, System).</div>` : '';
+  return `${note}<div class="tl" style="width:${LW + W}px">${head}<div style="position:relative">${grid}${showToday ? `<div class="tl-today" style="left:${tx}px"></div>` : ''}${rows}</div>
+    <div class="legend">${used.map(s => `<span><i style="background:${statusColour(s)}"></i>${esc(s)}</span>`).join('')}<span><i style="background:#D97706"></i>2 overlapping</span><span><i style="background:#DC2626"></i>3 or more overlapping</span><span class="muted">Drag a bar to move it, drag its ends to resize. The Timeline column on the Project board sets the same dates.</span></div></div>`;
 }
 function scrollTimelineToToday() {
   const c = $('#vb'); if (!c) return;
-  const dayW = TL_W[S.ec.zoom], idx = wdIndex(todayStr(), tlStart(), 'start');
-  c.scrollLeft = Math.max(0, idx * dayW - (c.clientWidth - TL_LABEL_W) * 0.35);
+  const dayW = S._dayW || ecDayW(), idx = Math.floor(wdIndex(todayStr(), tlStart(), 'start') / 5) * 5;
+  c.scrollLeft = Math.max(0, idx * dayW);
 }
-ACT.tlzoom = el => { S.ec.zoom = Math.min(TL_W.length - 1, Math.max(0, S.ec.zoom + Number(el.dataset.d))); rerenderBody(); scrollTimelineToToday(); };
 ACT.tltoday = () => scrollTimelineToToday();
 INP['ec-person'] = el => { S.ec.person = el.value; rerenderBody(); };
 INP['ec-internal'] = el => { S.ec.internal = el.checked; rerenderBody(); };
+INP['ec-weeks'] = el => { S.ec.weeks = Number(el.value) || 2; rerenderBody(); scrollTimelineToToday(); };
 
-/* drag / resize edit periods, click an empty row to create one */
+/* drag / resize timelines, click an empty row to create one */
 document.addEventListener('pointerdown', e => {
   if (S.view !== 'timeline' || !canEdit() || (e.button != null && e.button > 0)) return;
-  const dayW = TL_W[S.ec.zoom], totalDays = TL_WEEKS * 5;
+  const dayW = S._dayW || ecDayW(), totalDays = TL_WEEKS * 5;
   const bar = e.target.closest && e.target.closest('.tl-bar');
   if (bar) {
     const mode = e.target.classList.contains('l') ? 'l' : e.target.classList.contains('r') ? 'r' : 'm', pid = bar.dataset.pid, i0 = Number(bar.dataset.i0), i1 = Number(bar.dataset.i1), x0 = e.clientX;
     const lbl = $(`[data-lbl="${pid}"]`, bar.parentNode); let n0 = i0, n1 = i1, moved = false;
-    const baseLeft = parseFloat(bar.style.left), baseW = parseFloat(bar.style.width);
     try { bar.setPointerCapture(e.pointerId); } catch (err) {}
     bar.classList.add('moving'); S.dragging = true;
     const mv = ev => {
@@ -1269,13 +1528,16 @@ document.addEventListener('pointerdown', e => {
 });
 
 /* ================================================================
-   Out processing
+   Out processing (+ the walkthrough pane for team meetings)
    ================================================================ */
 const coFields = () => S.cfg.closeout_fields || [];
 function coClass(v) { const x = norm(v); if (!x) return ''; if (x === 'stuck') return 'co-bad'; if (x === 'in progress' || x.includes('awaiting')) return 'co-warn'; if (x === 'n/a') return 'co-na'; return 'co-ok'; }
 const coDone = v => { const x = norm(v); return !!x && x !== 'stuck' && x !== 'in progress' && !x.includes('awaiting'); };
 const coOutstanding = p => coFields().filter(([k]) => !coDone(p[k])).map(([, l]) => l);
 const canArchive = p => coOutstanding(p).length === 0;
+const coDoneCount = p => coFields().filter(([k]) => coDone(p[k])).length;
+const coStagesShown = () => (S.co.stage ? [S.co.stage] : closeoutStages());
+
 function viewCloseout() {
   return `<div class="toolbar">
     <div class="search"><i class="ti ti-search"></i><input class="inp" placeholder="Search out processing" value="${esc(S.co.q)}" data-inp="co-q"></div>
@@ -1285,34 +1547,221 @@ function viewCloseout() {
   </div><div id="vb">${coBody()}</div>`;
 }
 BODY.closeout = coBody;
-function coBody() {
-  const q = norm(S.co.q), F = coFields(), opts = S.cfg.closeout_options || {}, ed = canEdit(), stages = S.co.stage ? [S.co.stage] : closeoutStages();
+function coBody() { return `<div id="wtWrap">${wtHTML()}</div><div id="coTable">${coTableHTML()}</div>`; }
+function coTableHTML() {
+  const q = norm(S.co.q), F = coFields(), ed = canEdit(), stages = coStagesShown();
   const cols = withFirst([{ k: 'name', l: 'Project', w: 280, min: 140, sticky: 1 }, { k: 'progress', l: 'Progress', w: 140 }]
     .concat(F.map(([k, l]) => ({ k, l, w: 150 }))).concat([{ k: 'size_location', l: 'Size + Location', w: 220 }, { k: 'act', l: '', w: 130, min: 100, nosort: 1, noresize: 1 }]));
-  const val = (p, k) => k === 'progress' ? F.filter(([f]) => coDone(p[f])).length : norm(p[k]);
+  const opts = S.cfg.closeout_options || {};
+  const val = (p, k) => k === 'progress' ? coDoneCount(p) : norm(p[k]);
   const groups = stages.map(stage => {
-    const all = S.projects.filter(p => p.stage === stage), items = sortRows(all.filter(p => (!q || norm(p.name + ' ' + p.client).includes(q)) && (!S.co.incomplete || !canArchive(p))).sort((a, b) => (a.sort === '' ? 1e9 : a.sort) - (b.sort === '' ? 1e9 : b.sort)), 'closeout', val);
+    const all = S.projects.filter(p => p.stage === stage), items = sortRows(all.filter(p => (!q || norm(p.name + ' ' + p.client).includes(q)) && (!S.co.incomplete || !canArchive(p))).sort(bySort), 'closeout', val);
     return { key: stage, title: stage, colour: stageColour(stage), items, total: all.length };
   });
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('closeout');
   return tableHTML('closeout', cols, groups, (p, g, cs) => {
-    const done = F.filter(([k]) => coDone(p[k])).length;
+    const done = coDoneCount(p);
     return `<tr class="prow" data-id="${p.id}">${cs.map(c => {
-      if (c.k === 'name') return td(c, g, `<div class="nm co-name" style="cursor:pointer;overflow:hidden;text-overflow:ellipsis" data-act="open" data-id="${p.id}">${esc(p.name)}</div><div class="muted" style="font-size:11px;overflow:hidden;text-overflow:ellipsis">${esc(p.client)}</div>`);
-      if (c.k === 'progress') return td(c, g, `<div class="row" style="gap:8px"><div class="bar"><i style="width:${F.length ? Math.round(done / F.length * 100) : 0}%"></i></div><span class="muted" style="font-size:11px">${done}/${F.length}</span></div>`);
+      if (c.k === 'name') return td(c, g, `<div class="nm co-name" style="cursor:pointer;overflow:hidden;text-overflow:ellipsis" data-act="open" data-id="${p.id}">${esc(p.name)}</div><div class="nm-sub">${esc(p.client)}</div>`);
+      if (c.k === 'progress') return td(c, g, `<div class="row" style="gap:8px"><div class="bar"><i class="co-bar" style="width:${F.length ? Math.round(done / F.length * 100) : 0}%"></i></div><span class="muted co-cnt" style="font-size:11px">${done}/${F.length}</span></div>`);
       if (c.k === 'size_location') return td(c, g, `<input class="cell-inp" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="-">`);
-      if (c.k === 'act') return td(c, g, ed ? `<button class="btn btn-ghost btn-sm${canArchive(p) ? '' : ' is-locked'}" data-act="archive" data-id="${p.id}" title="${canArchive(p) ? 'Send to the Archive' : 'Every item needs a response first'}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Archive</button>` : '');
+      if (c.k === 'act') return td(c, g, ed ? `<button class="btn btn-ghost btn-sm co-arch${canArchive(p) ? '' : ' is-locked'}" data-act="archive" data-id="${p.id}" title="${canArchive(p) ? 'Send to the Archive' : 'Every item needs a response first'}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Archive</button>` : '');
       const v = p[c.k] || '', list = (opts[c.k] || []).slice(); if (v && !list.includes(v)) list.push(v);
       return td(c, g, `<select class="sel co-sel ${coClass(v)}" data-chg="co" data-id="${p.id}" data-k="${c.k}" ${ed ? '' : 'disabled'}>${optList(list, v, '-')}</select>`);
     }).join('')}</tr>`;
-  }) + `<div class="page-foot tagline">${TAGLINE}</div>`;
+  }) + `<div class="page-end"></div>`;
 }
 INP['co-q'] = el => { S.co.q = el.value; rerenderBody(); };
 INP['co-stage'] = el => { S.co.stage = el.value; rerenderBody(); };
 INP['co-inc'] = el => { S.co.incomplete = el.checked; rerenderBody(); };
+
+/* keeps the progress bar, count and archive button in step the moment a response changes (also while the select still has focus) */
+function coAfterChange(id) {
+  const p = projectById(id); if (!p) return;
+  const F = coFields(), done = coDoneCount(p), ok = canArchive(p);
+  $$(`#coTable tr.prow[data-id="${id}"]`).forEach(tr => {
+    const b = $('.co-bar', tr); if (b) b.style.width = (F.length ? Math.round(done / F.length * 100) : 0) + '%';
+    const n = $('.co-cnt', tr); if (n) n.textContent = `${done}/${F.length}`;
+    const a = $('.co-arch', tr); if (a) { a.classList.toggle('is-locked', !ok); a.title = ok ? 'Send to the Archive' : 'Every item needs a response first'; const ic = $('i', a); if (ic) ic.className = 'ti ' + (ok ? 'ti-archive' : 'ti-lock'); }
+  });
+}
 INP.co = el => {
-  saveFields(el.dataset.id, { [el.dataset.k]: el.value }, null, true);
-  if (el.tagName === 'SELECT') { el.className = 'sel co-sel ' + coClass(el.value); }
+  const id = el.dataset.id, k = el.dataset.k;
+  saveFields(id, { [k]: el.value }, null, true);
+  if (el.tagName === 'SELECT') el.className = 'sel co-sel ' + coClass(el.value);
+  coAfterChange(id);
+  const w = $('#wtWrap'); if (w && S.wt.on) w.innerHTML = wtHTML(); else if (w) w.innerHTML = wtHTML();
+};
+
+/* ---- walkthrough: one project at a time, every question big on screen ---- */
+const wtQueue = () => S.wt.ids.map(projectById).filter(p => p && closeoutStages().includes(p.stage));
+function wtStart() {
+  const stages = coStagesShown(), ids = [];
+  stages.forEach(s => S.projects.filter(p => p.stage === s && !canArchive(p)).sort(bySort).forEach(p => ids.push(p.id)));
+  S.wt = { on: true, ids, i: 0 };
+}
+function wtRefresh() { const w = $('#wtWrap'); if (w) w.innerHTML = wtHTML(); const t = $('#coTable'); if (t) t.innerHTML = coTableHTML(); setVW(); }
+function wtGo(d) {
+  const n = wtQueue().length; S.wt.i = Math.max(0, Math.min(n, S.wt.i + d)); wtRefresh();
+  const w = $('#wtWrap'), vb = $('#vb'); if (w && vb && vb.scrollTop > w.offsetTop) vb.scrollTop = 0;
+}
+ACT.wtstart = () => { wtStart(); wtRefresh(); };
+ACT.wtexit = () => { S.wt = { on: false, ids: [], i: 0 }; wtRefresh(); };
+ACT.wtgo = el => wtGo(Number(el.dataset.d));
+ACT.wtjump = el => { S.wt.i = Number(el.dataset.i); wtRefresh(); };
+ACT.wtpick = el => {
+  const id = el.dataset.id, k = el.dataset.k, v = el.dataset.v, p = projectById(id); if (!p || !canEdit()) return;
+  saveFields(id, { [k]: p[k] === v ? '' : v }, null, true); wtRefresh();
+};
+function wtHTML() {
+  const ed = canEdit(), F = coFields(), opts = S.cfg.closeout_options || {};
+  if (!S.wt.on) {
+    const n = coStagesShown().reduce((a, s) => a + S.projects.filter(p => p.stage === s && !canArchive(p)).length, 0);
+    return `<div class="wt"><div class="wt-idle"><div style="flex:1;min-width:220px"><div class="lbl">Team meeting mode</div><div class="big">Out processing walkthrough</div>
+      <div class="muted">${n ? `${n} project${n === 1 ? '' : 's'} still ${n === 1 ? 'has' : 'have'} questions open. Go through them one at a time with every question on screen.` : 'Nothing has questions open right now.'}</div></div>
+      <button class="btn btn-primary btn-lg" data-act="wtstart" ${n && ed ? '' : 'disabled'}><i class="ti ti-player-play"></i>Start walkthrough</button></div></div>`;
+  }
+  const q = wtQueue(), n = q.length;
+  const dots = q.map((p, i) => `<i class="${canArchive(p) ? 'done' : ''}${i === S.wt.i ? ' now' : ''}" data-act="wtjump" data-i="${i}" title="${esc(p.name)}" style="cursor:pointer"></i>`).join('');
+  const top = `<div class="wt-top"><span class="lbl">Walkthrough</span><span class="count">${Math.min(S.wt.i + 1, n)} of ${n}</span><div class="wt-dots">${dots}</div><span class="sp"></span>
+    <button class="btn btn-plain btn-sm" data-act="wtexit"><i class="ti ti-x"></i>Exit</button></div>`;
+  if (!n || S.wt.i >= n) {
+    return `<div class="wt">${top}<div class="wt-end"><div class="big">\u{1F389} That is the lot</div><div class="muted" style="margin-bottom:16px">${n ? 'You have been through every project in this walkthrough.' : 'Nothing left to go through.'}</div>
+      <div class="row wrap" style="justify-content:center">${n ? `<button class="btn btn-plain" data-act="wtgo" data-d="-1"><i class="ti ti-arrow-left"></i>Back</button>` : ''}<button class="btn btn-primary" data-act="wtexit">Back to the full list</button></div></div></div>`;
+  }
+  const p = q[S.wt.i], done = coDoneCount(p), ok = canArchive(p);
+  const cards = F.map(([k, l]) => {
+    const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]);
+    const isDone = coDone(p[k]);
+    return `<div class="wt-q ${isDone ? 'done' : 'todo'}"><div class="qh"><span class="qn">${esc(l)}</span><span class="qs">${isDone ? 'Done' : (p[k] ? esc(p[k]) : 'To answer')}</span></div>
+      <div class="wt-opts">${list.map(o => { const c = coClass(o).replace('co-', ''); return `<button class="wt-opt${p[k] === o ? ' sel ' + (c || 'ok') : ''}" data-act="wtpick" data-id="${p.id}" data-k="${k}" data-v="${esc(o)}" ${ed ? '' : 'disabled'}>${esc(o)}</button>`; }).join('')}</div></div>`;
+  }).join('');
+  return `<div class="wt">${top}
+    <div class="wt-body"><div class="lbl">${esc(p.stage)}${p.client ? ' · ' + esc(p.client) : ''}</div><div class="wt-title">${esc(p.name)}</div>
+      <div class="wt-sub"><span>${done} of ${F.length} answered</span><div class="bar"><i style="width:${F.length ? Math.round(done / F.length * 100) : 0}%"></i></div></div></div>
+    <div class="wt-grid">${cards}
+      <div class="wt-q ${p.size_location ? 'done' : 'todo'}"><div class="qh"><span class="qn">Size + Location</span><span class="qs">${p.size_location ? 'Done' : 'To answer'}</span></div>
+        <input class="inp" style="min-height:44px;font-size:14px" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="e.g. 2TB, Edit drive 3, Shelf B"></div></div>
+    <div class="wt-foot"><button class="btn btn-plain btn-lg" data-act="wtgo" data-d="-1" ${S.wt.i === 0 ? 'disabled' : ''}><i class="ti ti-arrow-left"></i>Back</button>
+      <button class="btn btn-primary btn-lg" data-act="wtgo" data-d="1">${S.wt.i === n - 1 ? 'Finish' : 'Next project'}<i class="ti ti-arrow-right"></i></button>
+      ${ok ? `<span class="wt-ready"><i class="ti ti-circle-check"></i>Every question answered</span>${ed ? `<button class="btn btn-secondary btn-lg" data-act="archive" data-id="${p.id}"><i class="ti ti-archive"></i>Send to Archive</button>` : ''}` : `<span class="muted" style="font-weight:600">${F.length - done} still to answer. Arrow keys also move between projects.</span>`}</div></div>`;
+}
+
+/* ================================================================
+   Finance
+   ================================================================ */
+const INV_TO_DO = ['', 'Not invoiced', 'No Estimate', 'Estimate Pending', 'Estimate Accepted'];
+const INV_OUT = ['Partially invoiced', 'Sent but not portal uploaded', 'Invoiced'];
+const FIN_COLS = [
+  { k: 'name', l: 'Project', w: 300, min: 140, sticky: 1 }, { k: 'client', l: 'Client', w: 170 }, { k: 'stage', l: 'Stage', w: 160 },
+  { k: 'budget', l: 'Budget', w: 120, num: 1 }, { k: 'margin', l: 'Profit margin', w: 130, num: 1 }, { k: 'profit', l: 'Est. profit', w: 120, num: 1 }, { k: 'invoicing', l: 'Invoicing', w: 210 }
+];
+function viewFinance() {
+  return `<div class="toolbar">
+    <div class="search"><i class="ti ti-search"></i><input class="inp" placeholder="Search finance" value="${esc(S.fin.q)}" data-inp="fin-q"></div>
+    <select class="sel sel-sm" data-chg="fin-inv"><option value="">Any invoicing status</option><option value="__none"${S.fin.inv === '__none' ? ' selected' : ''}>Not set</option>${INV_LABELS.map(l => `<option${S.fin.inv === l ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>
+    <span id="sortChip">${sortChip('finance')}</span><span class="spacer"></span>${collapseBtn('finance')}
+  </div><div id="vb">${finBody()}</div>`;
+}
+BODY.finance = finBody;
+function finBody() {
+  const all = S.projects, sum = a => a.reduce((s, p) => s + (numOf(p.budget) || 0), 0);
+  const inv = p => fget(p, 'invoicing');
+  const todo = all.filter(p => INV_TO_DO.includes(inv(p))), out = all.filter(p => INV_OUT.includes(inv(p))), paid = all.filter(p => inv(p) === 'Paid');
+  const mp = all.filter(p => marginOf(p) != null && numOf(p.budget)), wb = mp.reduce((s, p) => s + numOf(p.budget), 0);
+  const wm = wb ? mp.reduce((s, p) => s + numOf(p.budget) * marginOf(p), 0) / wb : null, prof = mp.reduce((s, p) => s + profitOf(p), 0);
+  const tile = (t1, t2, t3, col) => `<div class="fin-tile${col ? '' : ' plain'}" ${col ? `style="background:${col}"` : ''}><span class="t1">${t1}</span><span class="t2">${t2}</span><span class="t3">${t3}</span></div>`;
+  const tiles = `<div class="fin-tiles">
+    ${tile('All budgets', fmoney(sum(all)) || '£0', `${all.length} project${all.length === 1 ? '' : 's'}`, '')}
+    ${tile('Still to invoice', fmoney(sum(todo)) || '£0', `${todo.length} project${todo.length === 1 ? '' : 's'}`, invColour('Not invoiced'))}
+    ${tile('Invoiced, awaiting payment', fmoney(sum(out)) || '£0', `${out.length} project${out.length === 1 ? '' : 's'}`, invColour('Invoiced'))}
+    ${tile('Paid', fmoney(sum(paid)) || '£0', `${paid.length} project${paid.length === 1 ? '' : 's'}`, invColour('Paid'))}
+    ${tile('Profit margin', wm == null ? 'n/a' : (Math.round(wm * 10) / 10) + '%', wm == null ? 'Add margins on the board' : `${fmoney(prof)} est. profit, budget weighted`, '')}</div>`;
+  const q = norm(S.fin.q);
+  const list = all.filter(p => (!q || norm(p.name + ' ' + p.client + ' ' + p.project_code).includes(q)) && (!S.fin.inv || (S.fin.inv === '__none' ? !inv(p) : inv(p) === S.fin.inv)));
+  const val = (p, k) => k === 'stage' ? S.cfg.stages.indexOf(p.stage) : k === 'margin' ? marginOf(p) : k === 'profit' ? profitOf(p) : k === 'budget' ? numOf(p.budget) : k === 'invoicing' ? inv(p) : norm(p[k]);
+  const groups = [''].concat(INV_LABELS).map(l => {
+    const items = sortRows(list.filter(p => inv(p) === l).sort(bySort), 'finance', val);
+    return { key: l || 'none', title: l || 'Not set', colour: invColour(l), items, sub: items.length ? esc(fmoney(sum(items))) + ' budget' : '' };
+  }).filter(g => g.items.length);
+  const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('finance');
+  const note = sharedCols() ? '' : `<div class="note-bar">Invoicing and profit margin are saved in this browser for now. Sharing them with the whole team needs the small backend update (see Settings, System).</div>`;
+  if (!groups.length) return `${note}${tiles}<div class="empty"><i class="ti ti-coin-pound"></i>No projects match.</div>`;
+  const ed = canEdit();
+  return note + tiles + `<div style="height:14px"></div>` + tableHTML('finance', withFirst(FIN_COLS), groups, (p, g, cols) => `<tr class="prow" data-id="${p.id}">${cols.map(c => {
+    switch (c.k) {
+      case 'name': return td(c, g, `<span class="cell-txt nm-txt" data-act="open" data-id="${p.id}" style="cursor:pointer">${esc(p.name)}</span>`);
+      case 'client': return td(c, g, `<span class="cell-txt">${esc(p.client)}</span>`);
+      case 'stage': return td(c, g, lchip(p.stage, stageColour(p.stage)));
+      case 'budget': return td(c, g, ed ? `<input type="number" min="0" step="1" class="cell-inp num" data-chg="cell" data-id="${p.id}" data-f="budget" value="${p.budget === '' || p.budget == null ? '' : esc(p.budget)}" placeholder="0">` : `<span class="cell-txt num" style="text-align:right">${esc(fmoney(p.budget))}</span>`);
+      case 'margin': return td(c, g, marginCell(p, ed));
+      case 'profit': { const pr = profitOf(p); return td(c, g, `<span class="cell-txt num ${marginCls(marginOf(p))}" style="text-align:right">${pr == null ? '' : esc(fmoney(pr))}</span>`); }
+      case 'invoicing': return td(c, g, labCell(inv(p), invColour(inv(p)), `data-act="labpick" data-kind="invoicing" data-id="${p.id}"`, ed), 'zp');
+      default: return td(c, g, '');
+    }
+  }).join('')}</tr>`) + `<div class="page-end"></div>`;
+}
+INP['fin-q'] = el => { S.fin.q = el.value; rerenderBody(); };
+INP['fin-inv'] = el => { S.fin.inv = el.value; rerenderBody(); };
+
+/* ================================================================
+   Pod capacity (Tools): groups of people and how many live projects each group is working on
+   ================================================================ */
+const liveProjects = () => { const c = closeoutStages(); return S.projects.filter(p => !c.includes(p.stage)); };
+const podKey = ids => ids.slice().sort().join('|');
+function podsAuto() {
+  const map = {};
+  liveProjects().forEach(p => {
+    const ids = teamOf(p).filter(i => { const x = personById(i); return x && x.active !== false; });
+    if (!ids.length || (ids.length < 2 && !S.pod.solo)) return;
+    const k = podKey(ids); (map[k] = map[k] || { ids: ids.slice().sort(), name: '', projects: [] }).projects.push(p);
+  });
+  return Object.values(map).sort((a, b) => b.projects.length - a.projects.length || a.ids.length - b.ids.length);
+}
+const podsMine = () => S.pods.map((pod, i) => ({ ids: pod.ids, name: pod.name, idx: i, projects: liveProjects().filter(p => { const t = teamOf(p); return pod.ids.every(id => t.includes(id)); }) }));
+function podCard(pod, custom) {
+  const n = pod.projects.length, names = pod.ids.map(i => (personById(i) || {}).name || '?').join(', ');
+  const per = boardStages().map(s => [s, pod.projects.filter(p => p.stage === s).length]).filter(x => x[1]);
+  return `<div class="pod"><div class="pod-h">${avStack(pod.ids, 'av-lg', 6)}<div class="pod-n">${n}<small>project${n === 1 ? '' : 's'}</small></div></div>
+    <div class="pod-names">${pod.name ? `<b style="color:var(--color-text-primary)">${esc(pod.name)}</b> · ` : ''}${esc(names)}</div>
+    ${per.length ? `<div class="row wrap" style="gap:6px">${per.map(([s, c]) => lchip(`${s} ${c}`, stageColour(s))).join('')}</div>` : ''}
+    <div class="pod-list">${pod.projects.length ? pod.projects.map(p => `<div class="pod-item" data-act="open" data-id="${p.id}"><span class="nm">${esc(p.name)}</span>${p.client ? `<span class="muted" style="font-size:11px">${esc(p.client)}</span>` : ''}${lchip(p.stage, stageColour(p.stage))}</div>`).join('') : '<div class="muted" style="font-size:12px">Not working on anything live right now.</div>'}</div>
+    <div class="row">${custom ? `<button class="btn btn-plain btn-sm" data-act="poddel" data-i="${pod.idx}"><i class="ti ti-trash"></i>Remove pod</button>` : (canEdit() && !S.pods.some(x => podKey(x.ids) === podKey(pod.ids)) ? `<button class="btn btn-ghost btn-sm" data-act="podsave" data-k="${esc(podKey(pod.ids))}"><i class="ti ti-pin"></i>Save as a pod</button>` : '')}</div></div>`;
+}
+function viewPods() {
+  return `<div class="toolbar"><span class="muted" style="font-size:12px;font-weight:600">Live projects only (Out processing and To Archive are not counted)</span><span class="spacer"></span>
+    <label class="row muted" style="font-size:12px;gap:6px"><input type="checkbox" class="toggle" data-chg="pod-solo" ${S.pod.solo ? 'checked' : ''}> Include one-person teams</label></div><div id="vb">${podsBody()}</div>`;
+}
+BODY.pods = podsBody;
+function podsBody() {
+  const ppl = activePeople(), sel = S.pod.sel, mine = podsMine(), auto = podsAuto();
+  const builder = `<div class="panel pod-builder"><div class="lbl" style="margin-bottom:8px">Build a pod</div>
+    <div class="muted" style="font-size:12px;margin-bottom:10px">Pick the people, give it a name if you like, and the pod counts every live project that has all of them on the team.</div>
+    <div class="pod-pick">${ppl.map(p => `<button class="${sel.includes(p.id) ? 'on' : ''}" data-act="podtoggle" data-id="${p.id}">${av(p.id, 'av-sm')}${esc(p.name)}</button>`).join('')}</div>
+    <div class="row wrap" style="margin-top:12px"><input class="inp" style="max-width:240px" placeholder="Pod name (optional)" value="${esc(S.pod.name)}" data-inp="pod-name"><button class="btn btn-primary" data-act="podadd" ${sel.length >= 2 ? '' : 'disabled'}><i class="ti ti-plus"></i>Save pod</button>
+      ${sel.length ? `<button class="btn btn-plain btn-sm" data-act="podreset">Clear</button>` : ''}</div>
+    ${sel.length >= 2 ? `<div class="muted" style="font-size:12px;margin-top:8px">Preview: ${liveProjects().filter(p => { const t = teamOf(p); return sel.every(id => t.includes(id)); }).length} live project(s) have all ${sel.length} of them on the team.</div>` : ''}</div>`;
+  const sect = (title, sub, list, custom) => `<div style="padding:18px 20px 0;position:sticky;left:0;width:var(--vw,auto)"><div class="lbl">${title}</div><div class="muted" style="font-size:12px;margin-top:2px">${sub}</div></div>
+    ${list.length ? `<div class="pods" style="padding-top:12px">${list.map(p => podCard(p, custom)).join('')}</div>` : `<div class="empty" style="position:sticky;left:0;width:var(--vw,auto)"><i class="ti ti-users-group"></i>${custom ? 'No saved pods yet. Build one above, or save one of the teams below.' : 'No teams to show yet.'}</div>`}`;
+  const note = !S.pods.length || canEdit() ? '' : '';
+  return builder + sect('Your pods', 'Projects that include everyone in the pod. Pods are saved in this browser for now.', mine, true) +
+    sect('Teams on live projects', 'Each exact group of people that is on a live project, busiest first.', auto, false) + note + `<div class="page-end"></div>`;
+}
+ACT.podtoggle = el => { const id = el.dataset.id, i = S.pod.sel.indexOf(id); if (i >= 0) S.pod.sel.splice(i, 1); else S.pod.sel.push(id); rerenderBody(); };
+ACT.podreset = () => { S.pod.sel = []; S.pod.name = ''; rerenderBody(); };
+INP['pod-name'] = el => { S.pod.name = el.value; };
+INP['pod-solo'] = el => { S.pod.solo = el.checked; rerenderBody(); };
+ACT.podadd = () => {
+  if (S.pod.sel.length < 2) return;
+  const key = podKey(S.pod.sel); const ex = S.pods.find(p => podKey(p.ids) === key);
+  if (ex) { if (S.pod.name.trim()) ex.name = S.pod.name.trim(); } else S.pods.push({ ids: S.pod.sel.slice().sort(), name: S.pod.name.trim() });
+  savePods(); S.pod.sel = []; S.pod.name = ''; rerenderBody(); toast('Pod saved');
+};
+ACT.podsave = el => { const ids = el.dataset.k.split('|'); if (!S.pods.some(p => podKey(p.ids) === el.dataset.k)) { S.pods.push({ ids, name: '' }); savePods(); rerenderBody(); toast('Saved as a pod'); } };
+ACT.poddel = async el => {
+  const pod = S.pods[Number(el.dataset.i)]; if (!pod) return;
+  if (!await confirmBox('Remove this pod? The projects are not affected.', 'Remove', true, 'Remove pod')) return;
+  S.pods.splice(Number(el.dataset.i), 1); savePods(); rerenderBody();
 };
 
 /* ================================================================
@@ -1339,7 +1788,7 @@ function arBody() {
   if (!a.rows.length) return `<div class="empty"><i class="ti ti-archive-off"></i>No archived projects match.</div>`;
   const val = (r, k) => k === 'progress' ? F.filter(([f]) => coDone(r[f])).length : norm(r[k]);
   const fys = uniq(a.rows.map(r => r.fy || '')).sort((x, y) => String(y).localeCompare(String(x), 'en-GB', { numeric: true }));
-  const groups = fys.map(fy => { const all = a.rows.filter(r => (r.fy || '') === fy); return { key: fy || 'none', title: fyTitle(fy), colour: '#6B6B75', items: sortRows(all, 'archive', val), total: all.length }; });
+  const groups = fys.map(fy => { const all = a.rows.filter(r => (r.fy || '') === fy); return { key: fy || 'none', title: fyTitle(fy), colour: '#5F6672', items: sortRows(all, 'archive', val), total: all.length }; });
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('archive');
   return `<div class="note-bar">${a.total} archived project${a.total === 1 ? '' : 's'}, grouped by financial year</div>` +
     tableHTML('archive', withFirst(ARCH_COLS), groups, (r, g, cols) => {
@@ -1350,7 +1799,7 @@ function arBody() {
       })[c.k])).join('')}</tr>`;
     }) +
     (a.rows.length < a.total ? `<div style="padding:16px 20px;position:sticky;left:0"><button class="btn btn-plain" data-act="armore">${a.loading ? 'Loading' : 'Load more'}</button></div>` : '') +
-    `<div class="page-foot tagline">${TAGLINE}</div>`;
+    `<div class="page-end"></div>`;
 }
 async function loadArchive(reset) {
   const a = S.ar; if (a.loading) return; a.loading = true;
@@ -1406,7 +1855,7 @@ function viewCodes() {
       <span class="lbl">Project code</span><div class="codebox" id="cgOut"></div>
       <div class="row"><button class="btn btn-primary" data-act="cgcopy"><i class="ti ti-copy"></i>Copy</button></div>
       <div class="muted" style="font-size:12px">Format is CLIENTCODE_TitleCaseTitle. Project codes are still entered into QuickBooks by hand.</div>
-    </div></div><div class="tagline" style="padding-top:24px">${TAGLINE}</div></div>`;
+    </div></div></div>`;
 }
 function cgCurrentCode() {
   const c = S.codes; return c.mode === 'existing' ? (findClient(c.client) || {}).code : String(c.newCode || '').toUpperCase();
@@ -1444,14 +1893,12 @@ ACT.cgcopy = async () => {
 };
 
 /* ================================================================
-   BOARD alpha 0.2. Panels: project drawer, modals, feedback, settings, read-only start
+   Panels: saving, project drawer, modals, feedback
    ================================================================ */
-
-/* ---------------- saving fields (debounced, optimistic) ---------------- */
 const pendingSave = {}, flushers = {}, saveTimers = {};
 function recordFor(id, from) { return from === 'archive' ? S.ar.rows.find(x => x.id === id) : projectById(id); }
 function setDrawerSync(t) { const e = $('#dsync'); if (e) e.textContent = t; }
-const bgRefresh = debounce(() => { if (['pipeline', 'timeline', 'closeout', 'mine', 'archive'].includes(S.view) && !typing()) { rerenderBody(); } }, 250);
+const bgRefresh = debounce(() => { if (['pipeline', 'timeline', 'closeout', 'mine', 'archive', 'finance', 'pods'].includes(S.view) && !typing()) { rerenderBody(); } }, 250);
 
 function saveFields(id, fields, from, immediate) {
   const p = recordFor(id, from); if (!p || !canEdit()) return;
@@ -1479,7 +1926,7 @@ const clientNames = () => uniq((S.clients || []).map(c => c.name).concat(S.proje
 const ROLE_BLOCKS = [['creative', 'Creative team'], ['production', 'Production team'], ['edit', 'Edit team']];
 function roleBlock(role, label, ids, ro) {
   const free = activePeople().filter(p => !ids.includes(p.id));
-  return `<div class="field"><span class="lbl">${label}${ids.length ? '' : ''}</span><div class="picks">
+  return `<div class="field"><span class="lbl">${label}</span><div class="picks">
     ${ids.map((i, n) => { const p = personById(i); return `<span class="pickchip${n === 0 ? ' is-lead' : ''}">${av(i, 'av-sm')}${esc(p ? p.name : i)}${n === 0 ? '<span class="lead-tag">&nbsp;Lead</span>' : (ro ? '' : `<button data-act="pf-lead" data-role="${role}" data-pid="${i}" title="Make lead"><i class="ti ti-star"></i></button>`)}${ro ? '' : `<button data-act="pf-rm" data-role="${role}" data-pid="${i}" title="Remove">&times;</button>`}</span>`; }).join('')}
     ${ro || !free.length ? (ids.length ? '' : '<span class="muted">Nobody yet</span>') : `<select class="sel sel-sm" data-chg="pf-add" data-role="${role}" style="width:auto"><option value="">+ Add${ids.length ? '' : ' lead'}</option>${free.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select>`}
   </div></div>`;
@@ -1492,6 +1939,7 @@ function drawerHTML(p, arch) {
   const updBy = personById(p.updated_by), ep = epOf(p);
   const stList = statusList().concat(p.status && !statusList().includes(p.status) ? [p.status] : []);
   const archBtn = canArchive(p) ? '' : ' is-locked';
+  const m = marginOf(p), invV = fget(p, 'invoicing');
   return `
   <div class="drawer-head"><div><div class="lbl">${arch ? 'Archived project' : 'Project'}</div></div><span class="sp"></span><span class="muted" style="font-size:11px;font-weight:600" id="dsync"></span>
     <button class="icon-btn" data-act="closedrawer" title="Close"><i class="ti ti-x"></i></button></div>
@@ -1510,22 +1958,20 @@ function drawerHTML(p, arch) {
     <div class="field"><span class="lbl">Account lead</span><select class="sel" data-chg="pf" data-f="lead" ${dis}>${personOpts(p.lead, '-')}</select></div>
     ${ROLE_BLOCKS.map(([r, l]) => roleBlock(r, l, p[r] || [], ro)).join('')}
     <div class="muted" style="font-size:11px">The first person in each team is its lead. Use the star to change who leads.</div>
-    <div class="sec-title"><span class="lbl">Dates</span></div>
+    ${arch || pub ? '' : `<div class="sec-title"><span class="lbl">Timeline</span></div>
     <div class="grid2">
-      <div class="field"><span class="lbl">Start</span><input type="date" class="inp" data-chg="pf" data-f="start" value="${esc(p.start)}" ${dis}></div>
-      <div class="field"><span class="lbl">End</span><input type="date" class="inp" data-chg="pf" data-f="end" value="${esc(p.end)}" ${dis}></div>
-    </div>
-    ${arch || pub ? '' : `<div class="grid2">
-      <div class="field"><span class="lbl">Edit period start</span><input type="date" class="inp" data-chg="pf-ep" data-w="s" value="${esc(ep.s)}" ${dis}></div>
-      <div class="field"><span class="lbl">Edit period end</span><input type="date" class="inp" data-chg="pf-ep" data-w="e" value="${esc(ep.e)}" ${dis}></div></div>
-      <div class="muted" style="font-size:11px">${ep.custom ? 'Shown on the Edit capacity view.' : 'Not set yet, so Edit capacity uses the project dates.'}</div>`}
-    ${pub ? '' : `<div class="field"><span class="lbl">Budget (GBP)</span><input type="number" min="0" step="1" class="inp" data-inp="pf" data-f="budget" value="${p.budget === '' || p.budget == null ? '' : esc(p.budget)}" ${dis}></div>
+      <div class="field"><span class="lbl">From</span><input type="date" class="inp" data-chg="pf-ep" data-w="s" value="${esc(ep.s)}" ${dis}></div>
+      <div class="field"><span class="lbl">To</span><input type="date" class="inp" data-chg="pf-ep" data-w="e" value="${esc(ep.e)}" ${dis}></div></div>
+      <div class="muted" style="font-size:11px">${ep.custom ? 'This is the edit period shown on Edit capacity.' : (ep.s ? 'Using the old project dates until you set a timeline.' : 'Not set yet.')}</div>`}
+    ${pub ? '' : `<div class="sec-title"><span class="lbl">Finance</span></div>
+    <div class="grid2"><div class="field"><span class="lbl">Budget (GBP)</span><input type="number" min="0" step="1" class="inp" data-inp="pf" data-f="budget" value="${p.budget === '' || p.budget == null ? '' : esc(p.budget)}" ${dis}></div>
+      ${arch ? '' : `<div class="field"><span class="lbl">Profit margin (%)</span><input type="number" step="0.1" class="inp" data-chg="pf-fin" data-k="profit_margin" value="${m == null ? '' : esc(m)}" ${dis}></div>`}</div>
+    ${arch ? '' : `<div class="field"><span class="lbl">Invoicing</span><select class="sel" data-chg="pf-fin" data-k="invoicing" ${dis}>${optList(INV_LABELS, invV, '-')}</select></div>`}
     <div class="field"><span class="lbl">Notes</span><textarea class="txt" data-inp="pf" data-f="notes" ${dis}>${esc(p.notes)}</textarea></div>
     <div class="sec-title"><span class="lbl">Out processing</span></div>
     <div class="grid2">${F.map(([k, l]) => { const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]); return `<div class="field"><span class="lbl">${esc(l)}</span><select class="sel ${coClass(p[k])}" data-chg="pf" data-f="${k}" ${dis}>${optList(list, p[k], '-')}</select></div>`; }).join('')}</div>
     ${inp('size_location', 'Size + Location', p.size_location)}
     <div class="muted" style="font-size:11px">${p.created_at ? 'Created ' + esc(p.created_at) + '. ' : ''}${p.updated_at ? 'Last edit ' + esc(p.updated_at) + (updBy ? ' by ' + esc(updBy.name) : '') + '.' : ''}</div>`}
-    <div class="tagline">${TAGLINE}</div>
   </div>
   ${ro ? '' : `<div class="drawer-foot">
     ${arch ? `<button class="btn btn-secondary" data-act="restore" data-id="${p.id}"><i class="ti ti-arrow-back-up"></i>Restore to board</button>` : `<button class="btn btn-secondary${archBtn}" data-act="archive" data-id="${p.id}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Send to Archive</button>`}
@@ -1572,11 +2018,17 @@ INP.pf = async el => {
   saveFields(id, fields, from, !textual);
   if (el.tagName === 'SELECT' && /^(budget_recon|social|vimeo|website|deck|wash_up|referral|on_client_board|music_licensing|archive)$/.test(f)) el.className = 'sel ' + coClass(el.value);
   if (el.tagName === 'SELECT' && !textual) { const b = $('[data-act="archive"]', $('#drawer')); if (b && p) { b.classList.toggle('is-locked', !canArchive(p)); const ic = $('i', b); if (ic) ic.className = 'ti ' + (canArchive(p) ? 'ti-archive' : 'ti-lock'); } }
+  if (S.view === 'closeout') coAfterChange(id);
 };
 INP['pf-stage'] = el => { if (S.drawerFrom === 'archive') return; moveProject(S.drawer, el.value); };
 INP['pf-ep'] = el => {
   const d = $('#drawer'), s = $('[data-w="s"]', d).value, e = $('[data-w="e"]', d).value; if (!S.drawer) return;
-  epSet(S.drawer, s, e); refreshDrawer(true); bgRefresh();
+  epSet(S.drawer, s || e, e || s); refreshDrawer(true); bgRefresh();
+};
+INP['pf-fin'] = el => {
+  if (!S.drawer || S.drawerFrom === 'archive') return;
+  let v = el.value; if (el.dataset.k === 'profit_margin') v = v === '' ? '' : Number(v);
+  fset(S.drawer, el.dataset.k, v);
 };
 INP['pf-add'] = el => {
   if (!el.value) return; const role = el.dataset.role, p = recordFor(S.drawer, S.drawerFrom);
@@ -1680,7 +2132,7 @@ ACT.newproject = el => {
 ACT.feedback = () => {
   closePop();
   const m = openModal(`<h3>Send feedback</h3>
-    <div class="muted">This is an alpha build. Tell Oli what is confusing, broken or missing. It arrives as an email with the page you were on.</div>
+    <div class="muted">This is an alpha build. Tell Oli what is confusing, broken or missing. It is emailed to Oli straight away, along with which page you were on and the build number.</div>
     <div class="field"><span class="lbl">Type</span><select class="sel" id="fbKind"><option>Feedback</option><option>Bug</option><option>Idea</option></select></div>
     <div class="field"><span class="lbl">Message</span><textarea class="txt" id="fbMsg" placeholder="What happened, or what would help?"></textarea></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="fbGo">Send</button></div>`);
@@ -1703,7 +2155,7 @@ function viewSettings() {
 }
 BODY.settings = settingsBody;
 function settingsBody() {
-  return `<div class="pad">${({ people: setPeople, departments: setDepts, workflow: setWorkflow, closeout: setCloseout, clients: setClients, system: setSystem }[S.settingsTab] || setPeople)()}<div class="tagline" style="padding-top:28px">${TAGLINE}</div></div>`;
+  return `<div class="pad">${({ people: setPeople, departments: setDepts, workflow: setWorkflow, closeout: setCloseout, clients: setClients, system: setSystem }[S.settingsTab] || setPeople)()}</div>`;
 }
 ACT.settab = el => { S.settingsTab = el.dataset.t; renderView(); };
 function settingsAfter() {
@@ -1768,11 +2220,11 @@ ACT.ppdel = async el => {
 
 /* ---- departments ---- */
 function setDepts() {
-  return `<div class="row wrap" style="margin-bottom:12px"><div class="muted sp" style="min-width:240px">Department colours show on the initial circles, and the Tendering, Pre Production and Post headers on the Project board take their colour from the matching department.</div>
+  return `<div class="row wrap" style="margin-bottom:12px"><div class="muted sp" style="min-width:240px">Department colours show on the initial circles, and the Tendering, Pre Production and Post banners on the Project board take their colour from the matching department. Text on every colour is white, so very light colours are darkened a little automatically.</div>
     <button class="btn btn-plain" data-act="dddefaults"><i class="ti ti-palette"></i>Use Sunday Treat defaults</button><button class="btn btn-primary" data-act="ddadd"><i class="ti ti-plus"></i>Add department</button></div>
   <div class="tbl-wrap"><table class="sub-tbl" style="min-width:560px"><thead><tr><th>Preview</th><th>Colour</th><th>Name</th><th>People</th><th></th></tr></thead><tbody>
   ${S.depts.map(d => { const n = S.people.filter(p => p.department === d.id).length;
-    return `<tr><td><span class="av av-lg" style="background:${d.colour};color:${textOn(d.colour)}">AB</span></td>
+    return `<tr><td><span class="av av-lg" style="background:${fixDept(d.colour)}">AB</span></td>
     <td><input type="color" value="${esc(d.colour)}" data-chg="dd" data-id="${d.id}" data-k="colour"></td>
     <td><input class="inp" style="min-width:180px" value="${esc(d.name)}" data-chg="dd" data-id="${d.id}" data-k="name"></td><td>${n}</td>
     <td>${n ? '' : `<button class="icon-btn" data-act="dddel" data-id="${d.id}"><i class="ti ti-trash"></i></button>`}</td></tr>`; }).join('')}</tbody></table></div>`;
@@ -1789,7 +2241,7 @@ ACT.dddefaults = async () => {
   try { let r; for (const x of todo) r = await write('dept_save', { department: { id: x.d.id, colour: x.c } }); if (r) S.depts = r.departments; toast(`Updated ${todo.length} department${todo.length === 1 ? '' : 's'}`); rerenderBody(); } catch (e) {}
 };
 ACT.ddadd = () => {
-  const m = openModal(`<h3>Add department</h3><div class="grid2"><div class="field"><span class="lbl">Name</span><input class="inp" id="daName"></div><div class="field"><span class="lbl">Colour</span><input type="color" id="daCol" value="#9AA0A6"></div></div>
+  const m = openModal(`<h3>Add department</h3><div class="grid2"><div class="field"><span class="lbl">Name</span><input class="inp" id="daName"></div><div class="field"><span class="lbl">Colour</span><input type="color" id="daCol" value="#6F7787"></div></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="daGo">Add</button></div>`);
   $('#daName', m).addEventListener('input', e => { const c = defaultColourFor(e.target.value); if (c) $('#daCol', m).value = c; });
   $('#daGo', m).onclick = async () => { try { const r = await write('dept_save', { department: { name: $('#daName', m).value, colour: $('#daCol', m).value } }); S.depts = r.departments; closeModal(); rerenderBody(); } catch (e) {} };
@@ -1798,9 +2250,9 @@ ACT.dddel = async el => { try { const r = await write('dept_delete', { id: el.da
 
 /* ---- workflow ---- */
 function saveCfg(key, value) { return write('config_save', { key, value }).then(r => { S.cfg = Object.assign(S.cfg, r.config); }); }
-function listEditor(key, label, items, used) {
-  return `<div class="panel pad" style="margin-bottom:16px"><div class="lbl" style="margin-bottom:10px">${label}</div>
-    ${items.map((s, i) => { const n = used(s); return `<div class="row" style="margin-bottom:6px"><input class="inp" value="${esc(s)}" data-chg="wf-ren" data-key="${key}" data-i="${i}" ${n ? 'disabled title="In use by ' + n + ' project(s), so it cannot be renamed"' : ''}>
+function listEditor(key, label, items, used, note) {
+  return `<div class="panel pad" style="margin-bottom:16px"><div class="lbl" style="margin-bottom:10px">${label}</div>${note ? `<div class="muted" style="font-size:12px;margin-bottom:10px">${note}</div>` : ''}
+    ${items.map((s, i) => { const n = used(s); return `<div class="row" style="margin-bottom:6px">${key === 'statuses' ? `<span style="width:14px;height:14px;border-radius:4px;flex:none;background:${statusColour(s)}"></span>` : ''}<input class="inp" value="${esc(s)}" data-chg="wf-ren" data-key="${key}" data-i="${i}" ${n ? 'disabled title="In use by ' + n + ' project(s), so it cannot be renamed"' : ''}>
       <button class="icon-btn" data-act="wf-mv" data-key="${key}" data-i="${i}" data-d="-1" ${i === 0 ? 'disabled' : ''}><i class="ti ti-arrow-up"></i></button>
       <button class="icon-btn" data-act="wf-mv" data-key="${key}" data-i="${i}" data-d="1" ${i === items.length - 1 ? 'disabled' : ''}><i class="ti ti-arrow-down"></i></button>
       <button class="icon-btn" data-act="wf-del" data-key="${key}" data-i="${i}" ${n || items.length < 2 ? 'disabled' : ''} title="${n ? 'In use' : 'Remove'}"><i class="ti ti-trash"></i></button></div>`; }).join('')}
@@ -1809,12 +2261,12 @@ function listEditor(key, label, items, used) {
 function setWorkflow() {
   const c = S.cfg;
   return `<div style="max-width:620px">
-    ${listEditor('stages', 'Stages (project board groups, in order)', c.stages, s => S.projects.filter(p => p.stage === s).length)}
-    ${listEditor('statuses', 'Statuses', c.statuses, s => S.projects.filter(p => p.status === s).length)}
+    ${listEditor('stages', 'Stages (project board groups, in order)', c.stages, s => S.projects.filter(p => p.stage === s).length, 'The last two stages (Out Processing and To Archive) are kept off the Project board and shown on the Out processing page.')}
+    ${listEditor('statuses', 'Statuses', c.statuses, s => S.projects.filter(p => p.status === s).length, 'Colours follow the Monday palette by name: Complete, Awaiting Client Feedback, Writing Pitch, Tendering, Failed Pitch, Awaiting KO, To Be Archived, Pre Production, Cancelled Project and Edit already have theirs. Add any of those names here to use them.')}
     <div class="panel pad" style="margin-bottom:16px"><div class="lbl" style="margin-bottom:10px">Shown on the read-only live link</div>
       ${c.stages.map(s => `<label class="row" style="margin-bottom:6px"><input type="checkbox" class="toggle" data-chg="wf-pub" data-s="${esc(s)}" ${c.public_stages.includes(s) ? 'checked' : ''}> ${esc(s)}</label>`).join('')}</div>
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Financial year starts</div>
-      <select class="sel" style="max-width:200px" data-chg="wf-fy">${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((m, i) => `<option value="${i + 1}"${c.fy_start_month === i + 1 ? ' selected' : ''}>${m}</option>`).join('')}</select></div></div>`;
+      <select class="sel" style="max-width:200px" data-chg="wf-fy">${MONTHS.map((m, i) => `<option value="${i + 1}"${c.fy_start_month === i + 1 ? ' selected' : ''}>${m}</option>`).join('')}</select></div></div>`;
 }
 INP['wf-ren'] = el => { const key = el.dataset.key, arr = S.cfg[key].slice(), v = el.value.trim(); if (!v) { rerenderBody(); return; } arr[el.dataset.i] = v; saveCfg(key, arr).then(rerenderBody).catch(rerenderBody); };
 ACT['wf-mv'] = el => { const key = el.dataset.key, arr = S.cfg[key].slice(), i = Number(el.dataset.i), j = i + Number(el.dataset.d); [arr[i], arr[j]] = [arr[j], arr[i]]; S.cfg[key] = arr; rerenderBody(); saveCfg(key, arr).catch(rerenderBody); };
@@ -1826,7 +2278,7 @@ INP['wf-fy'] = el => saveCfg('fy_start_month', Number(el.value)).catch(() => {})
 /* ---- out processing options ---- */
 function setCloseout() {
   const opts = S.cfg.closeout_options || {};
-  return `<div class="muted" style="margin-bottom:12px">One option per line. A project can still hold an old value that is not in the list. A project can only be archived once every item here has a response other than blank, In progress, Awaiting or Stuck.</div>
+  return `<div class="muted" style="margin-bottom:12px">One option per line. A project can still hold an old value that is not in the list. A project can only be archived once every item here has a response other than blank, In progress, Awaiting or Stuck. These options are also the big buttons in the Out processing walkthrough.</div>
   <div class="grid2" style="max-width:820px">${coFields().map(([k, l]) => `<div class="field"><span class="lbl">${esc(l)}</span><textarea class="txt" style="min-height:110px" data-chg="co-opt" data-k="${k}">${esc((opts[k] || []).join('\n'))}</textarea></div>`).join('')}</div>`;
 }
 INP['co-opt'] = el => { const next = Object.assign({}, S.cfg.closeout_options); next[el.dataset.k] = el.value.split('\n').map(s => s.trim()).filter(Boolean); S.cfg.closeout_options = next; saveCfg('closeout_options', next).then(() => toast('Options saved')).catch(() => {}); };
@@ -1857,6 +2309,7 @@ ACT.rcadd = async el => {
 function setSystem() {
   const h = S.health, link = S.adminKey ? `${location.origin}${location.pathname}?view=live&k=${S.adminKey}` : '';
   const tabs = h && h.tabs ? Object.keys(h.tabs).map(k => `${k}: ${h.tabs[k]}`).join('  |  ') : '';
+  const where = k => (hasCol(k) ? 'Saved in the sheet, shared with everyone' : 'Saved in each browser until the sheet has a ' + k + ' column');
   return `<div style="max-width:720px;display:flex;flex-direction:column;gap:16px">
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Build</div><div class="kv">
       <span class="muted">Front end</span><span>BOARD alpha ${APP_VERSION}</span>
@@ -1865,12 +2318,15 @@ function setSystem() {
       <span class="muted">Data version</span><span>${S.version}</span>
       <span class="muted">Tabs (rows)</span><span>${esc(tabs)}</span>
       <span class="muted">Code sheet clients</span><span>${h ? esc(h.clients) : ''}</span>
-      <span class="muted">Feedback goes to</span><span>${h ? esc(h.feedback_to) : ''}</span>
+      <span class="muted">Feedback goes to</span><span>${h ? esc(h.feedback_to) : ''} (emailed when someone presses Send)</span>
       <span class="muted">Who sees Settings</span><span>Admin and superadmin accounts. Everyone else does not see this page.</span>
-      <span class="muted">Edit periods</span><span>${epBackend() ? 'Saved in the sheet, shared with everyone' : 'Saved in each browser until the backend has edit_start and edit_end columns'}</span>
+      <span class="muted">Timeline</span><span>${where('edit_start')}</span>
+      <span class="muted">Invoicing</span><span>${where('invoicing')}</span>
+      <span class="muted">Profit margin</span><span>${where('profit_margin')}</span>
+      <span class="muted">Saved pods</span><span>Saved in each browser</span>
       <span class="muted">Column sizes and sorting</span><span>Saved per browser</span></div></div>
     <div class="panel pad"><div class="lbl" style="margin-bottom:6px">Read-only live link</div>
-      <div class="muted" style="margin-bottom:10px">Anyone with this link can see the live projects without signing in. Budget, notes and out processing are never included.</div>
+      <div class="muted" style="margin-bottom:10px">Anyone with this link can see the live projects without signing in. Budget, finance, notes and out processing are never included.</div>
       <div class="row"><input class="inp" id="roLink" readonly value="${esc(link)}"><button class="btn btn-ghost" data-act="rocopy">Copy</button></div>
       <div class="row" style="margin-top:10px"><button class="btn btn-plain btn-sm" data-act="rorotate">Make a new link (old one stops working)</button></div></div>
     <div class="panel pad"><div class="lbl" style="margin-bottom:6px">Alpha open door</div>
@@ -1896,8 +2352,7 @@ ACT.rochange = el => { location.hash = '#/' + el.dataset.v; };
 async function startReadonly(key) {
   S.readonly = true; S.readonlyKey = key; S.view = 'board';
   $('#app').innerHTML = `<div class="main">
-    <div class="topbar">${logoHTML()}<h1 class="page-title" style="margin-left:6px">Live projects</h1><span class="pill pill-ro">Read only</span><span class="pill pill-alpha">Alpha</span><span class="spacer"></span>
-      <button class="icon-btn" data-act="theme" title="Light / dark"><i class="ti theme-ic ti-moon"></i></button></div>
+    <div class="topbar">${logoHTML()}<h1 class="page-title" style="margin-left:6px">Live projects</h1><span class="pill pill-ro">Read only</span><span class="pill pill-alpha">Alpha</span><span class="spacer"></span></div>
     <div class="content-wrap"><div class="content" id="content"><div class="skeleton">Loading live projects</div></div></div></div>`;
   document.title = '\u{1F7E2} BOARD live (alpha)';
   try {
