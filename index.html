@@ -2,7 +2,7 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<title>BOARD (alpha)</title>
+<title>🟢 BOARD (alpha)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111111">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
-/* BOARD alpha. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. */
+/* BOARD alpha 0.2. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. */
 :root {
   --stp: #FF50BD; --stp-hover: #D93EA6; --stp-light: #FFE8F7; --stp-alpha: rgba(255,80,189,0.12);
   --black: #111111;
@@ -63,6 +63,7 @@ a { color: var(--stp); }
 .muted { color: var(--color-text-secondary); }
 .strong { font-weight: 600; }
 h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; }
+.tagline { font-size: 11px; color: var(--color-text-secondary); line-height: 1.4; }
 
 /* ---------- buttons ---------- */
 .btn {
@@ -125,14 +126,14 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
   display: flex; flex-direction: column; padding: 16px 12px 12px; gap: 4px; overflow-y: auto;
 }
 .brand { display: flex; align-items: center; gap: 10px; padding: 2px 8px 14px; min-height: 46px; }
-.brand-logo { display: inline-flex; align-items: center; height: 26px; }
+.brand-logo { display: inline-flex; align-items: center; height: 26px; flex: none; }
 .brand-logo img { height: 26px; width: auto; display: block; }
-.brand-logo .logo-dark { display: none; }
-:root[data-theme="dark"] .brand-logo .logo-light { display: none; } :root[data-theme="dark"] .brand-logo .logo-dark { display: block; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .brand-logo .logo-light { display: none; } :root:not([data-theme="light"]) .brand-logo .logo-dark { display: block; } }
+:root[data-theme="dark"] .brand-logo img { filter: invert(1); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .brand-logo img { filter: invert(1); } }
 .brand-logo .wordmark { display: none; font-weight: 800; letter-spacing: 1.2px; font-size: 12px; text-transform: uppercase; line-height: 1.05; }
 .brand-logo.no-logo img { display: none !important; } .brand-logo.no-logo .wordmark { display: block; }
-.brand-name { margin-left: auto; font-weight: 800; letter-spacing: 1.2px; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.brand-name { margin-left: auto; font-weight: 800; letter-spacing: 1.2px; font-size: 13px; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.emoji { font-size: 14px; line-height: 1; }
 .nav-item {
   display: flex; align-items: center; gap: 11px; padding: 0 12px; height: 38px; border-radius: var(--r-md); border: 0; background: transparent;
   width: 100%; text-align: left; font-size: 13px; font-weight: 600; color: var(--color-text-primary);
@@ -147,18 +148,20 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .userchip .nm { font-weight: 600; font-size: 12px; line-height: 1.2; }
 .userchip .rl { font-size: 11px; color: var(--color-text-secondary); }
 .ver { font-size: 10px; color: var(--color-text-secondary); padding: 6px 12px 0; letter-spacing: .5px; }
+.side-foot .tagline { padding: 8px 12px 0; }
 
 .main { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; }
 .topbar { height: 56px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 20px; border-bottom: 0.5px solid var(--color-border-tertiary); }
 .topbar .spacer { flex: 1; }
 .topbar .brand-logo { display: none; }
-.sync { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 6px; }
-.sync .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-text-success); }
-.sync.saving .dot { background: var(--color-text-warning); } .sync.error .dot { background: var(--color-text-danger); }
+.sync { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.sync .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-text-success); flex: none; }
+.sync.saving .dot { background: var(--color-text-warning); } .sync.error .dot, .sync.offline .dot { background: var(--color-text-danger); }
+.sync.error, .sync.offline { color: var(--color-text-danger); }
 .content-wrap { position: relative; flex: 1; min-height: 0; }
 .content { position: absolute; inset: 0; overflow: auto; -webkit-overflow-scrolling: touch; }
 .pad { padding: 16px 20px 40px; }
-.toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 20px; border-bottom: 0.5px solid var(--color-border-tertiary); position: sticky; left: 0; top: 0; background: var(--color-background-primary); z-index: 5; }
+.toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 20px; border-bottom: 0.5px solid var(--color-border-tertiary); position: sticky; left: 0; top: 0; background: var(--color-background-primary); z-index: 8; }
 .toolbar .spacer { flex: 1; }
 .seg { display: inline-flex; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-pill); padding: 2px; background: var(--color-background-secondary); }
 .seg button { border: 0; background: transparent; border-radius: var(--r-pill); padding: 5px 13px; font-size: 12px; font-weight: 600; color: var(--color-text-secondary); display: inline-flex; gap: 6px; align-items: center; }
@@ -171,51 +174,66 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .empty { text-align: center; color: var(--color-text-secondary); padding: 48px 20px; }
 .empty i { font-size: 30px; display: block; margin-bottom: 8px; }
 
-/* ---------- board ---------- */
-.board { display: flex; gap: 12px; padding: 14px 20px 24px; align-items: flex-start; min-height: calc(100% - 58px); }
-.col { flex: 0 0 292px; display: flex; flex-direction: column; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-lg); max-height: 100%; }
-.col-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px 8px; }
-.col-head .lbl { color: var(--color-text-primary); }
-.col-body { padding: 4px 10px 12px; display: flex; flex-direction: column; gap: 8px; min-height: 60px; overflow-y: auto; }
-.col.over { border: 2px solid var(--stp); margin: -1.5px; }
-.card {
-  background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); padding: 10px 12px; cursor: pointer;
-  display: flex; flex-direction: column; gap: 6px; position: relative;
-}
-.card:hover { border-color: var(--stp); }
-.card.dragging { opacity: .4; }
-.card-title { font-weight: 600; font-size: 13px; line-height: 1.3; padding-right: 26px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
-.card-client { font-size: 11px; color: var(--color-text-secondary); }
-.card-foot { display: flex; align-items: center; gap: 8px; justify-content: space-between; font-size: 11px; color: var(--color-text-secondary); min-height: 22px; }
-.card .kebab { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; }
-.drop-line { height: 2px; background: var(--stp); border-radius: 2px; margin: -5px 0; pointer-events: none; }
-
-/* ---------- table / list ---------- */
-.tbl-wrap { overflow-x: auto; }
-table.tbl { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 720px; }
-.tbl th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--color-text-secondary); padding: 10px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; background: var(--color-background-primary); position: sticky; top: 0; z-index: 2; }
-.tbl th.sortable { cursor: pointer; user-select: none; }
-.tbl td { padding: 8px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: middle; }
-.tbl tr.row { display: table-row; cursor: pointer; }
-.tbl tr.row:hover td { background: var(--color-background-secondary); }
-.tbl tr.grp td { background: var(--color-background-secondary); padding: 8px 12px; }
-.tbl .nm { font-weight: 600; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tbl .nw { white-space: nowrap; }
-.tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
-.tbl td.sticky, .tbl th.sticky { position: sticky; left: 0; z-index: 1; background: var(--color-background-primary); }
-.tbl th.sticky { z-index: 3; }
-.tbl tr.row:hover td.sticky { background: var(--color-background-secondary); }
+/* ---------- tables (project board, out processing, archive) ---------- */
+table.tv { border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+.tv th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--color-text-secondary); padding: 0; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; background: var(--color-background-primary); position: sticky; top: 0; z-index: 4; height: 36px; }
+.tv th.sticky { z-index: 6; }
+.tv th .th-in { display: flex; align-items: center; gap: 5px; padding: 0 10px; height: 36px; cursor: pointer; user-select: none; overflow: hidden; }
+.tv th .th-in:hover { color: var(--color-text-primary); background: var(--color-background-secondary); }
+.tv th .th-l { overflow: hidden; text-overflow: ellipsis; }
+.tv th .rs { position: absolute; right: -3px; top: 0; bottom: 0; width: 7px; cursor: col-resize; z-index: 7; }
+.tv th .rs::after { content: ''; position: absolute; left: 3px; top: 8px; bottom: 8px; width: 1px; background: var(--color-border-tertiary); }
+.tv th .rs:hover::after, .tv th .rs.on::after { background: var(--stp); width: 2px; left: 2px; }
+.tv td { padding: 3px 6px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: middle; overflow: hidden; white-space: nowrap; height: 40px; background: var(--color-background-primary); }
+.tv td.sticky, .tv th.sticky { position: sticky; z-index: 3; }
+.tv td.s0, .tv th.s0 { left: 0; }
+.tv td.s1, .tv th.s1 { left: 30px; box-shadow: 1px 0 0 var(--color-border-tertiary); }
+.tv th.s1 { z-index: 6; }
+.tv tr.prow:hover td { background: var(--color-background-secondary); }
+.tv td.hd { padding: 0; text-align: center; }
+.drag-h { display: inline-grid; place-items: center; width: 28px; height: 32px; color: var(--color-text-secondary); cursor: grab; opacity: .55; }
+.drag-h:hover { opacity: 1; color: var(--color-text-primary); }
+tr.prow.dragging td { opacity: .35; }
+tr.prow.drop-before td { box-shadow: inset 0 2px 0 var(--stp); }
+tr.prow.drop-after td { box-shadow: inset 0 -2px 0 var(--stp); }
+tr.stage-row.drop-hdr .stage-bar { outline: 2px solid var(--stp); outline-offset: -2px; border-radius: var(--r-md); }
+.tv td.act { text-align: right; padding-right: 4px; }
+.cell-inp { width: 100%; border: 0; background: transparent; padding: 6px 7px; border-radius: 6px; min-height: 30px; font-size: 13px; text-overflow: ellipsis; }
+.cell-inp:hover { background: var(--color-background-tertiary); }
+.cell-inp:focus { outline: 2px solid var(--stp); background: var(--color-background-primary); }
+.cell-inp.nm-inp { font-weight: 600; }
+.cell-inp.num { text-align: right; font-variant-numeric: tabular-nums; }
+.cell-inp[type=date] { font-size: 12px; padding-right: 2px; }
+.cell-txt { display: block; padding: 6px 7px; overflow: hidden; text-overflow: ellipsis; }
+.cell-txt.nm-txt { font-weight: 600; }
+.cell-btn { border: 0; background: transparent; border-radius: 8px; padding: 4px 6px; min-height: 30px; display: inline-flex; align-items: center; gap: 7px; max-width: 100%; text-align: left; font-size: 12px; font-weight: 600; }
+.cell-btn:hover { background: var(--color-background-tertiary); }
+.cell-btn .nmx { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cell-plain { display: inline-flex; align-items: center; gap: 7px; padding: 4px 6px; font-size: 12px; font-weight: 600; max-width: 100%; }
+.cell-plain .nmx { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stage-row td { padding: 0; border-bottom: 0; height: auto; background: var(--color-background-primary); overflow: visible; }
+.stage-bar { display: flex; align-items: center; gap: 12px; padding: 20px 14px 10px 8px; position: sticky; left: 0; width: max-content; max-width: 100vw; cursor: pointer; user-select: none; }
+.stage-line { height: 3px; }
+.stage-pill { font-size: 17px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; padding: 6px 18px; border-radius: var(--r-pill); display: inline-flex; align-items: center; gap: 8px; line-height: 1.2; }
+.stage-chev { font-size: 18px; transition: transform .12s; color: var(--color-text-secondary); }
+.stage-row.collapsed .stage-chev { transform: rotate(-90deg); }
+.stage-add { margin-left: 4px; }
+.stage-empty td { color: var(--color-text-secondary); font-size: 12px; padding: 10px 14px; height: 36px; }
+.tv tr.rowlink { cursor: pointer; }
+.tv tr.rowlink:hover td { background: var(--color-background-secondary); }
+.tv .nm { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+.tv .num { text-align: right; font-variant-numeric: tabular-nums; }
 
 /* ---------- closeout ---------- */
-.co-sel { min-height: 28px; padding: 3px 24px 3px 9px; font-size: 11px; font-weight: 600; border-radius: var(--r-pill); min-width: 108px; max-width: 150px; background-position: right 8px center; }
+.co-sel { min-height: 28px; padding: 3px 24px 3px 9px; font-size: 11px; font-weight: 600; border-radius: var(--r-pill); width: 100%; background-position: right 8px center; }
 .co-ok { background-color: var(--ok-bg); border-color: transparent; }
 .co-warn { background-color: var(--warn-bg); border-color: transparent; }
 .co-bad { background-color: var(--bad-bg); border-color: transparent; }
 .co-na { color: var(--color-text-secondary); }
-.bar { height: 6px; background: var(--color-background-tertiary); border-radius: 6px; overflow: hidden; min-width: 60px; }
+.bar { height: 6px; background: var(--color-background-tertiary); border-radius: 6px; overflow: hidden; min-width: 40px; flex: 1; }
 .bar > i { display: block; height: 100%; background: var(--stp); border-radius: 6px; }
 
-/* ---------- timeline ---------- */
+/* ---------- edit capacity ---------- */
 .tl { position: relative; min-width: max-content; }
 .tl-row { display: flex; height: 34px; border-bottom: 0.5px solid var(--color-border-tertiary); }
 .tl-row.grp { height: 46px; background: var(--color-background-secondary); }
@@ -224,16 +242,22 @@ table.tbl { border-collapse: separate; border-spacing: 0; width: 100%; min-width
 .tl-label .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
 .tl-label .dt { color: var(--color-text-secondary); font-size: 11px; flex: none; }
 .tl-track { position: relative; flex: none; }
+.tl-track.free { cursor: copy; }
 .tl-grid { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(to right, var(--color-border-tertiary) 0.5px, transparent 0.5px); }
-.tl-bar { position: absolute; top: 7px; height: 20px; border-radius: 6px; cursor: pointer; }
+.tl-bar { position: absolute; top: 7px; height: 20px; border-radius: 6px; cursor: grab; touch-action: none; }
+.tl-bar.ro { cursor: pointer; }
+.tl-bar.moving { opacity: .8; box-shadow: 0 0 0 2px var(--stp); cursor: grabbing; }
+.tl-h { position: absolute; top: 0; bottom: 0; width: 8px; cursor: ew-resize; }
+.tl-h.l { left: 0; } .tl-h.r { right: 0; }
 .tl-bar-lbl { position: absolute; top: 7px; height: 20px; line-height: 20px; font-size: 12px; white-space: nowrap; pointer-events: none; padding-left: 5px; }
+.tl-free { position: absolute; top: 7px; height: 20px; line-height: 20px; font-size: 11px; color: var(--color-text-secondary); white-space: nowrap; padding-left: 8px; pointer-events: none; position: sticky; left: 262px; }
 .tl-head { position: sticky; top: 0; z-index: 6; background: var(--color-background-primary); }
 .tl-head .tl-row { height: 28px; }
 .tl-head .tl-label { z-index: 7; }
 .tl-cell { flex: none; font-size: 11px; font-weight: 600; color: var(--color-text-secondary); text-align: center; line-height: 28px; border-left: 0.5px solid var(--color-border-tertiary); overflow: hidden; white-space: nowrap; }
 .tl-cell.now { background: var(--stp); color: #fff; border-radius: var(--r-pill); line-height: 22px; margin-top: 3px; height: 22px; border-left: 0; }
 .tl-today { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--stp); z-index: 3; pointer-events: none; }
-.legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 14px 20px 24px; font-size: 12px; position: sticky; left: 0; }
+.legend { display: flex; gap: 8px 16px; flex-wrap: wrap; padding: 14px 20px 24px; font-size: 12px; position: sticky; left: 0; width: max-content; max-width: calc(100vw - 280px); }
 .legend span { display: inline-flex; align-items: center; gap: 7px; }
 .legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
@@ -256,23 +280,29 @@ table.tbl { border-collapse: separate; border-spacing: 0; width: 100%; min-width
 .modal.wide { width: min(640px, calc(100vw - 24px)); }
 .modal h3 { margin: 0; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; }
 .modal .actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.modal ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.modal .errline { color: var(--color-text-danger); font-size: 12px; font-weight: 600; min-height: 16px; }
 .scrim.m { z-index: 60; }
-.pop { position: fixed; z-index: 70; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); padding: 6px; min-width: 190px; max-height: 60vh; overflow: auto; }
+.pop { position: fixed; z-index: 70; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); padding: 6px; min-width: 190px; max-height: 60vh; overflow: auto; box-shadow: 0 8px 28px rgba(0,0,0,.18); }
 .pop button { display: flex; width: 100%; align-items: center; gap: 8px; text-align: left; border: 0; background: transparent; border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 600; }
 .pop button:hover { background: var(--color-background-tertiary); }
 .pop .cur { color: var(--stp); }
+.pop .sep { height: 0.5px; background: var(--color-border-tertiary); margin: 4px 2px; }
+.pop .sub { font-size: 10px; color: var(--color-text-secondary); margin-left: auto; font-weight: 600; }
 .toasts { position: fixed; z-index: 90; left: 50%; transform: translateX(-50%); bottom: calc(22px + var(--safe-b)); display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
 .toast { background: var(--black); color: #fff; padding: 9px 16px; border-radius: var(--r-pill); font-size: 12px; font-weight: 600; border: 0.5px solid rgba(255,255,255,.2); max-width: 92vw; }
 .toast.err { background: var(--color-text-danger); }
 
 /* ---------- login ---------- */
 .login { position: fixed; inset: 0; display: grid; place-items: center; padding: 20px; background: var(--color-background-secondary); overflow: auto; }
-.login-card { width: min(400px, 100%); background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-lg); padding: 32px 28px 26px; display: flex; flex-direction: column; gap: 16px; }
+.login-card { width: min(400px, 100%); background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-lg); padding: 32px 28px 22px; display: flex; flex-direction: column; gap: 16px; }
 .login-card .brand-logo { height: 34px; } .login-card .brand-logo img { height: 34px; }
 .login-title { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 900; letter-spacing: 1.2px; }
+.login-title .emoji { font-size: 22px; }
 .login-err { color: var(--color-text-danger); font-size: 12px; font-weight: 600; min-height: 16px; }
 .alpha-note { background: var(--stp-alpha); border-radius: var(--r-md); padding: 10px 12px; font-size: 12px; line-height: 1.5; }
 .alpha-note b { color: var(--stp); }
+.login-card .tagline { text-align: center; padding-top: 4px; }
 
 /* ---------- misc ---------- */
 .row { display: flex; align-items: center; gap: 8px; }
@@ -286,20 +316,49 @@ table.tbl { border-collapse: separate; border-spacing: 0; width: 100%; min-width
 .toggle:checked { background: var(--stp-alpha); border-color: var(--stp); } .toggle:checked::after { transform: translateX(16px); background: var(--stp); }
 input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); background: var(--color-background-primary); }
 .skeleton { display: grid; place-items: center; height: 100%; color: var(--color-text-secondary); font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; font-size: 11px; gap: 10px; }
-.group-h { display: flex; align-items: center; gap: 10px; padding: 16px 0 8px; }
-.mine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
 .ro-banner { padding: 6px 20px; background: var(--stp-alpha); color: var(--stp); font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+.page-foot { padding: 18px 20px 26px; position: sticky; left: 0; }
+.mine-head { display: flex; align-items: center; gap: 12px; padding: 14px 20px 0; flex-wrap: wrap; }
+.tbl-note { padding: 8px 20px 0; font-size: 12px; color: var(--color-text-secondary); }
+.sub-tbl { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 720px; }
+.sub-tbl th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--color-text-secondary); padding: 10px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; }
+.sub-tbl td { padding: 8px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: middle; }
+.tbl-wrap { overflow-x: auto; }
+
+/* ---------- fixed-toolbar views, 0.2 additions ---------- */
+.content.fixed { display: flex; flex-direction: column; overflow: hidden; }
+.content.fixed > #vb { flex: 1; min-height: 0; overflow: auto; position: relative; -webkit-overflow-scrolling: touch; }
+.content.fixed > .toolbar { position: static; flex: none; }
+.content.fixed > .tabs { flex: none; padding-bottom: 8px; }
+.sync-short { display: none; }
+.sync .dot { transition: background .2s; }
+.cell-sel { appearance: auto; -webkit-appearance: menulist; cursor: pointer; padding-left: 11px; font-size: 12px; font-weight: 600; }
+.cell-sel option { font-weight: 400; }
+.lead-btn { max-width: 100%; }
+.lead-btn.empty-l { color: var(--color-text-secondary); font-weight: 400; }
+.is-lead { border-color: var(--stp); }
+.lead-tag { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--stp); padding: 0 6px 0 0; }
+.pickchip button i { font-size: 14px; vertical-align: -2px; }
+.btn.is-locked { opacity: .5; }
+.sort-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; background: var(--stp-alpha); color: var(--stp); border-radius: var(--r-pill); padding: 3px 4px 3px 10px; }
+.sort-chip button { border: 0; background: transparent; color: inherit; width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; padding: 0; }
+.tl-heat { position: absolute; top: 0; bottom: 0; opacity: .22; pointer-events: none; }
+.note-bar { padding: 8px 20px; font-size: 12px; color: var(--color-text-secondary); background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); position: sticky; left: 0; }
+.co-name { max-width: 100%; }
+.arch-fy { color: var(--color-text-primary); background: var(--color-background-tertiary); }
+.pop .grp-lbl { padding: 6px 10px 2px; }
 
 /* ---------- mobile ---------- */
 @media (max-width: 860px) {
+  .sync-long { display: none; } .sync-short { display: inline; }
+  .note-bar { padding: 8px 14px; }
+  .legend { max-width: calc(100vw - 28px); padding: 14px 14px 24px; }
   .side { display: none; }
   .topbar { height: calc(52px + var(--safe-t)); padding: calc(var(--safe-t)) 14px 0; gap: 8px; }
   .topbar .brand-logo { display: inline-flex; }
   h1.page-title { font-size: 13px; }
   .toolbar { padding: 10px 14px; }
   .pad { padding: 12px 14px calc(90px + var(--safe-b)); }
-  .board { padding: 12px 14px calc(90px + var(--safe-b)); scroll-snap-type: x mandatory; gap: 10px; }
-  .col { flex: 0 0 86vw; scroll-snap-align: center; }
   .tabbar { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: var(--color-background-secondary); border-top: 0.5px solid var(--color-border-tertiary); padding: 6px 4px calc(6px + var(--safe-b)); }
   .tabbar button { flex: 1; border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; color: var(--color-text-secondary); padding: 4px 0; }
   .tabbar button i { font-size: 21px; }
@@ -308,9 +367,11 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
   .grid2 { grid-template-columns: 1fr; }
   .hide-m { display: none !important; }
   .tl-label { width: 150px; } .tl-label .dt { display: none; }
-  .tbl .nm { max-width: 190px; }
   .search { max-width: none; }
   .kv { grid-template-columns: 1fr; }
+  .stage-pill { font-size: 14px; padding: 5px 14px; }
+  .sync { font-size: 10px; }
+  .content-pad-b { height: 80px; }
 }
 @media (min-width: 861px) { .only-m { display: none !important; } }
 @media print { .side, .tabbar, .toolbar { display: none; } }
@@ -323,14 +384,15 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 (function () {
 'use strict';
 /* ================================================================
-   BOARD alpha. Core: config, state, API, queue, shell, login, routing
+   BOARD alpha 0.2. Core: config, state, API, queue, shell, login, routing
    ================================================================ */
 
-/* ---- CONFIG: paste your Apps Script web app URL between the quotes ---- */
+/* ---- CONFIG: your Apps Script web app URL ---- */
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
-/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------- */
 
-const APP_VERSION = '0.1.0-alpha';
+const APP_VERSION = '0.2.0-alpha';
+const TAGLINE = 'Built with love by Mr Follop for Sunday Treat \u{1F9E1}';
 const POLL_MS = 20000;
 const LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
 const API = (LOCAL && new URLSearchParams(location.search).get('api')) || API_URL;
@@ -340,19 +402,24 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
   del(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
+const jparse = (s, d) => { try { const v = JSON.parse(s); return v && typeof v === 'object' ? v : d; } catch (e) { return d; } };
 
 const S = {
   token: null, me: null, people: [], depts: [], cfg: { stages: [], statuses: [], closeout_fields: [], closeout_options: {}, public_stages: [], fy_start_month: 4 },
   projects: [], version: 0, readonly: false, readonlyKey: '', alphaOpen: false, adminKey: '',
-  view: 'pipeline', pipeMode: 'board',
-  f: { q: '', person: '', status: '', client: '' },
-  tl: { group: 'person', zoom: 1, offset: 0, closed: false },
+  view: 'pipeline',
+  f: { q: '', person: '', status: '' },
+  ec: { zoom: 1, internal: false, person: '' },
   co: { q: '', stage: '', incomplete: false },
   ar: { q: '', fy: '', client: '', rows: [], total: 0, fys: [], clients: [], loaded: false, loading: false, offset: 0 },
+  mine: { q: '' },
   clients: null, codes: { mode: 'existing', client: '', title: '', newName: '', newCode: '' },
   settingsTab: 'people', health: null,
-  drawer: null, dragging: false, stale: false, sort: { key: 'sort', dir: 1 }
+  drawer: null, dragging: false, stale: false, syncState: 'saved', lastSync: null,
+  ui: Object.assign({ widths: {}, sort: {}, collapsed: {} }, jparse(store.get('board_ui'), {})),
+  ep: jparse(store.get('board_ep'), {})
 };
+function saveUI() { store.set('board_ui', JSON.stringify(S.ui)); }
 
 /* ---------------- tiny utils ---------------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -382,10 +449,31 @@ function textOn(hex) {
   return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#111111' : '#FFFFFF';
 }
 
+/* ---------------- colours: departments + stages ---------------- */
+/* Sunday Treat defaults: used when a department has no colour and as the fallback for stage headers */
+const DEPT_DEFAULTS = [
+  [/tender/i, '#57AEFF'], [/pre[\s-]?prod/i, '#F9CD48'], [/post|edit/i, '#8B5DDF'],
+  [/client|account/i, '#34AD6C'], [/admin/i, '#D3454A'], [/freelanc/i, '#F28C28']
+];
+const NEUTRAL = '#9AA0A6';
+function defaultColourFor(name) { const hit = DEPT_DEFAULTS.find(([re]) => re.test(name || '')); return hit ? hit[1] : null; }
+const squash = s => String(s || '').toLowerCase().replace(/[^a-z]/g, '');
+const STAGE_PALETTE = ['#57AEFF', '#F9CD48', '#8B5DDF', '#34AD6C', '#D3454A', '#F28C28'];
+function stageColour(stage) {
+  const k = squash(stage);
+  const d = S.depts.find(x => { const n = squash(x.name); return n && (n === k || n.startsWith(k) || k.startsWith(n)); });
+  if (d && d.colour) return d.colour;
+  const def = defaultColourFor(stage); if (def) return def;
+  if (/closeout|out[\s-]?proc|archive|handover/i.test(stage)) return '#D3454A';
+  const i = S.cfg.stages.indexOf(stage); return STAGE_PALETTE[(i < 0 ? 0 : i) % STAGE_PALETTE.length];
+}
+const isPreStage = s => /pre[\s-]?prod/i.test(s || '');
+const isPostStage = s => /post/i.test(s || '');
+
 /* ---------------- people / departments / status ---------------- */
 const personById = id => S.people.find(p => p.id === id) || null;
 const deptById = id => S.depts.find(d => d.id === id) || null;
-const deptColour = id => (deptById(id) || {}).colour || '#9AA0A6';
+const deptColour = id => (deptById(id) || {}).colour || NEUTRAL;
 const activePeople = () => S.people.filter(p => p.active !== false);
 function av(id, size = '') {
   const p = personById(id);
@@ -399,12 +487,16 @@ function avStack(ids, size = 'av-sm', max = 4) {
   return `<span class="av-stack">${shown.map(i => av(i, size)).join('')}${extra > 0 ? `<span class="av ${size} av-more">+${extra}</span>` : ''}</span>`;
 }
 const teamOf = p => uniq([p.lead].concat(p.creative || [], p.production || [], p.edit || []).filter(Boolean));
-
-const STATUS_COL = { 'Tendering': '#7A8699', 'Awaiting KO': '#FF50BD', 'Pre Production': '#F2B705', 'Edit': '#7C4DFF', 'Awaiting Client Feedback': '#2FB36D', 'To Be Archived': '#9AA0A6' };
-const STATUS_FALLBACK = ['#0EA5E9', '#F97316', '#14B8A6', '#B45309', '#6366F1', '#84CC16'];
+/* Leads: account lead is the existing "lead" field. Creative / production / edit lead is the first person in that list. */
+const LEAD_ROLES = [['lead', 'Account lead'], ['creative', 'Creative lead'], ['production', 'Production lead'], ['edit', 'Edit lead']];
+const leadOf = (p, role) => (role === 'lead' ? (p.lead || '') : ((p[role] || [])[0] || ''));
+const EXTRA_STATUSES = ['Awaiting Handover', 'Archive'];
+const statusList = () => S.cfg.statuses.concat(EXTRA_STATUSES.filter(s => !S.cfg.statuses.includes(s)));
+const STATUS_COL = { 'Tendering': '#7A8699', 'Awaiting KO': '#FF50BD', 'Pre Production': '#F2B705', 'Edit': '#7C4DFF', 'Awaiting Client Feedback': '#2FB36D', 'To Be Archived': '#9AA0A6', 'Awaiting Handover': '#F97316', 'Archive': '#6B6B75' };
+const STATUS_FALLBACK = ['#0EA5E9', '#14B8A6', '#B45309', '#6366F1', '#84CC16'];
 function statusColour(s) {
   if (!s) return null; if (STATUS_COL[s]) return STATUS_COL[s];
-  const i = (S.cfg.statuses || []).indexOf(s);
+  const i = statusList().indexOf(s);
   return STATUS_FALLBACK[(i < 0 ? 0 : i) % STATUS_FALLBACK.length];
 }
 function statusChip(s) {
@@ -418,7 +510,8 @@ const closeoutStages = () => S.cfg.stages.slice(-2);
 const liveStages = () => (S.cfg.public_stages && S.cfg.public_stages.length ? S.cfg.public_stages : S.cfg.stages.slice(0, -2));
 const projectById = id => S.projects.find(p => p.id === id) || null;
 const sortedStage = stage => S.projects.filter(p => p.stage === stage).sort((a, b) => (a.sort === '' ? 1e9 : a.sort) - (b.sort === '' ? 1e9 : b.sort));
-const logoHTML = () => `<span class="brand-logo"><img class="logo-light" src="assets/logo-black.png" alt="Sunday Treat" onerror="this.parentNode.classList.add('no-logo')"><img class="logo-dark" src="assets/logo-white.png" alt="" onerror="this.parentNode.classList.add('no-logo')"><span class="wordmark">Sunday<br>Treat</span></span>`;
+/* The Sunday Treat logo: drop assets/logo-black.png and assets/logo-white.png next to index.html. Until then a wordmark shows. */
+const logoHTML = () => `<span class="brand-logo"><img src="assets/logo-black.png" alt="Sunday Treat" onerror="this.parentNode.classList.add('no-logo')"><span class="wordmark">Sunday<br>Treat</span></span>`;
 
 /* ---------------- toasts, modals, popovers ---------------- */
 function toast(msg, kind = '') {
@@ -432,7 +525,7 @@ function openModal(html, cls = '') {
   const m = document.createElement('div'); m.className = 'modal ' + cls; m.id = 'modal'; m.setAttribute('role', 'dialog'); m.innerHTML = html;
   document.body.appendChild(s); document.body.appendChild(m);
   s.addEventListener('click', closeModal);
-  const f = $('input,select,textarea', m); if (f && !matchMedia('(max-width:860px)').matches) f.focus();
+  const f = $('input:not([type=checkbox]),select,textarea', m); if (f && !matchMedia('(max-width:860px)').matches) f.focus();
   return m;
 }
 function closeModal() { $('#modal') && $('#modal').remove(); $('#modalScrim') && $('#modalScrim').remove(); }
@@ -447,7 +540,8 @@ function openPop(anchor, html) {
   closePop();
   const p = document.createElement('div'); p.className = 'pop'; p.id = 'pop'; p.innerHTML = html; document.body.appendChild(p);
   const r = anchor.getBoundingClientRect(), pw = p.offsetWidth, ph = p.offsetHeight;
-  let x = Math.min(Math.max(8, r.right - pw), innerWidth - pw - 8), y = r.bottom + 4;
+  let x = Math.min(Math.max(8, r.left), innerWidth - pw - 8), y = r.bottom + 4;
+  if (r.left + pw > innerWidth - 8) x = Math.max(8, r.right - pw);
   if (y + ph > innerHeight - 8) y = Math.max(8, r.top - ph - 4);
   p.style.left = x + 'px'; p.style.top = y + 'px';
   return p;
@@ -475,13 +569,20 @@ async function apiPublic(key) {
   const data = await res.json(); if (!data.ok) throw new Error(data.error || 'Link not valid'); return data;
 }
 
+/* ---------------- connection status ---------------- */
+const SYNC_TXT = { saved: ['Connected to sheet', 'Connected'], saving: ['Saving', 'Saving'], error: ['Not saved', 'Not saved'], offline: ['Cannot reach sheet', 'Offline'], none: ['Not connected to a sheet', 'Offline'] };
+function setSync(state) {
+  S.syncState = state; if (state === 'saved') S.lastSync = new Date();
+  const el = $('#sync'); if (!el) return;
+  const t = SYNC_TXT[state] || SYNC_TXT.saved;
+  el.className = 'sync ' + state;
+  const hh = S.lastSync ? String(S.lastSync.getHours()).padStart(2, '0') + ':' + String(S.lastSync.getMinutes()).padStart(2, '0') : '';
+  el.title = state === 'saved' && hh ? `Connected to the BOARD. Database sheet. Last synced ${hh}` : t[0];
+  el.innerHTML = `<span class="dot"></span><span class="sync-long">${t[0]}</span><span class="sync-short">${t[1]}</span>`;
+}
+
 /* serial write queue so edits always land in order */
 let chain = Promise.resolve(), inflight = 0;
-function setSync(state) {
-  const el = $('#sync'); if (!el) return;
-  el.className = 'sync ' + state;
-  el.innerHTML = `<span class="dot"></span>${state === 'saving' ? 'Saving' : state === 'error' ? 'Not saved' : 'Live'}`;
-}
 function write(action, params) {
   inflight++; setSync('saving');
   const p = chain.then(() => api(action, params)).then(res => {
@@ -489,7 +590,7 @@ function write(action, params) {
     return res;
   });
   chain = p.catch(() => {});
-  p.then(() => { if (--inflight === 0) setSync('saved'); }, err => { inflight--; setSync('error'); toast(err.message || 'Save failed', 'err'); schedule(refresh); });
+  p.then(() => { if (--inflight === 0) setSync('saved'); }, err => { inflight--; setSync(/reach|too long/i.test(err.message) ? 'offline' : 'error'); toast(err.message || 'Save failed', 'err'); schedule(refresh); });
   return p;
 }
 const schedule = fn => setTimeout(fn, 0);
@@ -502,9 +603,9 @@ function applyBootstrap(d) {
 let refreshing = false;
 async function refresh() {
   if (refreshing || S.readonly) return; refreshing = true;
-  try { await chain; const d = await api('bootstrap'); applyBootstrap(d); softRender(); } catch (e) { /* retry on next poll */ } finally { refreshing = false; }
+  try { await chain; const d = await api('bootstrap'); applyBootstrap(d); if (!inflight) setSync('saved'); softRender(); } catch (e) { if (/reach|too long/i.test(e.message)) setSync('offline'); } finally { refreshing = false; }
 }
-function typing() { const a = document.activeElement; return !!(a && /^(INPUT|TEXTAREA)$/.test(a.tagName) && a.closest('.content') && a.type !== 'checkbox'); }
+function typing() { const a = document.activeElement; return !!(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.closest('.content') && a.type !== 'checkbox'); }
 function softRender() {
   if (S.dragging || typing()) { S.stale = true; return; }
   S.stale = false; renderView(); if (S.drawer) refreshDrawer();
@@ -514,29 +615,45 @@ async function poll() {
   if (document.hidden || inflight || S.dragging) return;
   if (S.readonly) { try { const d = await apiPublic(S.readonlyKey); if (d.version !== S.version) { S.version = d.version; loadPublic(d); renderView(); } } catch (e) {} return; }
   if (!S.token) return;
-  try { const d = await api('version'); if (d.version !== S.version) await refresh(); } catch (e) {}
+  try { const d = await api('version'); if (S.syncState === 'offline' || S.syncState === 'error') setSync('saved'); else S.lastSync = new Date(); if (d.version !== S.version) await refresh(); }
+  catch (e) { if (S.token && /reach|too long/i.test(e.message)) setSync('offline'); }
 }
 setInterval(poll, POLL_MS);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
 addEventListener('focus', poll);
+addEventListener('online', poll);
+addEventListener('offline', () => { if (S.token) setSync('offline'); });
+
+/* ---------------- seed new statuses / Freelancers department (admins only, once) ---------------- */
+let seeded = false;
+async function seedDefaults() {
+  if (seeded || !isAdmin()) return; seeded = true;
+  try {
+    const miss = EXTRA_STATUSES.filter(s => !S.cfg.statuses.includes(s));
+    if (miss.length) { const r = await write('config_save', { key: 'statuses', value: S.cfg.statuses.concat(miss) }); S.cfg = Object.assign(S.cfg, r.config); }
+    if (!S.depts.some(d => /freelanc/i.test(d.name))) { const r = await write('dept_save', { department: { name: 'Freelancers', colour: '#F28C28' } }); S.depts = r.departments; }
+    renderView();
+  } catch (e) { /* surfaced by write() */ }
+}
 
 /* ---------------- theme ---------------- */
 function applyTheme(t) { if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; }
 function curTheme() { return document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
-function toggleTheme() { const t = curTheme() === 'dark' ? 'light' : 'dark'; applyTheme(t); store.set('board_theme', t); const i = $('#themeBtn i'); if (i) i.className = 'ti ' + (t === 'dark' ? 'ti-sun' : 'ti-moon'); }
+function toggleTheme() { const t = curTheme() === 'dark' ? 'light' : 'dark'; applyTheme(t); store.set('board_theme', t); $$('.theme-ic').forEach(i => { i.className = 'ti theme-ic ' + (t === 'dark' ? 'ti-sun' : 'ti-moon'); }); }
 applyTheme(store.get('board_theme'));
 
 /* ---------------- shell ---------------- */
 const NAV = [
   { id: 'mine', label: 'My projects', icon: 'ti-user-circle' },
-  { id: 'pipeline', label: 'Pipeline', icon: 'ti-layout-kanban' },
-  { id: 'timeline', label: 'Timeline', icon: 'ti-calendar-stats' },
-  { id: 'closeout', label: 'Closeout', icon: 'ti-checklist' },
+  { id: 'pipeline', label: 'Project board', icon: 'ti-layout-list' },
+  { id: 'timeline', label: 'Edit capacity', icon: 'ti-calendar-stats' },
+  { id: 'closeout', label: 'Out processing', icon: 'ti-checklist' },
   { id: 'archive', label: 'Archive', icon: 'ti-archive' },
   { id: 'codes', label: 'Code generator', icon: 'ti-barcode', group: 'Tools' },
   { id: 'settings', label: 'Settings', icon: 'ti-settings', admin: true, group: 'Admin' }
 ];
-const TITLES = { mine: 'My projects', pipeline: 'Pipeline', timeline: 'Timeline', closeout: 'Closeout', archive: 'Archive', codes: 'Code generator', settings: 'Settings' };
+const TITLES = { mine: 'My projects', pipeline: 'Project board', timeline: 'Edit capacity', closeout: 'Out processing', archive: 'Archive', codes: 'Code generator', settings: 'Settings', board: 'Live projects' };
+const brandName = () => `<span class="brand-name"><span class="emoji">\u{1F7E2}</span>BOARD</span>`;
 
 function renderShell() {
   const app = $('#app'); const dark = curTheme() === 'dark';
@@ -548,26 +665,28 @@ function renderShell() {
   });
   app.innerHTML = `
     <nav class="side">
-      <div class="brand">${logoHTML()}<span class="brand-name">BOARD</span></div>
+      <div class="brand">${logoHTML()}${brandName()}</div>
       ${nav}
       <div class="side-foot">
         <button class="nav-item" data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button>
-        <button class="nav-item" id="themeBtn" data-act="theme"><i class="ti ${dark ? 'ti-sun' : 'ti-moon'}"></i>Light / dark</button>
+        <button class="nav-item" data-act="theme"><i class="ti theme-ic ${dark ? 'ti-sun' : 'ti-moon'}"></i>Light / dark</button>
         <div class="userchip">${av(S.me.id, 'av-lg')}<div><div class="nm">${esc(S.me.name)}</div><div class="rl">${esc(S.me.access)}</div></div>
           <button class="icon-btn" style="margin-left:auto" data-act="signout" title="Sign out"><i class="ti ti-logout"></i></button></div>
         <div class="ver">ALPHA ${APP_VERSION}</div>
+        <div class="tagline">${TAGLINE}</div>
       </div>
     </nav>
     <div class="main">
-      <div class="topbar">${logoHTML()}<h1 class="page-title" id="pageTitle"></h1><span class="pill pill-alpha">Alpha</span><span class="spacer"></span><span class="sync" id="sync"><span class="dot"></span>Live</span>
-        <button class="icon-btn only-m" data-act="theme" title="Light / dark"><i class="ti ti-moon"></i></button></div>
+      <div class="topbar">${logoHTML()}<h1 class="page-title" id="pageTitle"></h1><span class="pill pill-alpha">Alpha</span><span class="spacer"></span><span class="sync" id="sync"></span>
+        <button class="icon-btn only-m" data-act="theme" title="Light / dark"><i class="ti theme-ic ${dark ? 'ti-sun' : 'ti-moon'}"></i></button></div>
       <div class="content-wrap"><div class="content" id="content"></div></div>
     </div>
     <div class="tabbar">
-      ${['mine', 'pipeline', 'timeline', 'closeout'].map(id => { const n = NAV.find(x => x.id === id); return `<button data-act="go" data-v="${id}" data-nav="${id}"><i class="ti ${n.icon}"></i>${n.label.replace('My projects', 'Mine')}</button>`; }).join('')}
+      ${[['mine', 'Mine'], ['pipeline', 'Board'], ['timeline', 'Capacity'], ['closeout', 'Out']].map(([id, l]) => { const n = NAV.find(x => x.id === id); return `<button data-act="go" data-v="${id}" data-nav="${id}"><i class="ti ${n.icon}"></i>${l}</button>`; }).join('')}
       <button data-act="more" data-nav="more"><i class="ti ti-menu-2"></i>More</button>
     </div>`;
-  document.title = 'BOARD (alpha)';
+  document.title = '\u{1F7E2} BOARD (alpha)';
+  setSync(S.syncState === 'saving' ? 'saving' : 'saved');
 }
 
 function markNav() {
@@ -582,7 +701,7 @@ function route() {
   let v = (location.hash.replace(/^#\/?/, '') || 'pipeline').split('/')[0];
   if (S.readonly) { if (!['board', 'timeline'].includes(v)) v = 'board'; }
   else {
-    if (!TITLES[v]) v = 'pipeline';
+    if (!TITLES[v] || v === 'board') v = 'pipeline';
     if (v === 'settings' && !isAdmin()) v = 'pipeline';
   }
   if (v !== 'timeline') S._tlScrolled = false;
@@ -590,20 +709,24 @@ function route() {
 }
 addEventListener('hashchange', route);
 
+const FIXED = { pipeline: 1, mine: 1, timeline: 1, closeout: 1, archive: 1, settings: 1, board: 1 };
 function renderView() {
   const c = $('#content'); if (!c) return;
-  const sx = c.scrollLeft, sy = c.scrollTop, same = S._lastView === S.view; S._lastView = S.view;
-  const fn = { mine: viewMine, pipeline: viewPipeline, timeline: viewTimeline, closeout: viewCloseout, archive: viewArchive, codes: viewCodes, settings: viewSettings, board: viewReadonlyBoard }[S.view];
+  const old = $('#vb'), sx = old ? old.scrollLeft : c.scrollLeft, sy = old ? old.scrollTop : c.scrollTop, same = S._lastView === S.view; S._lastView = S.view;
+  const fn = { mine: viewMine, pipeline: viewPipeline, timeline: viewEditCapacity, closeout: viewCloseout, archive: viewArchive, codes: viewCodes, settings: viewSettings, board: viewPipeline }[S.view];
+  c.className = 'content' + (FIXED[S.view] ? ' fixed' : '');
   c.innerHTML = fn ? fn() : '';
+  const nv = $('#vb') || c;
   if (S.view === 'timeline' && !S._tlScrolled) { S._tlScrolled = true; scrollTimelineToToday(); }
-  else if (same) { c.scrollLeft = sx; c.scrollTop = sy; }
-  else { c.scrollLeft = 0; c.scrollTop = 0; }
+  else if (same) { nv.scrollLeft = sx; nv.scrollTop = sy; }
+  else { nv.scrollLeft = 0; nv.scrollTop = 0; }
   afterRender();
 }
 function afterRender() {
   if (S.view === 'archive' && !S.ar.loaded && !S.ar.loading) loadArchive(true);
   if (S.view === 'codes') { if (!S.clients) loadClients(); updateCodeOut(); }
   if (S.view === 'settings') settingsAfter();
+  if ((S.view === 'pipeline' || S.view === 'mine') && !S.readonly && !S.clients && !S._clientsTried) { S._clientsTried = true; loadClients(); }
 }
 
 /* ---------------- global events ---------------- */
@@ -616,7 +739,8 @@ document.addEventListener('click', e => {
 document.addEventListener('change', e => { const t = e.target.closest('[data-chg]'); if (t && INP[t.dataset.chg]) INP[t.dataset.chg](t, e); });
 document.addEventListener('input', e => { const t = e.target.closest('[data-inp]'); if (t && INP[t.dataset.inp]) INP[t.dataset.inp](t, e); });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { if ($('#modal')) closeModal(); else if ($('#pop')) closePop(); else if (S.drawer) closeDrawer(); }
+  if (e.key === 'Escape') { if ($('#modal')) closeModal(); else if ($('#pop')) closePop(); else if (S.drawer) closeDrawer(); else if (document.activeElement && document.activeElement.classList.contains('cell-inp')) { document.activeElement.value = document.activeElement.defaultValue; document.activeElement.blur(); } }
+  else if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('cell-inp') && e.target.tagName === 'INPUT') e.target.blur();
 });
 
 ACT.go = el => { closePop(); go(el.dataset.v); };
@@ -625,26 +749,27 @@ ACT.signout = () => signOut();
 ACT.more = el => {
   const items = NAV.filter(n => ['archive', 'codes', 'settings'].includes(n.id) && (!n.admin || isAdmin()));
   openPop(el, items.map(n => `<button data-act="go" data-v="${n.id}"><i class="ti ${n.icon}"></i>${n.label}</button>`).join('') +
-    `<button data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button><button data-act="signout"><i class="ti ti-logout"></i>Sign out</button>`);
+    `<button data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button><button data-act="signout"><i class="ti ti-logout"></i>Sign out</button><div class="sep"></div><div class="tagline" style="padding:6px 10px">${TAGLINE}</div>`);
 };
 
 /* ---------------- auth ---------------- */
 function onAuthLost() { if (!S.token) return; S.token = null; S.me = null; store.del('board_token'); showLogin('Your session has ended. Please sign in again.'); }
-function signOut() { S.token = null; S.me = null; store.del('board_token'); S._tlScrolled = false; closeDrawer(true); showLogin(''); }
+function signOut() { S.token = null; S.me = null; store.del('board_token'); S._tlScrolled = false; seeded = false; closeDrawer(true); showLogin(''); }
 
 async function showLogin(msg) {
   closeModal(); closePop();
   $('#app').innerHTML = `
     <div class="login"><form class="login-card" id="loginForm" autocomplete="off">
       ${logoHTML()}
-      <div class="login-title">BOARD <span class="pill pill-alpha">Alpha</span></div>
+      <div class="login-title"><span class="emoji">\u{1F7E2}</span>BOARD <span class="pill pill-alpha">Alpha</span></div>
       <div class="alpha-note" id="alphaNote"><b>Alpha build ${APP_VERSION}.</b> Things will change and break. Data is a test copy while we trial it.</div>
       <div class="field"><span class="lbl">Name</span><input class="inp" id="lgUser" name="user" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
       <div class="field"><span class="lbl">Passcode</span><input class="inp" id="lgPass" name="pass" type="password" autocomplete="new-password"></div>
       <div class="login-err" id="lgErr">${esc(msg || '')}</div>
       <button class="btn btn-primary" type="submit" id="lgBtn">Enter</button>
+      <div class="tagline">${TAGLINE}</div>
     </form></div>`;
-  document.title = 'BOARD (alpha)';
+  document.title = '\u{1F7E2} BOARD (alpha)';
   $('#loginForm').addEventListener('submit', async e => {
     e.preventDefault(); const b = $('#lgBtn'); b.disabled = true; $('#lgErr').textContent = '';
     try {
@@ -666,9 +791,10 @@ async function fetchLogin(user, pass) {
 async function loadApp() {
   $('#app').innerHTML = `<div class="skeleton"><div>${logoHTML()}</div>Loading BOARD</div>`;
   const d = await api('bootstrap'); applyBootstrap(d);
-  renderShell(); setSync('saved');
-  if (!location.hash || location.hash === '#') location.hash = '#/pipeline'; else route();
+  renderShell();
+  if (!location.hash || location.hash === '#') location.hash = '#/pipeline';
   route();
+  seedDefaults();
 }
 
 /* ---------------- boot ---------------- */
@@ -681,13 +807,13 @@ async function boot() {
 }
 
 /* ================================================================
-   BOARD alpha. Views: mine, pipeline (board/list), timeline, closeout, archive, codes
+   BOARD alpha 0.2. Views: project board, my projects, edit capacity, out processing, archive, code generator
    ================================================================ */
 
 const BODY = {};
 function rerenderBody() { const fn = BODY[S.view], vb = $('#vb'); if (fn && vb) vb.innerHTML = fn(); }
 const optList = (items, cur, blank) => (blank != null ? `<option value="">${esc(blank)}</option>` : '') + items.map(v => `<option value="${esc(v)}"${v === cur ? ' selected' : ''}>${esc(v)}</option>`).join('');
-const personOpts = (cur, blank) => (blank != null ? `<option value="">${esc(blank)}</option>` : '') + activePeople().map(p => `<option value="${p.id}"${p.id === cur ? ' selected' : ''}>${esc(p.name)}</option>`).join('');
+const personOpts = (cur, blank, list) => (blank != null ? `<option value="">${esc(blank)}</option>` : '') + (list || activePeople()).map(p => `<option value="${p.id}"${p.id === cur ? ' selected' : ''}>${esc(p.name)}</option>`).join('');
 
 function matches(p) {
   const f = S.f, q = norm(f.q);
@@ -696,137 +822,316 @@ function matches(p) {
   if (f.status && p.status !== f.status) return false;
   return true;
 }
+const hasCode = p => !!String(p.project_code || '').trim();
 
-/* ---------------- cards ---------------- */
-function cardHTML(p) {
-  const team = teamOf(p);
-  return `<div class="card" data-id="${p.id}" data-act="open"${canEdit() ? ' draggable="true"' : ''}>
-    ${canEdit() ? `<button class="icon-btn kebab" data-act="movemenu" data-id="${p.id}" title="Move to stage"><i class="ti ti-dots"></i></button>` : ''}
-    <div class="card-title">${esc(p.name)}</div>
-    ${p.client || (!S.readonly && p.budget) ? `<div class="card-client row"><span class="sp">${esc(p.client)}</span>${S.readonly || !p.budget ? '' : `<span>${esc(fmoney(p.budget))}</span>`}</div>` : ''}
-    ${p.status ? `<div>${statusChip(p.status)}</div>` : ''}
-    <div class="card-foot"><span>${avStack(team)}</span><span>${esc(frange(p.start, p.end))}</span></div>
-  </div>`;
+/* ================================================================
+   Table engine: stage groups (collapsible), sortable + resizable columns
+   ================================================================ */
+const COLS = {};
+S._groups = {};
+const colW = (tid, c) => Math.max(c.min || 60, (S.ui.widths[tid] || {})[c.k] || c.w);
+const curSort = tid => S.ui.sort[tid] || null;
+const cmpVals = (x, y) => (typeof x === 'number' && typeof y === 'number' ? x - y : String(x).localeCompare(String(y), 'en-GB', { numeric: true, sensitivity: 'base' }));
+function sortRows(rows, tid, val) {
+  const st = curSort(tid); if (!st) return rows.slice();
+  return rows.slice().sort((a, b) => {
+    const x = val(a, st.k), y = val(b, st.k), ex = x === '' || x == null, ey = y === '' || y == null;
+    if (ex && ey) return 0; if (ex) return 1; if (ey) return -1;
+    return cmpVals(x, y) * st.dir;
+  });
 }
+function tableHTML(tid, colsIn, groups, rowFn, opt = {}) {
+  COLS[tid] = colsIn;
+  const cols = colsIn.map(c => Object.assign({}, c, { w: colW(tid, c) }));
+  let left = 0; cols.forEach(c => { if (c.sticky) { c.left = left; left += c.w; } });
+  const total = cols.reduce((s, c) => s + c.w, 0), n = cols.length, st = curSort(tid);
+  S._groups[tid] = groups.map(g => g.key);
+  const head = cols.map(c => {
+    const on = st && st.k === c.k, arrow = on ? `<i class="ti ${st.dir === 1 ? 'ti-arrow-up' : 'ti-arrow-down'}" style="color:var(--stp)"></i>` : '';
+    const inner = c.nosort ? `<div class="th-in" style="cursor:default"><span class="th-l">${esc(c.l)}</span></div>` : `<div class="th-in" data-act="colmenu" data-t="${tid}" data-k="${c.k}"><span class="th-l">${esc(c.l)}</span>${arrow}</div>`;
+    return `<th class="${c.sticky ? 'sticky' : ''}" style="${c.sticky ? `left:${c.left}px;` : ''}">${inner}${c.noresize ? '' : `<span class="rs" data-t="${tid}" data-k="${c.k}"></span>`}</th>`;
+  }).join('');
+  let body = '';
+  groups.forEach(g => {
+    const coll = !!S.ui.collapsed[tid + ':' + g.key];
+    body += `<tr class="stage-row${coll ? ' collapsed' : ''}" data-stage="${esc(g.key)}"><td colspan="${n}"><div class="stage-bar" data-act="stagetoggle" data-t="${tid}" data-g="${esc(g.key)}">
+      <i class="ti ti-chevron-down stage-chev"></i><span class="stage-pill" style="background:${g.colour};color:${textOn(g.colour)}">${esc(g.title)}</span>
+      <span class="count">${g.items.length}${g.total != null && g.total !== g.items.length ? ' / ' + g.total : ''}</span>
+      ${opt.add && canEdit() ? `<button class="btn btn-ghost btn-sm stage-add" data-act="newproject" data-stage="${esc(g.key)}"><i class="ti ti-plus"></i>New</button>` : ''}</div></td></tr>`;
+    if (coll) return;
+    if (g.items.length) body += g.items.map(p => rowFn(p, g, cols)).join('');
+    else body += `<tr class="stage-empty" data-stage="${esc(g.key)}"><td colspan="${n}">${opt.dnd && canEdit() ? 'Drop a project here' : 'Nothing here'}</td></tr>`;
+  });
+  return `<table class="tv" id="tv-${tid}" style="width:${total}px"><colgroup>${cols.map(c => `<col data-k="${c.k}" style="width:${c.w}px">`).join('')}</colgroup><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+}
+/* cell wrapper that applies sticky offset and the stage colour strip on the first column */
+function td(c, g, inner, cls = '') {
+  const strip = c.first && g ? `box-shadow:inset 5px 0 0 ${g.colour};` : '';
+  const stick = c.sticky ? `left:${c.left}px;` : '';
+  return `<td class="${c.sticky ? 'sticky ' : ''}${cls}"${strip || stick ? ` style="${stick}${strip}"` : ''}>${inner}</td>`;
+}
+const withFirst = cols => cols.map((c, i) => Object.assign({}, c, { first: i === 0 }));
 
-/* ---------------- pipeline ---------------- */
+ACT.colmenu = el => {
+  const tid = el.dataset.t, k = el.dataset.k, c = (COLS[tid] || []).find(x => x.k === k) || {}, st = curSort(tid), on = st && st.k === k;
+  const [asc, desc] = c.num ? ['Smallest first', 'Largest first'] : c.date ? ['Earliest first', 'Latest first'] : ['Sort A to Z', 'Sort Z to A'];
+  openPop(el, `<button data-act="colsort" data-t="${tid}" data-k="${k}" data-d="1" class="${on && st.dir === 1 ? 'cur' : ''}"><i class="ti ti-sort-ascending"></i>${asc}</button>
+    <button data-act="colsort" data-t="${tid}" data-k="${k}" data-d="-1" class="${on && st.dir === -1 ? 'cur' : ''}"><i class="ti ti-sort-descending"></i>${desc}</button>
+    ${st ? `<button data-act="colclear" data-t="${tid}"><i class="ti ti-x"></i>Clear sorting</button>` : ''}<div class="sep"></div>
+    <button data-act="colreset" data-t="${tid}" data-k="${k}"><i class="ti ti-arrows-horizontal"></i>Reset column width</button>`);
+};
+ACT.colsort = el => { closePop(); S.ui.sort[el.dataset.t] = { k: el.dataset.k, dir: Number(el.dataset.d) }; saveUI(); renderView(); };
+ACT.colclear = el => { closePop(); delete S.ui.sort[el.dataset.t]; saveUI(); renderView(); };
+ACT.colreset = el => { closePop(); const w = S.ui.widths[el.dataset.t]; if (w) delete w[el.dataset.k]; saveUI(); rerenderBody(); };
+ACT.stagetoggle = el => { const key = el.dataset.t + ':' + el.dataset.g; if (S.ui.collapsed[key]) delete S.ui.collapsed[key]; else S.ui.collapsed[key] = true; saveUI(); rerenderBody(); };
+ACT.collapseall = el => { const t = el.dataset.t, all = (S._groups[t] || []).every(g => S.ui.collapsed[t + ':' + g]); (S._groups[t] || []).forEach(g => { if (all) delete S.ui.collapsed[t + ':' + g]; else S.ui.collapsed[t + ':' + g] = true; }); saveUI(); rerenderBody(); };
+const sortChip = tid => {
+  const st = curSort(tid); if (!st) return '';
+  const c = (COLS[tid] || []).find(x => x.k === st.k) || { l: st.k }, dirTxt = c.num ? (st.dir === 1 ? 'smallest first' : 'largest first') : c.date ? (st.dir === 1 ? 'earliest first' : 'latest first') : (st.dir === 1 ? 'A to Z' : 'Z to A');
+  return `<span class="sort-chip"><span>${esc(c.l)}: ${dirTxt}, within each stage</span><button data-act="colclear" data-t="${tid}" title="Clear sorting"><i class="ti ti-x"></i></button></span>`;
+};
+const collapseBtn = tid => `<button class="btn btn-plain btn-sm hide-m" data-act="collapseall" data-t="${tid}"><i class="ti ti-fold"></i>Collapse / expand all</button>`;
+
+/* column resize (pointer events, works with mouse and touch) */
+document.addEventListener('pointerdown', e => {
+  const h = e.target.closest && e.target.closest('.rs'); if (!h) return;
+  e.preventDefault(); e.stopPropagation();
+  const tid = h.dataset.t, k = h.dataset.k, table = $('#tv-' + tid), col = table && $(`col[data-k="${k}"]`, table); if (!col) return;
+  const c = (COLS[tid] || []).find(x => x.k === k) || {}, min = c.min || 60, x0 = e.clientX, w0 = parseFloat(col.style.width), tw0 = parseFloat(table.style.width);
+  h.classList.add('on'); try { h.setPointerCapture(e.pointerId); } catch (err) {}
+  const mv = ev => { const w = Math.max(min, Math.round(w0 + ev.clientX - x0)); col.style.width = w + 'px'; table.style.width = (tw0 + w - w0) + 'px'; };
+  const up = () => {
+    h.removeEventListener('pointermove', mv); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up); h.classList.remove('on');
+    (S.ui.widths[tid] = S.ui.widths[tid] || {})[k] = parseFloat(col.style.width); saveUI();
+  };
+  h.addEventListener('pointermove', mv); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
+});
+
+/* ================================================================
+   Project board (list, grouped by stage)
+   ================================================================ */
+const PIPE_COLS = [
+  { k: 'hd', l: '', w: 34, min: 34, sticky: 1, nosort: 1, noresize: 1, ed: 1 },
+  { k: 'name', l: 'Project', w: 300, min: 140, sticky: 1 },
+  { k: 'client', l: 'Client', w: 180 },
+  { k: 'project_code', l: 'Project code', w: 200, priv: 1 },
+  { k: 'status', l: 'Status', w: 200 },
+  { k: 'lead', l: 'Account lead', w: 160 },
+  { k: 'creative', l: 'Creative lead', w: 160 },
+  { k: 'production', l: 'Production lead', w: 160 },
+  { k: 'edit', l: 'Edit lead', w: 160 },
+  { k: 'team', l: 'Team', w: 140 },
+  { k: 'start', l: 'Start', w: 140, date: 1 },
+  { k: 'end', l: 'End', w: 140, date: 1 },
+  { k: 'budget', l: 'Budget', w: 120, num: 1, priv: 1 },
+  { k: 'act', l: '', w: 80, min: 80, nosort: 1, noresize: 1 }
+];
+function pipeCols() { return withFirst(PIPE_COLS.filter(c => (!c.ed || canEdit()) && (!c.priv || !S.readonly))); }
+function pipeVal(p, k) {
+  if (LEAD_ROLES.some(r => r[0] === k)) return norm((personById(leadOf(p, k)) || {}).name);
+  if (k === 'team') return teamOf(p).length;
+  if (k === 'budget') return p.budget === '' || p.budget == null ? '' : Number(p.budget);
+  return norm(p[k]);
+}
+function roSeg(active) {
+  return S.readonly ? `<div class="seg"><button class="${active === 'board' ? 'on' : ''}" data-act="rochange" data-v="board">Board</button><button class="${active === 'timeline' ? 'on' : ''}" data-act="rochange" data-v="timeline">Edit capacity</button></div>` : '';
+}
 function viewPipeline() {
-  const st = S.cfg.statuses;
   return `<div class="toolbar">
-    <div class="seg"><button data-act="pipemode" data-m="board" class="${S.pipeMode === 'board' ? 'on' : ''}"><i class="ti ti-layout-kanban"></i>Board</button><button data-act="pipemode" data-m="list" class="${S.pipeMode === 'list' ? 'on' : ''}"><i class="ti ti-list"></i>List</button></div>
+    ${roSeg('board')}
     <div class="search"><i class="ti ti-search"></i><input class="inp" placeholder="Search projects" value="${esc(S.f.q)}" data-inp="f-q"></div>
     <select class="sel sel-sm" data-chg="f-person">${personOpts(S.f.person, 'Everyone')}</select>
-    <select class="sel sel-sm hide-m" data-chg="f-status">${optList(st, S.f.status, 'Any status')}</select>
-    <span class="spacer"></span>
+    <select class="sel sel-sm hide-m" data-chg="f-status">${optList(statusList(), S.f.status, 'Any status')}</select>
+    <span id="sortChip">${sortChip('pipeline')}</span>
+    <span class="spacer"></span>${collapseBtn('pipeline')}
     ${canEdit() ? `<button class="btn btn-primary" data-act="newproject"><i class="ti ti-plus"></i>New project</button>` : ''}
   </div><div id="vb">${pipeBody()}</div>`;
 }
-function pipeBody() { return S.pipeMode === 'board' ? boardHTML() : listHTML(); }
-BODY.pipeline = pipeBody;
-
-function boardHTML() {
-  return `<div class="board">${S.cfg.stages.map(stage => {
-    const all = sortedStage(stage), items = all.filter(matches);
-    return `<div class="col"><div class="col-head"><span class="lbl">${esc(stage)}</span><span class="count">${items.length}${items.length !== all.length ? ' / ' + all.length : ''}</span></div>
-      <div class="col-body" data-stage="${esc(stage)}">${items.map(cardHTML).join('')}${!items.length ? `<div class="muted" style="font-size:12px;padding:6px 4px">${canEdit() ? 'Drop a project here' : 'Nothing here'}</div>` : ''}</div></div>`;
-  }).join('')}</div>`;
+BODY.pipeline = BODY.board = pipeBody;
+function pipeBody() {
+  const stages = S.readonly ? liveStages() : S.cfg.stages;
+  const groups = stages.map(stage => {
+    const all = sortedStage(stage), items = sortRows(all.filter(matches), 'pipeline', pipeVal);
+    return { key: stage, title: stage, colour: stageColour(stage), items, total: all.length };
+  });
+  const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('pipeline');
+  return tableHTML('pipeline', pipeCols(), groups, pipeRow, { add: true, dnd: true }) +
+    `<datalist id="dlClients">${clientNames().map(n => `<option value="${esc(n)}">`).join('')}</datalist><div class="page-foot tagline">${TAGLINE}</div>`;
+}
+function leadCell(p, role, ed) {
+  const id = leadOf(p, role), inner = id ? `${av(id, 'av-sm')}<span class="nmx">${esc((personById(id) || {}).name || '')}</span>` : `<span class="nmx">${ed ? '+ Add' : ''}</span>`;
+  return ed ? `<button class="cell-btn lead-btn ${id ? '' : 'empty-l'}" data-act="leadpick" data-id="${p.id}" data-role="${role}">${inner}</button>` : `<span class="cell-plain">${inner}</span>`;
+}
+function pipeRow(p, g, cols) {
+  const ed = canEdit();
+  const cell = c => {
+    switch (c.k) {
+      case 'hd': return td(c, g, ed ? `<span class="drag-h" draggable="true" data-drag="${p.id}" title="Drag to move or reorder"><i class="ti ti-grip-vertical"></i></span>` : '', 'hd');
+      case 'name': return td(c, g, ed ? `<input class="cell-inp nm-inp" data-chg="cell" data-id="${p.id}" data-f="name" value="${esc(p.name)}" placeholder="Project name">` : `<span class="cell-txt nm-txt" data-act="open" data-id="${p.id}" style="cursor:pointer">${esc(p.name)}</span>`);
+      case 'client': return td(c, g, ed ? `<input class="cell-inp" list="dlClients" data-chg="cell" data-id="${p.id}" data-f="client" value="${esc(p.client)}" placeholder="Client">` : `<span class="cell-txt">${esc(p.client)}</span>`);
+      case 'project_code': return td(c, g, ed ? `<input class="cell-inp" data-chg="cell" data-id="${p.id}" data-f="project_code" value="${esc(p.project_code)}" placeholder="Add code">` : `<span class="cell-txt">${esc(p.project_code)}</span>`);
+      case 'status': return td(c, g, ed ? `<select class="cell-inp cell-sel" data-chg="cellsel" data-id="${p.id}" data-f="status" style="border-left:4px solid ${statusColour(p.status) || 'transparent'};border-radius:0">${optList(statusList().concat(p.status && !statusList().includes(p.status) ? [p.status] : []), p.status, '-')}</select>` : statusChip(p.status));
+      case 'lead': case 'creative': case 'production': case 'edit': return td(c, g, leadCell(p, c.k, ed));
+      case 'team': return td(c, g, avStack(teamOf(p), 'av-sm', 5));
+      case 'start': case 'end': return td(c, g, ed ? `<input type="date" class="cell-inp" data-chg="cell" data-id="${p.id}" data-f="${c.k}" value="${esc(p[c.k])}">` : `<span class="cell-txt">${esc(fdate(p[c.k]))}</span>`);
+      case 'budget': return td(c, g, ed ? `<input type="number" min="0" step="1" class="cell-inp num" data-chg="cell" data-id="${p.id}" data-f="budget" value="${p.budget === '' || p.budget == null ? '' : esc(p.budget)}" placeholder="0">` : `<span class="cell-txt num" style="text-align:right">${esc(fmoney(p.budget))}</span>`);
+      case 'act': return td(c, g, `<button class="icon-btn" data-act="open" data-id="${p.id}" title="Open details"><i class="ti ti-layout-sidebar-right"></i></button>${ed ? `<button class="icon-btn" data-act="movemenu" data-id="${p.id}" title="Move to stage"><i class="ti ti-dots"></i></button>` : ''}`, 'act');
+      default: return td(c, g, '');
+    }
+  };
+  return `<tr class="prow" data-id="${p.id}" data-stage="${esc(p.stage)}">${cols.map(cell).join('')}</tr>`;
 }
 
-const LIST_COLS = [
-  { k: 'name', l: 'Project', sticky: 1 }, { k: 'client', l: 'Client', hm: 1 }, { k: 'stage', l: 'Stage', hm: 1 }, { k: 'status', l: 'Status' },
-  { k: 'lead', l: 'Team' }, { k: 'start', l: 'Start', hm: 1 }, { k: 'end', l: 'End' }, { k: 'budget', l: 'Budget', num: 1, hm: 1 }
-];
-function sortVal(p, k) {
-  if (k === 'stage') return S.cfg.stages.indexOf(p.stage);
-  if (k === 'lead') return norm((personById(p.lead) || {}).name);
-  if (k === 'budget') return p.budget === '' ? -1 : p.budget;
-  if (k === 'sort') return p.sort === '' ? 1e9 : p.sort;
-  return norm(p[k]) || '￿';
-}
-function listHTML() {
-  const grouped = S.sort.key === 'sort';
-  let rows = S.projects.filter(matches);
-  const row = p => `<tr class="row" data-act="open" data-id="${p.id}">
-    <td class="sticky nm">${esc(p.name)}</td><td class="hide-m">${esc(p.client)}</td><td class="hide-m nw">${esc(p.stage)}</td><td class="nw">${statusChip(p.status)}</td>
-    <td>${avStack(teamOf(p), 'av-sm', 5)}</td><td class="hide-m nw">${esc(fdate(p.start))}</td><td class="nw">${esc(fdate(p.end))}</td><td class="num hide-m">${esc(fmoney(p.budget))}</td></tr>`;
-  let body = '';
-  if (grouped) {
-    S.cfg.stages.forEach(stage => {
-      const items = rows.filter(p => p.stage === stage).sort((a, b) => sortVal(a, 'sort') - sortVal(b, 'sort'));
-      if (!items.length) return;
-      body += `<tr class="grp"><td colspan="8"><span class="lbl" style="color:var(--color-text-primary)">${esc(stage)}</span> <span class="count">${items.length}</span></td></tr>` + items.map(row).join('');
-    });
-  } else {
-    const d = S.sort.dir, k = S.sort.key;
-    rows = rows.sort((a, b) => { const x = sortVal(a, k), y = sortVal(b, k); return (x < y ? -1 : x > y ? 1 : 0) * d; });
-    body = rows.map(row).join('');
-  }
-  if (!rows.length) return `<div class="empty"><i class="ti ti-folder-off"></i>No projects match.</div>`;
-  const arrow = k => S.sort.key === k ? (S.sort.dir === 1 ? ' ↑' : ' ↓') : '';
-  return `<table class="tbl"><thead><tr>${LIST_COLS.map(c => `<th class="sortable ${c.sticky ? 'sticky' : ''} ${c.num ? 'num' : ''} ${c.hm ? 'hide-m' : ''}" data-act="sort" data-k="${c.k}">${c.l}${arrow(c.k)}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table>`;
-}
-ACT.sort = el => { const k = el.dataset.k; S.sort = S.sort.key === k ? (S.sort.dir === 1 ? { key: k, dir: -1 } : { key: 'sort', dir: 1 }) : { key: k, dir: 1 }; rerenderBody(); };
-ACT.pipemode = el => { S.pipeMode = el.dataset.m; store.set('board_mode', S.pipeMode); renderView(); };
-S.pipeMode = store.get('board_mode') === 'list' ? 'list' : 'board';
+/* inline editing */
+INP.cell = el => {
+  const id = el.dataset.id, f = el.dataset.f, p = projectById(id); if (!p || !canEdit()) return;
+  let v = el.value;
+  if (f === 'budget') v = v === '' ? '' : Number(v);
+  if (f === 'name') { v = v.trim(); if (!v) { el.value = p.name; toast('A project needs a name', 'err'); return; } }
+  if (f === 'project_code') v = v.trim();
+  const fields = { [f]: v };
+  if (f === 'client') { v = v.trim(); fields.client = v; const c = findClient(v); if (c && norm(c.name) === norm(v)) { fields.client = c.name; fields.client_code = c.code; } }
+  if (p[f] === fields[f] && !fields.client_code) return;
+  saveFields(id, fields, null, true);
+};
+INP.cellsel = async el => {
+  const id = el.dataset.id, p = projectById(id), v = el.value; if (!p || !canEdit()) return;
+  if (isPreStage(v) && !hasCode(p)) { el.value = p.status || ''; if (!await requireCode(p)) return; }
+  saveFields(id, { status: v }, null, true);
+};
+ACT.leadpick = el => {
+  const id = el.dataset.id, role = el.dataset.role, p = projectById(id); if (!p) return;
+  const cur = leadOf(p, role), label = (LEAD_ROLES.find(r => r[0] === role) || [])[1];
+  openPop(el, `<div class="lbl grp-lbl">${esc(label)}</div>` + activePeople().map(pp => `<button data-act="leadset" data-id="${id}" data-role="${role}" data-pid="${pp.id}" class="${cur === pp.id ? 'cur' : ''}">${av(pp.id, 'av-sm')}${esc(pp.name)}${(deptById(pp.department) || {}).name ? `<span class="sub">${esc(deptById(pp.department).name)}</span>` : ''}</button>`).join('') +
+    (cur ? `<div class="sep"></div><button data-act="leadset" data-id="${id}" data-role="${role}" data-pid=""><i class="ti ti-user-off"></i>Clear ${esc(label.toLowerCase())}</button>` : ''));
+};
+ACT.leadset = el => {
+  closePop(); const p = projectById(el.dataset.id), role = el.dataset.role, pid = el.dataset.pid; if (!p) return;
+  if (role === 'lead') saveFields(p.id, { lead: pid }, null, true);
+  else saveFields(p.id, { [role]: pid ? [pid].concat((p[role] || []).filter(x => x !== pid)) : (p[role] || []).slice(1) }, null, true);
+};
 INP['f-q'] = el => { S.f.q = el.value; rerenderBody(); };
-INP['f-person'] = el => { S.f.person = el.value; rerenderBody(); };
+INP['f-person'] = el => { S.f.person = el.value; if (S.view === 'timeline') S.ec.person = ''; rerenderBody(); };
 INP['f-status'] = el => { S.f.status = el.value; rerenderBody(); };
-ACT.open = el => { if (S.dragging) return; openDrawer(el.dataset.id, el.dataset.from); };
+ACT.open = el => { if (S.dragging || S._noOpen) return; openDrawer(el.dataset.id, el.dataset.from); };
 
-/* move menu + dnd */
+/* ---------------- pre-production needs a project code ---------------- */
+async function requireCode(p) {
+  if (!S.clients) { try { await loadClients(); } catch (e) {} }
+  const c = findClient(p.client), guess = genCode(p.client_code || (c && c.code) || '', p.name);
+  return new Promise(res => {
+    const m = openModal(`<h3>Project code needed</h3><div><b>${esc(p.name)}</b> cannot go into Pre Production until it has a project code. Enter it here, then it will move.</div>
+      <div class="field"><span class="lbl">Project code</span><div class="row"><input class="inp" id="rcCodeIn" value="${esc(p.project_code || guess)}" placeholder="CLIENT_ProjectTitle"><button class="btn btn-ghost btn-sm" id="rcGen">Generate</button></div></div>
+      <div class="errline" id="rcErr"></div>
+      <div class="actions"><button class="btn btn-plain" data-r="0">Cancel</button><button class="btn btn-primary" data-r="1">Save code and continue</button></div>`);
+    const input = $('#rcCodeIn', m);
+    $('#rcGen', m).onclick = () => { const g = genCode(p.client_code || (findClient(p.client) || {}).code || '', p.name); if (g) input.value = g; else $('#rcErr', m).textContent = 'Needs a known client and a project name to generate a code.'; };
+    m.addEventListener('click', e => {
+      const b = e.target.closest('[data-r]'); if (!b) return;
+      if (b.dataset.r === '0') { closeModal(); res(false); return; }
+      const v = input.value.trim(); if (!v) { $('#rcErr', m).textContent = 'Please enter a project code first.'; input.focus(); return; }
+      closeModal(); saveFields(p.id, { project_code: v }, null, true); res(true);
+    });
+    m.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target === input) $('[data-r="1"]', m).click(); });
+    $('#modalScrim').addEventListener('click', () => res(false));
+  });
+}
+
+/* ---------------- move + drag ---------------- */
 ACT.movemenu = el => {
   const p = projectById(el.dataset.id); if (!p) return;
-  openPop(el, `<div class="lbl" style="padding:6px 10px">Move to</div>` + S.cfg.stages.map(s => `<button data-act="moveto" data-id="${p.id}" data-stage="${esc(s)}" class="${s === p.stage ? 'cur' : ''}">${s === p.stage ? '<i class="ti ti-check"></i>' : ''}${esc(s)}</button>`).join(''));
+  openPop(el, `<div class="lbl grp-lbl">Move to</div>` + S.cfg.stages.map(s => `<button data-act="moveto" data-id="${p.id}" data-stage="${esc(s)}" class="${s === p.stage ? 'cur' : ''}">${s === p.stage ? '<i class="ti ti-check"></i>' : `<span class="dot" style="width:9px;height:9px;border-radius:50%;background:${stageColour(s)}"></span>`}${esc(s)}</button>`).join(''));
 };
 ACT.moveto = el => { closePop(); moveProject(el.dataset.id, el.dataset.stage); };
-function moveProject(id, stage, beforeId) {
+async function moveProject(id, stage, beforeId) {
   const p = projectById(id); if (!p || !canEdit()) return;
+  if (isPreStage(stage) && !isPreStage(p.stage) && !hasCode(p)) {
+    const ok = await requireCode(p);
+    if (!ok) { S.stale = false; renderView(); if (S.drawer === id) refreshDrawer(true); return; }
+  }
   const ids = sortedStage(stage).map(x => x.id).filter(x => x !== id);
   let idx = beforeId ? ids.indexOf(beforeId) : -1; if (idx < 0) idx = ids.length; ids.splice(idx, 0, id);
   const from = p.stage; p.stage = stage;
   ids.forEach((pid, i) => { const q = projectById(pid); if (q) q.sort = (i + 1) * 10; });
-  S.stale = false; renderView(); if (S.drawer === id) refreshDrawer();
+  S.stale = false; renderView(); if (S.drawer === id) refreshDrawer(true);
   write('project_move', { id, stage, ids });
   if (from !== stage) toast('Moved to ' + stage);
 }
-function dropPos(body, y) {
-  const cards = $$('.card:not(.dragging)', body);
-  for (const c of cards) { const r = c.getBoundingClientRect(); if (y < r.top + r.height / 2) return { before: c, beforeId: c.dataset.id }; }
-  return { before: null, beforeId: null };
+function clearDrop() { $$('.drop-before,.drop-after').forEach(x => x.classList.remove('drop-before', 'drop-after')); $$('.drop-hdr').forEach(x => x.classList.remove('drop-hdr')); }
+function dropTarget(e) {
+  const tr = e.target.closest && e.target.closest('#tv-pipeline tr'); if (!tr) return null;
+  if (tr.classList.contains('prow')) {
+    if (tr.dataset.id === S.dragId) return { tr, self: true };
+    const r = tr.getBoundingClientRect(), before = e.clientY < r.top + r.height / 2;
+    let beforeId = null;
+    if (before) beforeId = tr.dataset.id;
+    else { let n = tr.nextElementSibling; if (n && n.classList.contains('prow') && n.dataset.stage === tr.dataset.stage) beforeId = n.dataset.id; }
+    return { tr, stage: tr.dataset.stage, beforeId, before, row: true };
+  }
+  if (tr.classList.contains('stage-row') || tr.classList.contains('stage-empty')) return { tr, stage: tr.dataset.stage, beforeId: null, hdr: true };
+  return null;
 }
-function clearDrop() { $$('.drop-line').forEach(x => x.remove()); $$('.col.over').forEach(x => x.classList.remove('over')); }
 document.addEventListener('dragstart', e => {
-  const c = e.target.closest && e.target.closest('.card[data-id]'); if (!c || !canEdit()) return;
-  S.dragging = true; S.dragId = c.dataset.id; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', S.dragId);
-  setTimeout(() => c.classList.add('dragging'), 0);
+  const h = e.target.closest && e.target.closest('[data-drag]'); if (!h || !canEdit()) return;
+  const tr = h.closest('tr'); S.dragging = true; S.dragId = h.dataset.drag;
+  e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', S.dragId);
+  if (tr && e.dataTransfer.setDragImage) { try { e.dataTransfer.setDragImage(tr, 20, 16); } catch (err) {} }
+  setTimeout(() => tr && tr.classList.add('dragging'), 0);
 });
-document.addEventListener('dragend', () => { S.dragging = false; S.dragId = null; clearDrop(); $$('.card.dragging').forEach(x => x.classList.remove('dragging')); if (S.stale) softRender(); });
+document.addEventListener('dragend', () => { S.dragging = false; S.dragId = null; clearDrop(); $$('tr.dragging').forEach(x => x.classList.remove('dragging')); if (S.stale) softRender(); });
 document.addEventListener('dragover', e => {
-  const body = e.target.closest && e.target.closest('.col-body'); if (!body || !S.dragId) return;
-  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
-  clearDrop(); body.parentNode.classList.add('over');
-  const { before } = dropPos(body, e.clientY), line = document.createElement('div'); line.className = 'drop-line';
-  if (before) body.insertBefore(line, before); else body.appendChild(line);
+  if (!S.dragId) return; const t = dropTarget(e); if (!t) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move'; clearDrop();
+  if (t.self) return;
+  if (t.hdr) { const bar = $('.stage-bar', t.tr); (bar || t.tr).classList.add('drop-hdr'); (t.tr.classList.contains('stage-empty') ? t.tr : t.tr).classList.add('drop-hdr'); }
+  else t.tr.classList.add(t.before ? 'drop-before' : 'drop-after');
 });
 document.addEventListener('drop', e => {
-  const body = e.target.closest && e.target.closest('.col-body'); if (!body || !S.dragId) return;
-  e.preventDefault(); const { beforeId } = dropPos(body, e.clientY), id = S.dragId, stage = body.dataset.stage;
-  clearDrop(); S.dragging = false; S.dragId = null; moveProject(id, stage, beforeId);
+  if (!S.dragId) return; const t = dropTarget(e); if (!t) return;
+  e.preventDefault(); const id = S.dragId; clearDrop(); $$('tr.dragging').forEach(x => x.classList.remove('dragging')); S.dragging = false; S.dragId = null;
+  if (t.self) return;
+  const p = projectById(id); if (!p) return;
+  if (t.row && curSort('pipeline') && p.stage === t.stage) { toast('Clear the column sort to put projects in your own order'); return; }
+  moveProject(id, t.stage, curSort('pipeline') && t.row ? null : t.beforeId);
 });
 
-/* ---------------- my projects ---------------- */
-function viewMine() {
-  const mine = S.projects.filter(p => teamOf(p).includes(S.me.id));
-  const groups = S.cfg.stages.map(stage => ({ stage, items: mine.filter(p => p.stage === stage).sort((a, b) => sortVal(a, 'sort') - sortVal(b, 'sort')) })).filter(g => g.items.length);
-  return `<div class="pad">
-    <div class="row wrap" style="margin-bottom:6px">${av(S.me.id, 'av-xl')}<div><div style="font-size:16px;font-weight:800">${esc(S.me.name)}</div><div class="muted">${mine.length} project${mine.length === 1 ? '' : 's'} with you on the team</div></div><span class="sp"></span>
-      ${canEdit() ? `<button class="btn btn-primary" data-act="newproject"><i class="ti ti-plus"></i>New project</button>` : ''}</div>
-    ${groups.length ? groups.map(g => `<div class="group-h"><span class="lbl" style="color:var(--color-text-primary)">${esc(g.stage)}</span><span class="count">${g.items.length}</span></div><div class="mine-grid">${g.items.map(cardHTML).join('')}</div>`).join('')
-      : `<div class="empty"><i class="ti ti-mood-smile"></i>Nothing assigned to you yet. Open a project and add yourself to the team.</div>`}
-  </div>`;
+/* ================================================================
+   My projects (list)
+   ================================================================ */
+const MINE_COLS = [
+  { k: 'name', l: 'Project', w: 300, min: 140, sticky: 1 }, { k: 'client', l: 'Client', w: 180 }, { k: 'role', l: 'My role', w: 200 },
+  { k: 'status', l: 'Status', w: 200 }, { k: 'start', l: 'Start', w: 130, date: 1 }, { k: 'end', l: 'End', w: 130, date: 1 }, { k: 'team', l: 'Team', w: 150 }
+];
+function rolesOf(p, id) {
+  const out = [];
+  if (p.lead === id) out.push('Account lead');
+  [['creative', 'Creative'], ['production', 'Production'], ['edit', 'Edit']].forEach(([r, l]) => { const i = (p[r] || []).indexOf(id); if (i === 0) out.push(l + ' lead'); else if (i > 0) out.push(l); });
+  return out.join(', ');
 }
+function viewMine() {
+  return `<div class="toolbar">${av(S.me.id, 'av-lg')}<div><div style="font-size:14px;font-weight:800">${esc(S.me.name)}</div><div class="muted" id="mineCount"></div></div>
+    <div class="search" style="margin-left:8px"><i class="ti ti-search"></i><input class="inp" placeholder="Search my projects" value="${esc(S.mine.q)}" data-inp="mine-q"></div>
+    <span id="sortChip">${sortChip('mine')}</span><span class="spacer"></span>${collapseBtn('mine')}
+    ${canEdit() ? `<button class="btn btn-primary" data-act="newproject"><i class="ti ti-plus"></i>New project</button>` : ''}</div><div id="vb">${mineBody()}</div>`;
+}
+BODY.mine = mineBody;
+function mineBody() {
+  const q = norm(S.mine.q), mine = S.projects.filter(p => teamOf(p).includes(S.me.id) && (!q || norm(p.name + ' ' + p.client).includes(q)));
+  const val = (p, k) => k === 'role' ? norm(rolesOf(p, S.me.id)) : k === 'team' ? teamOf(p).length : norm(p[k]);
+  const groups = S.cfg.stages.map(stage => { const items = sortRows(mine.filter(p => p.stage === stage).sort((a, b) => (a.sort === '' ? 1e9 : a.sort) - (b.sort === '' ? 1e9 : b.sort)), 'mine', val); return { key: stage, title: stage, colour: stageColour(stage), items }; }).filter(g => g.items.length);
+  const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('mine');
+  const cnt = $('#mineCount'); if (cnt) cnt.textContent = `${mine.length} project${mine.length === 1 ? '' : 's'} with you on the team`;
+  if (!groups.length) return `<div class="empty"><i class="ti ti-mood-smile"></i>Nothing assigned to you yet. Open a project and add yourself to the team.</div>`;
+  return tableHTML('mine', withFirst(MINE_COLS), groups, (p, g, cols) => `<tr class="prow rowlink" data-act="open" data-id="${p.id}">${cols.map(c => td(c, g, ({
+    name: `<span class="cell-txt nm-txt">${esc(p.name)}</span>`, client: `<span class="cell-txt">${esc(p.client)}</span>`, role: `<span class="cell-txt">${esc(rolesOf(p, S.me.id))}</span>`,
+    status: statusChip(p.status), start: `<span class="cell-txt">${esc(fdate(p.start))}</span>`, end: `<span class="cell-txt">${esc(fdate(p.end))}</span>`, team: avStack(teamOf(p), 'av-sm', 5)
+  })[c.k])).join('')}</tr>`) + `<div class="page-foot tagline">${TAGLINE}</div>`;
+}
+INP['mine-q'] = el => { S.mine.q = el.value; rerenderBody(); };
 
-/* ---------------- timeline (weekdays only, like Monday) ---------------- */
+/* ================================================================
+   Edit capacity (post production + freelancers, weekdays only, editable edit periods)
+   ================================================================ */
 const TL_W = [10, 18, 30, 48], TL_LABEL_W = 250, TL_BEFORE = 10, TL_WEEKS = 40;
 function monday(d) { const x = new Date(d.getTime()); const dow = (x.getUTCDay() + 6) % 7; return new Date(x.getTime() - dow * MS_DAY); }
 function isoWeek(d) { const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())); const dn = (t.getUTCDay() + 6) % 7; t.setUTCDate(t.getUTCDate() - dn + 3); const ft = new Date(Date.UTC(t.getUTCFullYear(), 0, 4)); return 1 + Math.round(((t - ft) / MS_DAY - 3 + ((ft.getUTCDay() + 6) % 7)) / 7); }
@@ -836,27 +1141,42 @@ function wdIndex(str, start, mode) {
   if (dow > 4) return mode === 'start' ? (w + 1) * 5 : w * 5 + 4;
   return w * 5 + dow;
 }
-function tlProjects() {
-  const stages = S.tl.closed && !S.readonly ? S.cfg.stages : liveStages();
-  return S.projects.filter(p => stages.includes(p.stage) && matches(p));
+const idxDate = i => ymd(new Date(tlStart().getTime() + (Math.floor(i / 5) * 7 + (((i % 5) + 5) % 5)) * MS_DAY));
+const hasInternal = () => S.cfg.stages.some(s => isPostStage(s) && /internal/i.test(s));
+function ecStages() {
+  let st = S.cfg.stages.filter(isPostStage);
+  if (!st.length) st = S.cfg.stages.filter(s => /edit/i.test(s));
+  if (!st.length) st = liveStages();
+  if (S.readonly) st = st.filter(s => liveStages().includes(s));
+  if (!S.ec.internal) { const ex = st.filter(s => !/internal/i.test(s)); if (ex.length) st = ex; }
+  return st;
 }
-function viewTimeline() {
-  const ro = S.readonly;
-  return `<div class="toolbar" style="top:auto">
-    ${ro ? `<div class="seg"><button data-act="rochange" data-v="board">Board</button><button class="on" data-act="rochange" data-v="timeline">Timeline</button></div>` : ''}
-    <div class="seg"><button data-act="tlgroup" data-g="person" class="${S.tl.group === 'person' ? 'on' : ''}">By person</button><button data-act="tlgroup" data-g="stage" class="${S.tl.group === 'stage' ? 'on' : ''}">By stage</button></div>
-    <select class="sel sel-sm" data-chg="f-person">${personOpts(S.f.person, 'Everyone')}</select>
+const ecPeople = () => activePeople().filter(p => /post|freelanc/i.test((deptById(p.department) || {}).name || ''));
+/* edit periods: stored on the project if the backend has edit_start/edit_end columns, otherwise kept in this browser */
+const epBackend = () => S.projects.some(p => 'edit_start' in p);
+function epOf(p) {
+  const own = epBackend() ? { s: p.edit_start || '', e: p.edit_end || '' } : (S.ep[p.id] || { s: '', e: '' });
+  return { s: own.s || p.start || p.end || '', e: own.e || p.end || p.start || '', custom: !!(own.s || own.e) };
+}
+function epSet(id, s, e) {
+  if (epBackend()) saveFields(id, { edit_start: s, edit_end: e }, null, true);
+  else { S.ep[id] = { s, e }; store.set('board_ep', JSON.stringify(S.ep)); }
+}
+function viewEditCapacity() {
+  const ppl = ecPeople();
+  return `<div class="toolbar">
+    ${roSeg('timeline')}
+    <select class="sel sel-sm" data-chg="ec-person">${personOpts(S.ec.person, 'Everyone in post and freelancers', ppl)}</select>
     <div class="row"><button class="icon-btn" data-act="tlzoom" data-d="-1" title="Zoom out"><i class="ti ti-minus"></i></button><button class="icon-btn" data-act="tlzoom" data-d="1" title="Zoom in"><i class="ti ti-plus"></i></button></div>
     <button class="btn btn-plain btn-sm" data-act="tltoday">Today</button>
-    ${ro ? '' : `<label class="row muted" style="font-size:12px;gap:6px"><input type="checkbox" class="toggle" data-chg="tl-closed" ${S.tl.closed ? 'checked' : ''}> Include closeout</label>`}
-  </div><div id="vb">${tlBody()}</div>`;
+    ${hasInternal() ? `<label class="row muted" style="font-size:12px;gap:6px"><input type="checkbox" class="toggle" data-chg="ec-internal" ${S.ec.internal ? 'checked' : ''}> Include internal post production</label>` : ''}
+  </div><div id="vb">${ecBody()}</div>`;
 }
-BODY.timeline = tlBody;
-function tlBody() {
-  const dayW = TL_W[S.tl.zoom], start = tlStart(), totalDays = TL_WEEKS * 5, W = totalDays * dayW, today = todayStr();
-  const all = tlProjects(), dated = all.filter(p => pd(p.start) || pd(p.end)), undated = all.length - dated.length;
+BODY.timeline = ecBody;
+function ecBody() {
+  const dayW = TL_W[S.ec.zoom], start = tlStart(), totalDays = TL_WEEKS * 5, W = totalDays * dayW, today = todayStr();
+  const stages = ecStages(), people = ecPeople().filter(p => !S.ec.person || p.id === S.ec.person), projs = S.projects.filter(p => stages.includes(p.stage));
   const todayIdx = wdIndex(today, start, 'start'), curWeek = Math.floor(todayIdx / 5);
-  /* header */
   let months = '', weeks = '', lastKey = '', span = 0, spanLbl = '';
   const flush = () => { if (span) months += `<div class="tl-cell" style="width:${span * 5 * dayW}px;font-weight:700;color:var(--color-text-primary)">${spanLbl}</div>`; };
   for (let w = 0; w < TL_WEEKS; w++) {
@@ -869,110 +1189,168 @@ function tlBody() {
   flush();
   const head = `<div class="tl-head"><div class="tl-row"><div class="tl-label"></div><div style="display:flex;width:${W}px">${months}</div></div>
     <div class="tl-row"><div class="tl-label"></div><div style="display:flex;width:${W}px">${weeks}</div></div></div>`;
-  /* groups */
-  let groups = [];
-  if (S.tl.group === 'person') {
-    activePeople().forEach(p => { const items = dated.filter(x => teamOf(x).includes(p.id)); if (items.length) groups.push({ key: p.id, person: p, items }); });
-    const un = dated.filter(x => !teamOf(x).length); if (un.length) groups.push({ key: 'none', title: 'Unassigned', items: un });
-  } else {
-    S.cfg.stages.forEach(s => { const items = dated.filter(x => x.stage === s); if (items.length) groups.push({ key: s, title: s, items }); });
-  }
+  const ed = canEdit();
+  const span_ = p => { const ep = epOf(p); if (!pd(ep.s) && !pd(ep.e)) return null; let s = wdIndex(ep.s || ep.e, start, 'start'), e = wdIndex(ep.e || ep.s, start, 'end'); if (e < s) e = s; return { s, e, ep }; };
   const bar = p => {
-    const sStr = p.start || p.end, eStr = p.end || p.start;
-    let s = wdIndex(sStr, start, 'start'), e = wdIndex(eStr, start, 'end'); if (e < s) e = s;
-    if (e < 0 || s >= totalDays) return '';
-    const cs = Math.max(0, s), ce = Math.min(totalDays - 1, e), x = cs * dayW, w = (ce - cs + 1) * dayW, col = statusColour(p.status) || '#9AA0A6';
-    const left = x + w > W - 220;
-    return `<div class="tl-bar" data-act="open" data-id="${p.id}" style="left:${x}px;width:${w}px;background:${col}" title="${esc(p.name)}"></div>
-      <div class="tl-bar-lbl" style="${left ? `right:${W - x}px;padding:0 5px 0 0` : `left:${x + w}px`}">${esc(p.name)}</div>`;
+    const sp = span_(p); if (!sp) return '';
+    if (sp.e < 0 || sp.s >= totalDays) return '';
+    const cs = Math.max(0, sp.s), ce = Math.min(totalDays - 1, sp.e), x = cs * dayW, w = (ce - cs + 1) * dayW, col = statusColour(p.status) || NEUTRAL, left = x + w > W - 220;
+    return `<div class="tl-bar${ed ? '' : ' ro'}" data-act="open" data-id="${p.id}" data-pid="${p.id}" data-i0="${sp.s}" data-i1="${sp.e}" style="left:${x}px;width:${w}px;background:${col};${sp.ep.custom ? '' : 'opacity:.5;'}" title="${esc(p.name)}: edit period ${esc(frange(sp.ep.s, sp.ep.e))}${sp.ep.custom ? '' : ' (using the project dates until you set one)'}">${ed ? '<span class="tl-h l"></span><span class="tl-h r"></span>' : ''}</div>
+      <div class="tl-bar-lbl" data-lbl="${p.id}" style="${left ? `right:${W - x}px;padding:0 5px 0 0` : `left:${x + w}px`}">${esc(p.name)}</div>`;
   };
   let rows = '';
-  groups.forEach(g => {
-    const lab = g.person ? `${av(g.person.id, 'av-lg')}<div style="min-width:0"><div class="nm" style="cursor:default">${esc(g.person.name)}</div><div class="muted" style="font-size:11px">${esc((deptById(g.person.department) || {}).name || '')}</div></div>`
-      : `<span class="nm" style="cursor:default">${esc(g.title)}</span><span class="count">${g.items.length}</span>`;
-    rows += `<div class="tl-row grp"><div class="tl-label">${lab}</div><div class="tl-track" style="width:${W}px"></div></div>`;
-    g.items.sort((a, b) => (a.start || a.end).localeCompare(b.start || b.end)).forEach(p => {
-      rows += `<div class="tl-row"><div class="tl-label"><span class="nm" data-act="open" data-id="${p.id}" title="${esc(p.name)}">${esc(p.name)}</span><span class="dt">${esc(frange(p.start, p.end))}</span></div>
-        <div class="tl-track" style="width:${W}px">${bar(p)}</div></div>`;
+  people.forEach(person => {
+    const items = projs.filter(p => teamOf(p).includes(person.id)).sort((a, b) => (epOf(a).s || '9').localeCompare(epOf(b).s || '9'));
+    const counts = new Array(totalDays).fill(0);
+    items.forEach(p => { const sp = span_(p); if (!sp) return; for (let i = Math.max(0, sp.s); i <= Math.min(totalDays - 1, sp.e); i++) counts[i]++; });
+    let heat = '', i = 0;
+    while (i < totalDays) { const lv = Math.min(counts[i], 3); if (lv < 2) { i++; continue; } let j = i; while (j + 1 < totalDays && Math.min(counts[j + 1], 3) === lv) j++; heat += `<div class="tl-heat" style="left:${i * dayW}px;width:${(j - i + 1) * dayW}px;background:${lv >= 3 ? '#DC2626' : '#D97706'}"></div>`; i = j + 1; }
+    rows += `<div class="tl-row grp"><div class="tl-label">${av(person.id, 'av-lg')}<div style="min-width:0"><div class="nm" style="cursor:default">${esc(person.name)}</div><div class="muted" style="font-size:11px">${esc((deptById(person.department) || {}).name || '')}</div></div><span class="count">${items.length}</span></div>
+      <div class="tl-track" style="width:${W}px">${heat}${items.length ? '' : '<span class="tl-free">Free: nothing in post production</span>'}</div></div>`;
+    items.forEach(p => {
+      const ep = epOf(p), none = !span_(p);
+      rows += `<div class="tl-row"><div class="tl-label"><span class="nm" data-act="open" data-id="${p.id}" title="${esc(p.name)}">${esc(p.name)}</span><span class="dt">${esc(frange(ep.s, ep.e))}</span></div>
+        <div class="tl-track${none && ed ? ' free' : ''}" data-pid="${p.id}" style="width:${W}px">${bar(p)}${none ? `<span class="tl-free">${ed ? 'No dates yet. Click here to set an edit period.' : 'No dates yet'}</span>` : ''}</div></div>`;
     });
   });
-  if (!groups.length) rows = `<div class="empty" style="position:sticky;left:0">No dated projects to show.</div>`;
+  if (!people.length) rows = `<div class="empty" style="position:sticky;left:0"><i class="ti ti-users"></i>No one in the Post or Freelancers departments yet. Add people in Settings and set their department.</div>`;
   const grid = `<div class="tl-grid" style="left:${TL_LABEL_W}px;right:auto;width:${W}px;background-size:${dayW * 5}px 100%"></div>`;
   const tx = TL_LABEL_W + todayIdx * dayW + dayW / 2, showToday = todayIdx >= 0 && todayIdx < totalDays;
-  const used = uniq(dated.map(p => p.status).filter(Boolean));
-  const legend = `<div class="legend">${used.map(s => `<span><i style="background:${statusColour(s)}"></i>${esc(s)}</span>`).join('')}${dated.some(p => !p.status) ? '<span><i style="background:#9AA0A6"></i>No status</span>' : ''}${undated ? `<span class="muted">${undated} without dates not shown</span>` : ''}</div>`;
-  return `<div class="tl" style="width:${TL_LABEL_W + W}px">${head}<div style="position:relative">${grid}${showToday ? `<div class="tl-today" style="left:${tx}px"></div>` : ''}${rows}</div>${legend}</div>`;
+  const used = uniq(projs.map(p => p.status).filter(Boolean));
+  const note = ed && !epBackend() ? `<div class="note-bar">Edit periods are saved in this browser for now. Sharing them with the team needs the small backend update (see Settings, System).</div>` : '';
+  return `${note}<div class="tl" style="width:${TL_LABEL_W + W}px">${head}<div style="position:relative">${grid}${showToday ? `<div class="tl-today" style="left:${tx}px"></div>` : ''}${rows}</div>
+    <div class="legend">${used.map(s => `<span><i style="background:${statusColour(s)}"></i>${esc(s)}</span>`).join('')}<span><i style="background:#D97706"></i>2 overlapping</span><span><i style="background:#DC2626"></i>3 or more overlapping</span><span class="muted">Faded bar = using project dates. Drag a bar to move it, drag its ends to resize.</span></div></div>`;
 }
 function scrollTimelineToToday() {
-  const c = $('#content'); if (!c) return;
-  const dayW = TL_W[S.tl.zoom], idx = wdIndex(todayStr(), tlStart(), 'start');
+  const c = $('#vb'); if (!c) return;
+  const dayW = TL_W[S.ec.zoom], idx = wdIndex(todayStr(), tlStart(), 'start');
   c.scrollLeft = Math.max(0, idx * dayW - (c.clientWidth - TL_LABEL_W) * 0.35);
 }
-ACT.tlgroup = el => { S.tl.group = el.dataset.g; renderView(); };
-ACT.tlzoom = el => { S.tl.zoom = Math.min(TL_W.length - 1, Math.max(0, S.tl.zoom + Number(el.dataset.d))); renderView(); scrollTimelineToToday(); };
+ACT.tlzoom = el => { S.ec.zoom = Math.min(TL_W.length - 1, Math.max(0, S.ec.zoom + Number(el.dataset.d))); rerenderBody(); scrollTimelineToToday(); };
 ACT.tltoday = () => scrollTimelineToToday();
-INP['tl-closed'] = el => { S.tl.closed = el.checked; rerenderBody(); };
+INP['ec-person'] = el => { S.ec.person = el.value; rerenderBody(); };
+INP['ec-internal'] = el => { S.ec.internal = el.checked; rerenderBody(); };
 
-/* ---------------- closeout ---------------- */
+/* drag / resize edit periods, click an empty row to create one */
+document.addEventListener('pointerdown', e => {
+  if (S.view !== 'timeline' || !canEdit() || (e.button != null && e.button > 0)) return;
+  const dayW = TL_W[S.ec.zoom], totalDays = TL_WEEKS * 5;
+  const bar = e.target.closest && e.target.closest('.tl-bar');
+  if (bar) {
+    const mode = e.target.classList.contains('l') ? 'l' : e.target.classList.contains('r') ? 'r' : 'm', pid = bar.dataset.pid, i0 = Number(bar.dataset.i0), i1 = Number(bar.dataset.i1), x0 = e.clientX;
+    const lbl = $(`[data-lbl="${pid}"]`, bar.parentNode); let n0 = i0, n1 = i1, moved = false;
+    const baseLeft = parseFloat(bar.style.left), baseW = parseFloat(bar.style.width);
+    try { bar.setPointerCapture(e.pointerId); } catch (err) {}
+    bar.classList.add('moving'); S.dragging = true;
+    const mv = ev => {
+      const dx = ev.clientX - x0; if (Math.abs(dx) > 3) moved = true; if (!moved) return;
+      const di = Math.round(dx / dayW);
+      if (mode === 'm') { n0 = Math.max(0, i0 + di); n1 = n0 + (i1 - i0); if (n1 > totalDays - 1) { n1 = totalDays - 1; n0 = n1 - (i1 - i0); } }
+      else if (mode === 'l') { n0 = Math.max(0, Math.min(i0 + di, i1)); n1 = i1; }
+      else { n0 = i0; n1 = Math.min(totalDays - 1, Math.max(i1 + di, i0)); }
+      const cs = Math.max(0, n0), x = cs * dayW, w = (n1 - cs + 1) * dayW;
+      bar.style.left = x + 'px'; bar.style.width = w + 'px'; if (lbl) { lbl.style.right = ''; lbl.style.padding = ''; lbl.style.left = (x + w) + 'px'; }
+    };
+    const up = () => {
+      bar.removeEventListener('pointermove', mv); bar.removeEventListener('pointerup', up); bar.removeEventListener('pointercancel', up);
+      bar.classList.remove('moving'); S.dragging = false;
+      if (moved) { S._noOpen = true; setTimeout(() => { S._noOpen = false; }, 80); }
+      if (moved && (n0 !== i0 || n1 !== i1)) epSet(pid, idxDate(n0), idxDate(n1));
+      if (moved) { rerenderBody(); }
+    };
+    bar.addEventListener('pointermove', mv); bar.addEventListener('pointerup', up); bar.addEventListener('pointercancel', up);
+    return;
+  }
+  const tr = e.target.closest && e.target.closest('.tl-track.free');
+  if (tr) {
+    const idx = Math.max(0, Math.min(totalDays - 1, Math.floor((e.clientX - tr.getBoundingClientRect().left) / dayW)));
+    epSet(tr.dataset.pid, idxDate(idx), idxDate(Math.min(totalDays - 1, idx + 4))); rerenderBody();
+  }
+});
+
+/* ================================================================
+   Out processing
+   ================================================================ */
 const coFields = () => S.cfg.closeout_fields || [];
 function coClass(v) { const x = norm(v); if (!x) return ''; if (x === 'stuck') return 'co-bad'; if (x === 'in progress' || x.includes('awaiting')) return 'co-warn'; if (x === 'n/a') return 'co-na'; return 'co-ok'; }
 const coDone = v => { const x = norm(v); return !!x && x !== 'stuck' && x !== 'in progress' && !x.includes('awaiting'); };
-function coRows() {
-  const q = norm(S.co.q), stages = S.co.stage ? [S.co.stage] : closeoutStages();
-  return S.projects.filter(p => stages.includes(p.stage) && (!q || norm(p.name + ' ' + p.client).includes(q)))
-    .filter(p => !S.co.incomplete || coFields().some(([k]) => !coDone(p[k])))
-    .sort((a, b) => stages.indexOf(a.stage) - stages.indexOf(b.stage) || sortVal(a, 'sort') - sortVal(b, 'sort'));
-}
+const coOutstanding = p => coFields().filter(([k]) => !coDone(p[k])).map(([, l]) => l);
+const canArchive = p => coOutstanding(p).length === 0;
 function viewCloseout() {
   return `<div class="toolbar">
-    <div class="search"><i class="ti ti-search"></i><input class="inp" placeholder="Search closeout" value="${esc(S.co.q)}" data-inp="co-q"></div>
+    <div class="search"><i class="ti ti-search"></i><input class="inp" placeholder="Search out processing" value="${esc(S.co.q)}" data-inp="co-q"></div>
     <select class="sel sel-sm" data-chg="co-stage">${optList(closeoutStages(), S.co.stage, 'Both stages')}</select>
     <label class="row muted" style="font-size:12px;gap:6px"><input type="checkbox" class="toggle" data-chg="co-inc" ${S.co.incomplete ? 'checked' : ''}> Only incomplete</label>
+    <span id="sortChip">${sortChip('closeout')}</span><span class="spacer"></span>${collapseBtn('closeout')}
   </div><div id="vb">${coBody()}</div>`;
 }
 BODY.closeout = coBody;
 function coBody() {
-  const rows = coRows(), F = coFields(), opts = S.cfg.closeout_options || {}, ed = canEdit();
-  if (!rows.length) return `<div class="empty"><i class="ti ti-circle-check"></i>Nothing waiting for closeout.</div>`;
-  const cell = (p, k) => {
-    const v = p[k] || '', list = (opts[k] || []).slice(); if (v && !list.includes(v)) list.push(v);
-    return `<td class="hide-m-none"><select class="sel co-sel ${coClass(v)}" data-chg="co" data-id="${p.id}" data-k="${k}" ${ed ? '' : 'disabled'}>${optList(list, v, '-')}</select></td>`;
-  };
-  return `<table class="tbl" style="width:max-content;min-width:0"><thead><tr><th class="sticky" style="min-width:210px">Project</th><th>Progress</th>${F.map(([, l]) => `<th>${esc(l)}</th>`).join('')}<th>Size + Location</th><th></th></tr></thead><tbody>
-    ${rows.map(p => {
-      const done = F.filter(([k]) => coDone(p[k])).length;
-      return `<tr class="row" style="cursor:default"><td class="sticky"><div class="nm" style="cursor:pointer;max-width:230px" data-act="open" data-id="${p.id}">${esc(p.name)}</div><div class="muted" style="font-size:11px">${[p.client, p.stage].filter(Boolean).map(esc).join(' &middot; ')}</div></td>
-        <td><div class="row" style="gap:8px"><div class="bar" style="width:70px"><i style="width:${F.length ? Math.round(done / F.length * 100) : 0}%"></i></div><span class="muted" style="font-size:11px">${done}/${F.length}</span></div></td>
-        ${F.map(([k]) => cell(p, k)).join('')}
-        <td><input class="inp inp-sm" style="width:200px;border-radius:var(--r-md)" value="${esc(p.size_location)}" data-chg="co" data-id="${p.id}" data-k="size_location" ${ed ? '' : 'disabled'}></td>
-        <td>${ed ? `<button class="btn btn-ghost btn-sm" data-act="archive" data-id="${p.id}"><i class="ti ti-archive"></i>Archive</button>` : ''}</td></tr>`;
-    }).join('')}</tbody></table>`;
+  const q = norm(S.co.q), F = coFields(), opts = S.cfg.closeout_options || {}, ed = canEdit(), stages = S.co.stage ? [S.co.stage] : closeoutStages();
+  const cols = withFirst([{ k: 'name', l: 'Project', w: 280, min: 140, sticky: 1 }, { k: 'progress', l: 'Progress', w: 140 }]
+    .concat(F.map(([k, l]) => ({ k, l, w: 150 }))).concat([{ k: 'size_location', l: 'Size + Location', w: 220 }, { k: 'act', l: '', w: 130, min: 100, nosort: 1, noresize: 1 }]));
+  const val = (p, k) => k === 'progress' ? F.filter(([f]) => coDone(p[f])).length : norm(p[k]);
+  const groups = stages.map(stage => {
+    const all = S.projects.filter(p => p.stage === stage), items = sortRows(all.filter(p => (!q || norm(p.name + ' ' + p.client).includes(q)) && (!S.co.incomplete || !canArchive(p))).sort((a, b) => (a.sort === '' ? 1e9 : a.sort) - (b.sort === '' ? 1e9 : b.sort)), 'closeout', val);
+    return { key: stage, title: stage, colour: stageColour(stage), items, total: all.length };
+  });
+  const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('closeout');
+  return tableHTML('closeout', cols, groups, (p, g, cs) => {
+    const done = F.filter(([k]) => coDone(p[k])).length;
+    return `<tr class="prow" data-id="${p.id}">${cs.map(c => {
+      if (c.k === 'name') return td(c, g, `<div class="nm co-name" style="cursor:pointer;overflow:hidden;text-overflow:ellipsis" data-act="open" data-id="${p.id}">${esc(p.name)}</div><div class="muted" style="font-size:11px;overflow:hidden;text-overflow:ellipsis">${esc(p.client)}</div>`);
+      if (c.k === 'progress') return td(c, g, `<div class="row" style="gap:8px"><div class="bar"><i style="width:${F.length ? Math.round(done / F.length * 100) : 0}%"></i></div><span class="muted" style="font-size:11px">${done}/${F.length}</span></div>`);
+      if (c.k === 'size_location') return td(c, g, `<input class="cell-inp" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="-">`);
+      if (c.k === 'act') return td(c, g, ed ? `<button class="btn btn-ghost btn-sm${canArchive(p) ? '' : ' is-locked'}" data-act="archive" data-id="${p.id}" title="${canArchive(p) ? 'Send to the Archive' : 'Every item needs a response first'}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Archive</button>` : '');
+      const v = p[c.k] || '', list = (opts[c.k] || []).slice(); if (v && !list.includes(v)) list.push(v);
+      return td(c, g, `<select class="sel co-sel ${coClass(v)}" data-chg="co" data-id="${p.id}" data-k="${c.k}" ${ed ? '' : 'disabled'}>${optList(list, v, '-')}</select>`);
+    }).join('')}</tr>`;
+  }) + `<div class="page-foot tagline">${TAGLINE}</div>`;
 }
 INP['co-q'] = el => { S.co.q = el.value; rerenderBody(); };
 INP['co-stage'] = el => { S.co.stage = el.value; rerenderBody(); };
 INP['co-inc'] = el => { S.co.incomplete = el.checked; rerenderBody(); };
-INP.co = el => { saveFields(el.dataset.id, { [el.dataset.k]: el.value }, null, true); if (el.tagName === 'SELECT') { el.className = 'sel co-sel ' + coClass(el.value); } };
+INP.co = el => {
+  saveFields(el.dataset.id, { [el.dataset.k]: el.value }, null, true);
+  if (el.tagName === 'SELECT') { el.className = 'sel co-sel ' + coClass(el.value); }
+};
 
-/* ---------------- archive ---------------- */
+/* ================================================================
+   Archive (grouped by financial year)
+   ================================================================ */
+const ARCH_COLS = [
+  { k: 'name', l: 'Project', w: 300, min: 140, sticky: 1 }, { k: 'client', l: 'Client', w: 190 }, { k: 'fy', l: 'Year', w: 110 },
+  { k: 'archive', l: 'Archived', w: 150, date: 1 }, { k: 'size_location', l: 'Size + Location', w: 240 }, { k: 'progress', l: 'Out processing', w: 140 }
+];
 function viewArchive() {
   const a = S.ar;
   return `<div class="toolbar">
     <div class="search" style="max-width:340px"><i class="ti ti-search"></i><input class="inp" placeholder="Search name, client, notes, location" value="${esc(a.q)}" data-inp="ar-q"></div>
     <select class="sel sel-sm" data-chg="ar-fy">${optList(a.fys, a.fy, 'All years')}</select>
     <select class="sel sel-sm hide-m" data-chg="ar-client">${optList(a.clients, a.client, 'All clients')}</select>
+    <span id="sortChip">${sortChip('archive')}</span><span class="spacer"></span>${collapseBtn('archive')}
   </div><div id="vb">${arBody()}</div>`;
 }
 BODY.archive = arBody;
+const fyTitle = fy => (!fy ? 'No year' : /fy|year/i.test(fy) ? fy : 'FY ' + fy);
 function arBody() {
-  const a = S.ar;
+  const a = S.ar, F = coFields();
   if (a.loading && !a.rows.length) return `<div class="skeleton" style="height:240px">Loading archive</div>`;
   if (!a.rows.length) return `<div class="empty"><i class="ti ti-archive-off"></i>No archived projects match.</div>`;
-  return `<div style="padding:10px 20px" class="muted">${a.total} project${a.total === 1 ? '' : 's'}</div>
-  <table class="tbl"><thead><tr><th class="sticky">Project</th><th class="hide-m">Client</th><th>Year</th><th class="hide-m">Archive</th><th class="hide-m">Size + Location</th><th>Closeout</th></tr></thead><tbody>
-  ${a.rows.map(p => { const F = coFields(), done = F.filter(([k]) => coDone(p[k])).length;
-    return `<tr class="row" data-act="open" data-id="${p.id}" data-from="archive"><td class="sticky nm">${esc(p.name)}</td><td class="hide-m">${esc(p.client)}</td><td>${esc(p.fy)}</td><td class="hide-m">${esc(p.archive)}</td><td class="hide-m">${esc(p.size_location)}</td><td><span class="muted" style="font-size:11px">${done}/${F.length}</span></td></tr>`; }).join('')}
-  </tbody></table>
-  ${a.rows.length < a.total ? `<div style="padding:16px 20px"><button class="btn btn-plain" data-act="armore">${a.loading ? 'Loading' : 'Load more'}</button></div>` : ''}`;
+  const val = (r, k) => k === 'progress' ? F.filter(([f]) => coDone(r[f])).length : norm(r[k]);
+  const fys = uniq(a.rows.map(r => r.fy || '')).sort((x, y) => String(y).localeCompare(String(x), 'en-GB', { numeric: true }));
+  const groups = fys.map(fy => { const all = a.rows.filter(r => (r.fy || '') === fy); return { key: fy || 'none', title: fyTitle(fy), colour: '#6B6B75', items: sortRows(all, 'archive', val), total: all.length }; });
+  const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('archive');
+  return `<div class="note-bar">${a.total} archived project${a.total === 1 ? '' : 's'}, grouped by financial year</div>` +
+    tableHTML('archive', withFirst(ARCH_COLS), groups, (r, g, cols) => {
+      const done = F.filter(([k]) => coDone(r[k])).length;
+      return `<tr class="prow rowlink" data-act="open" data-id="${r.id}" data-from="archive">${cols.map(c => td(c, g, ({
+        name: `<span class="cell-txt nm-txt">${esc(r.name)}</span>`, client: `<span class="cell-txt">${esc(r.client)}</span>`, fy: `<span class="cell-txt">${esc(r.fy)}</span>`,
+        archive: `<span class="cell-txt">${esc(r.archive)}</span>`, size_location: `<span class="cell-txt">${esc(r.size_location)}</span>`, progress: `<span class="muted" style="font-size:11px;padding:0 7px">${done}/${F.length}</span>`
+      })[c.k])).join('')}</tr>`;
+    }) +
+    (a.rows.length < a.total ? `<div style="padding:16px 20px;position:sticky;left:0"><button class="btn btn-plain" data-act="armore">${a.loading ? 'Loading' : 'Load more'}</button></div>` : '') +
+    `<div class="page-foot tagline">${TAGLINE}</div>`;
 }
 async function loadArchive(reset) {
   const a = S.ar; if (a.loading) return; a.loading = true;
@@ -990,7 +1368,9 @@ INP['ar-fy'] = el => { S.ar.fy = el.value; loadArchive(true); };
 INP['ar-client'] = el => { S.ar.client = el.value; loadArchive(true); };
 ACT.armore = () => loadArchive(false);
 
-/* ---------------- code generator ---------------- */
+/* ================================================================
+   Code generator
+   ================================================================ */
 function titleCase(s) {
   return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').split(/\s+/).filter(Boolean).map(t => {
     if (t === '&') return 'and';
@@ -1005,6 +1385,7 @@ function findClient(txt) {
 async function loadClients() {
   try { const d = await api('clients'); S.clients = d.clients; } catch (e) { S.clients = []; toast(e.message, 'err'); }
   if (S.view === 'codes') renderView();
+  else if (S.view === 'pipeline') { const dl = $('#dlClients'); if (dl) dl.innerHTML = clientNames().map(n => `<option value="${esc(n)}">`).join(''); }
 }
 function viewCodes() {
   const c = S.codes, mode = c.mode;
@@ -1025,7 +1406,7 @@ function viewCodes() {
       <span class="lbl">Project code</span><div class="codebox" id="cgOut"></div>
       <div class="row"><button class="btn btn-primary" data-act="cgcopy"><i class="ti ti-copy"></i>Copy</button></div>
       <div class="muted" style="font-size:12px">Format is CLIENTCODE_TitleCaseTitle. Project codes are still entered into QuickBooks by hand.</div>
-    </div></div></div>`;
+    </div></div><div class="tagline" style="padding-top:24px">${TAGLINE}</div></div>`;
 }
 function cgCurrentCode() {
   const c = S.codes; return c.mode === 'existing' ? (findClient(c.client) || {}).code : String(c.newCode || '').toUpperCase();
@@ -1062,25 +1443,15 @@ ACT.cgcopy = async () => {
   try { await navigator.clipboard.writeText(v); toast('Copied ' + v); } catch (e) { toast('Copy failed. Select the code and copy it.', 'err'); }
 };
 
-/* ---------------- read only board ---------------- */
-function viewReadonlyBoard() {
-  const stages = S.cfg.public_stages;
-  return `<div class="toolbar"><div class="seg"><button class="on" data-act="rochange" data-v="board">Board</button><button data-act="rochange" data-v="timeline">Timeline</button></div>
-    <div class="search"><i class="ti ti-search"></i><input class="inp" placeholder="Search" value="${esc(S.f.q)}" data-inp="f-q"></div>
-    <select class="sel sel-sm" data-chg="f-person">${personOpts(S.f.person, 'Everyone')}</select></div>
-    <div id="vb">${boardHTML().replace(/^<div class="board">/, '<div class="board">')}</div>`;
-}
-BODY.board = () => boardHTML();
-
 /* ================================================================
-   BOARD alpha. Panels: project drawer, modals, feedback, settings, read-only start
+   BOARD alpha 0.2. Panels: project drawer, modals, feedback, settings, read-only start
    ================================================================ */
 
 /* ---------------- saving fields (debounced, optimistic) ---------------- */
 const pendingSave = {}, flushers = {}, saveTimers = {};
 function recordFor(id, from) { return from === 'archive' ? S.ar.rows.find(x => x.id === id) : projectById(id); }
 function setDrawerSync(t) { const e = $('#dsync'); if (e) e.textContent = t; }
-const bgRefresh = debounce(() => { if (['pipeline', 'timeline', 'closeout', 'mine', 'archive'].includes(S.view) && !typing()) { if (S.view === 'mine') renderView(); else rerenderBody(); } }, 250);
+const bgRefresh = debounce(() => { if (['pipeline', 'timeline', 'closeout', 'mine', 'archive'].includes(S.view) && !typing()) { rerenderBody(); } }, 250);
 
 function saveFields(id, fields, from, immediate) {
   const p = recordFor(id, from); if (!p || !canEdit()) return;
@@ -1100,16 +1471,17 @@ function saveFields(id, fields, from, immediate) {
   bgRefresh();
 }
 function flushAll() { Object.keys(flushers).forEach(k => { clearTimeout(saveTimers[k]); flushers[k](); }); }
-addEventListener('beforeunload', e => { if (Object.keys(flushers).length) { flushAll(); } });
+addEventListener('beforeunload', () => { if (Object.keys(flushers).length) flushAll(); });
 
 /* ---------------- drawer ---------------- */
 const clientNames = () => uniq((S.clients || []).map(c => c.name).concat(S.projects.map(p => p.client)).filter(Boolean)).sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
 
-function pickerHTML(role, label, ids, ro) {
+const ROLE_BLOCKS = [['creative', 'Creative team'], ['production', 'Production team'], ['edit', 'Edit team']];
+function roleBlock(role, label, ids, ro) {
   const free = activePeople().filter(p => !ids.includes(p.id));
-  return `<div class="field"><span class="lbl">${label}</span><div class="picks">
-    ${ids.map(i => { const p = personById(i); return `<span class="pickchip">${av(i, 'av-sm')}${esc(p ? p.name : i)}${ro ? '' : `<button data-act="pf-rm" data-role="${role}" data-pid="${i}" title="Remove">&times;</button>`}</span>`; }).join('')}
-    ${ro || !free.length ? '' : `<select class="sel sel-sm" data-chg="pf-add" data-role="${role}" style="width:auto"><option value="">+ Add</option>${free.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select>`}
+  return `<div class="field"><span class="lbl">${label}${ids.length ? '' : ''}</span><div class="picks">
+    ${ids.map((i, n) => { const p = personById(i); return `<span class="pickchip${n === 0 ? ' is-lead' : ''}">${av(i, 'av-sm')}${esc(p ? p.name : i)}${n === 0 ? '<span class="lead-tag">&nbsp;Lead</span>' : (ro ? '' : `<button data-act="pf-lead" data-role="${role}" data-pid="${i}" title="Make lead"><i class="ti ti-star"></i></button>`)}${ro ? '' : `<button data-act="pf-rm" data-role="${role}" data-pid="${i}" title="Remove">&times;</button>`}</span>`; }).join('')}
+    ${ro || !free.length ? (ids.length ? '' : '<span class="muted">Nobody yet</span>') : `<select class="sel sel-sm" data-chg="pf-add" data-role="${role}" style="width:auto"><option value="">+ Add${ids.length ? '' : ' lead'}</option>${free.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select>`}
   </div></div>`;
 }
 function drawerHTML(p, arch) {
@@ -1117,36 +1489,46 @@ function drawerHTML(p, arch) {
   const dis = ro ? 'disabled' : '';
   const inp = (f, label, val, extra = '') => `<div class="field"><span class="lbl">${label}</span><input class="inp" data-inp="pf" data-f="${f}" value="${esc(val)}" ${dis} ${extra}></div>`;
   const F = coFields(), opts = S.cfg.closeout_options || {};
-  const updBy = personById(p.updated_by);
+  const updBy = personById(p.updated_by), ep = epOf(p);
+  const stList = statusList().concat(p.status && !statusList().includes(p.status) ? [p.status] : []);
+  const archBtn = canArchive(p) ? '' : ' is-locked';
   return `
   <div class="drawer-head"><div><div class="lbl">${arch ? 'Archived project' : 'Project'}</div></div><span class="sp"></span><span class="muted" style="font-size:11px;font-weight:600" id="dsync"></span>
     <button class="icon-btn" data-act="closedrawer" title="Close"><i class="ti ti-x"></i></button></div>
   <div class="drawer-body" id="drawerBody">
     <input class="inp name-inp" data-inp="pf" data-f="name" value="${esc(p.name)}" ${dis} placeholder="Project name">
     <div class="grid2">
-      <div class="field"><span class="lbl">Client</span><input class="inp" data-inp="pf" data-f="client" list="dlClients" value="${esc(p.client)}" ${dis}><datalist id="dlClients">${clientNames().map(n => `<option value="${esc(n)}">`).join('')}</datalist></div>
+      <div class="field"><span class="lbl">Client</span><input class="inp" data-inp="pf" data-f="client" list="dlClients2" value="${esc(p.client)}" ${dis}><datalist id="dlClients2">${clientNames().map(n => `<option value="${esc(n)}">`).join('')}</datalist></div>
       ${inp('client_code', 'Client code', p.client_code, 'style="text-transform:uppercase"')}
     </div>
     ${pub ? '' : `<div class="field"><span class="lbl">Project code</span><div class="row"><input class="inp" data-inp="pf" data-f="project_code" value="${esc(p.project_code)}" ${dis} placeholder="CLIENT_ProjectTitle">${ro ? '' : `<button class="btn btn-ghost btn-sm" data-act="genpc" title="Build from client code and name">Generate</button>`}</div></div>`}
     <div class="grid2">
       ${arch ? `<div class="field"><span class="lbl">Year</span><input class="inp" value="${esc(p.fy)}" disabled></div>` : `<div class="field"><span class="lbl">Stage</span><select class="sel" data-chg="pf-stage" ${dis}>${optList(S.cfg.stages, p.stage)}</select></div>`}
-      <div class="field"><span class="lbl">Status</span><select class="sel" data-chg="pf" data-f="status" ${dis}>${optList(S.cfg.statuses.concat(p.status && !S.cfg.statuses.includes(p.status) ? [p.status] : []), p.status, '-')}</select></div>
+      <div class="field"><span class="lbl">Status</span><select class="sel" data-chg="pf" data-f="status" ${dis}>${optList(stList, p.status, '-')}</select></div>
     </div>
-    <div class="field"><span class="lbl">Lead</span><select class="sel" data-chg="pf" data-f="lead" ${dis}>${personOpts(p.lead, '-')}</select></div>
-    ${pickerHTML('creative', 'Creative', p.creative || [], ro)}${pickerHTML('production', 'Production', p.production || [], ro)}${pickerHTML('edit', 'Edit', p.edit || [], ro)}
+    <div class="sec-title"><span class="lbl">Team</span></div>
+    <div class="field"><span class="lbl">Account lead</span><select class="sel" data-chg="pf" data-f="lead" ${dis}>${personOpts(p.lead, '-')}</select></div>
+    ${ROLE_BLOCKS.map(([r, l]) => roleBlock(r, l, p[r] || [], ro)).join('')}
+    <div class="muted" style="font-size:11px">The first person in each team is its lead. Use the star to change who leads.</div>
+    <div class="sec-title"><span class="lbl">Dates</span></div>
     <div class="grid2">
       <div class="field"><span class="lbl">Start</span><input type="date" class="inp" data-chg="pf" data-f="start" value="${esc(p.start)}" ${dis}></div>
       <div class="field"><span class="lbl">End</span><input type="date" class="inp" data-chg="pf" data-f="end" value="${esc(p.end)}" ${dis}></div>
     </div>
-    ${pub ? '' : `<div class="field"><span class="lbl">Budget (GBP)</span><input type="number" min="0" step="1" class="inp" data-inp="pf" data-f="budget" value="${p.budget === '' ? '' : esc(p.budget)}" ${dis}></div>
+    ${arch || pub ? '' : `<div class="grid2">
+      <div class="field"><span class="lbl">Edit period start</span><input type="date" class="inp" data-chg="pf-ep" data-w="s" value="${esc(ep.s)}" ${dis}></div>
+      <div class="field"><span class="lbl">Edit period end</span><input type="date" class="inp" data-chg="pf-ep" data-w="e" value="${esc(ep.e)}" ${dis}></div></div>
+      <div class="muted" style="font-size:11px">${ep.custom ? 'Shown on the Edit capacity view.' : 'Not set yet, so Edit capacity uses the project dates.'}</div>`}
+    ${pub ? '' : `<div class="field"><span class="lbl">Budget (GBP)</span><input type="number" min="0" step="1" class="inp" data-inp="pf" data-f="budget" value="${p.budget === '' || p.budget == null ? '' : esc(p.budget)}" ${dis}></div>
     <div class="field"><span class="lbl">Notes</span><textarea class="txt" data-inp="pf" data-f="notes" ${dis}>${esc(p.notes)}</textarea></div>
-    <div class="sec-title"><span class="lbl">Closeout</span></div>
+    <div class="sec-title"><span class="lbl">Out processing</span></div>
     <div class="grid2">${F.map(([k, l]) => { const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]); return `<div class="field"><span class="lbl">${esc(l)}</span><select class="sel ${coClass(p[k])}" data-chg="pf" data-f="${k}" ${dis}>${optList(list, p[k], '-')}</select></div>`; }).join('')}</div>
     ${inp('size_location', 'Size + Location', p.size_location)}
     <div class="muted" style="font-size:11px">${p.created_at ? 'Created ' + esc(p.created_at) + '. ' : ''}${p.updated_at ? 'Last edit ' + esc(p.updated_at) + (updBy ? ' by ' + esc(updBy.name) : '') + '.' : ''}</div>`}
+    <div class="tagline">${TAGLINE}</div>
   </div>
   ${ro ? '' : `<div class="drawer-foot">
-    ${arch ? `<button class="btn btn-secondary" data-act="restore" data-id="${p.id}"><i class="ti ti-arrow-back-up"></i>Restore to board</button>` : `<button class="btn btn-secondary" data-act="archive" data-id="${p.id}"><i class="ti ti-archive"></i>Send to Archive</button>`}
+    ${arch ? `<button class="btn btn-secondary" data-act="restore" data-id="${p.id}"><i class="ti ti-arrow-back-up"></i>Restore to board</button>` : `<button class="btn btn-secondary${archBtn}" data-act="archive" data-id="${p.id}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Send to Archive</button>`}
     <span class="sp"></span>${isAdmin() ? `<button class="btn btn-danger" data-act="delproject" data-id="${p.id}"><i class="ti ti-trash"></i>Delete</button>` : ''}</div>`}`;
 }
 function openDrawer(id, from) {
@@ -1174,18 +1556,28 @@ function closeDrawer(silent) {
 }
 ACT.closedrawer = () => closeDrawer();
 
-INP.pf = el => {
+INP.pf = async el => {
   const f = el.dataset.f, id = S.drawer, from = S.drawerFrom; if (!id) return;
   let v = el.value;
   if (f === 'budget') v = v === '' ? '' : Number(v);
+  const p = recordFor(id, from);
+  if (f === 'status' && p && isPreStage(v) && !hasCode(p) && from !== 'archive') {
+    el.value = p.status || '';
+    if (!await requireCode(p)) return; refreshDrawer(true);
+  }
   const fields = { [f]: v };
   if (f === 'client_code') { v = v.toUpperCase(); fields[f] = v; }
   if (f === 'client') { const c = findClient(v); if (c && c.name.toLowerCase() === v.trim().toLowerCase()) { fields.client_code = c.code; const i = $('[data-f="client_code"]', $('#drawer')); if (i) i.value = c.code; } }
   const textual = (el.tagName === 'INPUT' && el.type !== 'date') || el.tagName === 'TEXTAREA';
   saveFields(id, fields, from, !textual);
   if (el.tagName === 'SELECT' && /^(budget_recon|social|vimeo|website|deck|wash_up|referral|on_client_board|music_licensing|archive)$/.test(f)) el.className = 'sel ' + coClass(el.value);
+  if (el.tagName === 'SELECT' && !textual) { const b = $('[data-act="archive"]', $('#drawer')); if (b && p) { b.classList.toggle('is-locked', !canArchive(p)); const ic = $('i', b); if (ic) ic.className = 'ti ' + (canArchive(p) ? 'ti-archive' : 'ti-lock'); } }
 };
 INP['pf-stage'] = el => { if (S.drawerFrom === 'archive') return; moveProject(S.drawer, el.value); };
+INP['pf-ep'] = el => {
+  const d = $('#drawer'), s = $('[data-w="s"]', d).value, e = $('[data-w="e"]', d).value; if (!S.drawer) return;
+  epSet(S.drawer, s, e); refreshDrawer(true); bgRefresh();
+};
 INP['pf-add'] = el => {
   if (!el.value) return; const role = el.dataset.role, p = recordFor(S.drawer, S.drawerFrom);
   saveFields(S.drawer, { [role]: (p[role] || []).concat(el.value) }, S.drawerFrom, true); refreshDrawer(true);
@@ -1193,6 +1585,10 @@ INP['pf-add'] = el => {
 ACT['pf-rm'] = el => {
   const role = el.dataset.role, p = recordFor(S.drawer, S.drawerFrom);
   saveFields(S.drawer, { [role]: (p[role] || []).filter(x => x !== el.dataset.pid) }, S.drawerFrom, true); refreshDrawer(true);
+};
+ACT['pf-lead'] = el => {
+  const role = el.dataset.role, pid = el.dataset.pid, p = recordFor(S.drawer, S.drawerFrom);
+  saveFields(S.drawer, { [role]: [pid].concat((p[role] || []).filter(x => x !== pid)) }, S.drawerFrom, true); refreshDrawer(true);
 };
 ACT.genpc = () => {
   const p = recordFor(S.drawer, S.drawerFrom), code = genCode(p.client_code, p.name);
@@ -1202,16 +1598,31 @@ ACT.genpc = () => {
 };
 
 /* ---------------- archive / restore / delete ---------------- */
+ACT.closemodal = () => closeModal();
+ACT.gocloseout = () => { closeModal(); closeDrawer(true); go('closeout'); };
 ACT.archive = async el => {
   const id = el.dataset.id, p = projectById(id); if (!p) return;
-  if (!await confirmBox(`Send "${p.name}" to the Archive? It will leave the board and live in the Archive.`, 'Send to Archive')) return;
-  flushAll();
-  try {
-    await write('project_archive', { id });
-    S.projects = S.projects.filter(x => x.id !== id); S.ar.loaded = false; S.ar.fys = [];
-    if (S.drawer === id) closeDrawer(true);
-    renderView(); toast('Sent to Archive');
-  } catch (e) {}
+  const out = coOutstanding(p);
+  if (out.length) {
+    openModal(`<h3>Not ready to archive</h3><div><b>${esc(p.name)}</b> still has ${out.length} out processing item${out.length === 1 ? '' : 's'} without a final response. Each needs to be complete or marked N/A first:</div>
+      <ul>${out.map(l => `<li>${esc(l)}</li>`).join('')}</ul>
+      <div class="actions"><button class="btn btn-plain" data-act="closemodal">Close</button>${S.view !== 'closeout' ? `<button class="btn btn-primary" data-act="gocloseout">Open out processing</button>` : ''}</div>`);
+    return;
+  }
+  const m = openModal(`<h3>Archive this project?</h3>
+    <div><b>${esc(p.name)}</b>${p.client ? ` for ${esc(p.client)}` : ''} will leave the board and move to the Archive, filed under its financial year. You can restore it later if needed.</div>
+    <label class="row" style="gap:10px;align-items:flex-start"><input type="checkbox" class="toggle" id="arSure"><span>I am sure I want to archive this project</span></label>
+    <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="arGo" disabled>Yes, archive it</button></div>`);
+  $('#arSure', m).onchange = e => { $('#arGo', m).disabled = !e.target.checked; };
+  $('#arGo', m).onclick = async () => {
+    closeModal(); flushAll();
+    try {
+      await write('project_archive', { id });
+      S.projects = S.projects.filter(x => x.id !== id); S.ar.loaded = false; S.ar.fys = [];
+      if (S.drawer === id) closeDrawer(true);
+      renderView(); toast('Sent to Archive');
+    } catch (e) {}
+  };
 };
 ACT.restore = async el => {
   const id = el.dataset.id, p = recordFor(id, 'archive'); if (!p) return;
@@ -1234,26 +1645,36 @@ ACT.delproject = async el => {
 };
 
 /* ---------------- new project ---------------- */
-ACT.newproject = () => {
+ACT.newproject = el => {
   if (!canEdit()) return;
+  const preset = el && el.dataset && el.dataset.stage ? el.dataset.stage : S.cfg.stages[0];
   const m = openModal(`<h3>New project</h3>
     <div class="field"><span class="lbl">Project name</span><input class="inp" id="npName" placeholder="e.g. Brand film"></div>
     <div class="field"><span class="lbl">Client</span><input class="inp" id="npClient" list="npClients" autocomplete="off"><datalist id="npClients">${clientNames().map(n => `<option value="${esc(n)}">`).join('')}</datalist></div>
-    <div class="field"><span class="lbl">Stage</span><select class="sel" id="npStage">${optList(S.cfg.stages, S.cfg.stages[0])}</select></div>
+    <div class="field"><span class="lbl">Stage</span><select class="sel" id="npStage">${optList(S.cfg.stages, preset)}</select></div>
+    <div class="field" id="npCodeWrap"><span class="lbl">Project code <span id="npReq" class="muted"></span></span><div class="row"><input class="inp" id="npCode" placeholder="CLIENT_ProjectTitle"><button class="btn btn-ghost btn-sm" id="npGen" type="button">Generate</button></div></div>
+    <div class="errline" id="npErr"></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="npGo">Create</button></div>`);
   if (!S.clients) loadClients();
+  const reqNote = () => { $('#npReq', m).textContent = isPreStage($('#npStage', m).value) ? '(required for Pre Production)' : '(optional)'; };
+  reqNote(); $('#npStage', m).onchange = reqNote;
+  $('#npGen', m).onclick = () => {
+    const c = findClient($('#npClient', m).value), g = genCode(c ? c.code : '', $('#npName', m).value);
+    if (g) $('#npCode', m).value = g; else $('#npErr', m).textContent = 'Pick a known client and enter a name to generate a code.';
+  };
   $('#npGo', m).onclick = async () => {
     const name = $('#npName', m).value.trim(); if (!name) { $('#npName', m).focus(); return; }
-    const client = $('#npClient', m).value.trim(), c = findClient(client);
+    const client = $('#npClient', m).value.trim(), c = findClient(client), stage = $('#npStage', m).value, code = $('#npCode', m).value.trim();
+    if (isPreStage(stage) && !code) { $('#npErr', m).textContent = 'Pre Production needs a project code. Enter one or press Generate.'; $('#npCode', m).focus(); return; }
     $('#npGo', m).disabled = true;
     try {
-      const d = await write('project_save', { fields: { name, client: c ? c.name : client, client_code: c ? c.code : '', stage: $('#npStage', m).value } });
+      const fields = { name, client: c ? c.name : client, client_code: c ? c.code : '', stage }; if (code) fields.project_code = code;
+      const d = await write('project_save', { fields });
       S.projects.push(d.project); closeModal(); renderView(); openDrawer(d.project.id); toast('Project created');
     } catch (e) { $('#npGo', m).disabled = false; }
   };
   m.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') $('#npGo', m).click(); });
 };
-ACT.closemodal = () => closeModal();
 
 /* ---------------- feedback ---------------- */
 ACT.feedback = () => {
@@ -1274,15 +1695,15 @@ ACT.feedback = () => {
 };
 
 /* ================================================================
-   Settings (admin)
+   Settings (admin and superadmin accounts)
    ================================================================ */
-const SET_TABS = [['people', 'People'], ['departments', 'Departments'], ['workflow', 'Workflow'], ['closeout', 'Closeout options'], ['clients', 'Clients'], ['system', 'System']];
+const SET_TABS = [['people', 'People'], ['departments', 'Departments'], ['workflow', 'Workflow'], ['closeout', 'Out processing options'], ['clients', 'Clients'], ['system', 'System']];
 function viewSettings() {
   return `<div class="tabs"><div class="seg" style="flex-wrap:wrap">${SET_TABS.map(([k, l]) => `<button data-act="settab" data-t="${k}" class="${S.settingsTab === k ? 'on' : ''}">${l}</button>`).join('')}</div></div><div id="vb">${settingsBody()}</div>`;
 }
 BODY.settings = settingsBody;
 function settingsBody() {
-  return `<div class="pad">${({ people: setPeople, departments: setDepts, workflow: setWorkflow, closeout: setCloseout, clients: setClients, system: setSystem }[S.settingsTab] || setPeople)()}</div>`;
+  return `<div class="pad">${({ people: setPeople, departments: setDepts, workflow: setWorkflow, closeout: setCloseout, clients: setClients, system: setSystem }[S.settingsTab] || setPeople)()}<div class="tagline" style="padding-top:28px">${TAGLINE}</div></div>`;
 }
 ACT.settab = el => { S.settingsTab = el.dataset.t; renderView(); };
 function settingsAfter() {
@@ -1295,8 +1716,8 @@ async function loadHealth() { try { S.health = await api('health'); } catch (e) 
 const ACCESS = ['viewer', 'editor', 'admin', 'superadmin'];
 function setPeople() {
   const superMe = S.me.rank >= 3;
-  return `<div class="row wrap" style="margin-bottom:12px"><div class="muted sp" style="min-width:240px">Add the team, set their department (this sets the circle colour) and what they can do. Deactivate instead of deleting so history keeps their initials.</div><button class="btn btn-primary" data-act="ppadd"><i class="ti ti-plus"></i>Add person</button></div>
-  <table class="tbl" style="min-width:860px"><thead><tr><th></th><th>Name</th><th>Initials</th><th>Department</th><th>Access</th><th>Passcode</th><th>Active</th><th></th></tr></thead><tbody>
+  return `<div class="row wrap" style="margin-bottom:12px"><div class="muted sp" style="min-width:240px">Add the team and freelancers, set their department (this sets the circle colour and decides who shows in Edit capacity) and what they can do. Deactivate instead of deleting so history keeps their initials. Admins and superadmins can add people.</div><button class="btn btn-primary" data-act="ppadd"><i class="ti ti-plus"></i>Add person</button></div>
+  <div class="tbl-wrap"><table class="sub-tbl" style="min-width:860px"><thead><tr><th></th><th>Name</th><th>Initials</th><th>Department</th><th>Access</th><th>Passcode</th><th>Active</th><th></th></tr></thead><tbody>
   ${S.people.map(p => { const locked = p.rank >= 3 && !superMe; const d = locked ? 'disabled' : '';
     return `<tr><td>${av(p.id, 'av-lg')}</td>
       <td><input class="inp" style="min-width:160px" value="${esc(p.name)}" data-chg="pp" data-id="${p.id}" data-k="name" ${d}></td>
@@ -1306,7 +1727,7 @@ function setPeople() {
       <td><button class="btn btn-ghost btn-sm" data-act="ppass" data-id="${p.id}" ${d}>${p.has_passcode ? 'Change' : 'Set'}</button> <span class="muted" style="font-size:11px">${p.has_passcode ? 'set' : 'none'}</span></td>
       <td><input type="checkbox" class="toggle" data-chg="pp" data-id="${p.id}" data-k="active" ${p.active !== false ? 'checked' : ''} ${d}></td>
       <td>${p.id !== S.me.id && !locked ? `<button class="icon-btn" data-act="ppdel" data-id="${p.id}" title="Delete"><i class="ti ti-trash"></i></button>` : ''}</td></tr>`; }).join('')}
-  </tbody></table>`;
+  </tbody></table></div>`;
 }
 INP.pp = el => {
   const id = el.dataset.id, k = el.dataset.k, p = personById(id); if (!p) return;
@@ -1323,11 +1744,12 @@ ACT.ppass = el => {
   $('#ppGo', m).onclick = async () => { try { const r = await write('person_save', { person: { id, passcode: $('#ppVal', m).value } }); S.people = r.people; closeModal(); rerenderBody(); toast('Passcode updated'); } catch (e) {} };
 };
 ACT.ppadd = () => {
-  const superMe = S.me.rank >= 3;
+  const superMe = S.me.rank >= 3, fl = S.depts.find(d => /freelanc/i.test(d.name));
   const m = openModal(`<h3>Add person</h3>
     <div class="field"><span class="lbl">Name</span><input class="inp" id="paName"></div>
     <div class="grid2"><div class="field"><span class="lbl">Initials</span><input class="inp" id="paIni" maxlength="3" style="text-transform:uppercase"></div>
     <div class="field"><span class="lbl">Department</span><select class="sel" id="paDept">${S.depts.map(d => `<option value="${d.id}">${esc(d.name)}</option>`).join('')}</select></div></div>
+    ${fl ? `<div class="muted" style="font-size:12px">Choose <b>${esc(fl.name)}</b> for freelancers. They show up in Edit capacity alongside Post.</div>` : ''}
     <div class="grid2"><div class="field"><span class="lbl">Access</span><select class="sel" id="paAcc">${ACCESS.filter(a => a !== 'superadmin' || superMe).map(a => `<option${a === 'editor' ? ' selected' : ''}>${a}</option>`).join('')}</select></div>
     <div class="field"><span class="lbl">Passcode (optional)</span><input class="inp" id="paPass" autocomplete="off"></div></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="paGo">Add</button></div>`);
@@ -1346,22 +1768,30 @@ ACT.ppdel = async el => {
 
 /* ---- departments ---- */
 function setDepts() {
-  return `<div class="row wrap" style="margin-bottom:12px"><div class="muted sp" style="min-width:240px">Department colours appear only on the initial circles.</div><button class="btn btn-primary" data-act="ddadd"><i class="ti ti-plus"></i>Add department</button></div>
-  <table class="tbl" style="min-width:560px"><thead><tr><th>Preview</th><th>Colour</th><th>Name</th><th>People</th><th></th></tr></thead><tbody>
+  return `<div class="row wrap" style="margin-bottom:12px"><div class="muted sp" style="min-width:240px">Department colours show on the initial circles, and the Tendering, Pre Production and Post headers on the Project board take their colour from the matching department.</div>
+    <button class="btn btn-plain" data-act="dddefaults"><i class="ti ti-palette"></i>Use Sunday Treat defaults</button><button class="btn btn-primary" data-act="ddadd"><i class="ti ti-plus"></i>Add department</button></div>
+  <div class="tbl-wrap"><table class="sub-tbl" style="min-width:560px"><thead><tr><th>Preview</th><th>Colour</th><th>Name</th><th>People</th><th></th></tr></thead><tbody>
   ${S.depts.map(d => { const n = S.people.filter(p => p.department === d.id).length;
     return `<tr><td><span class="av av-lg" style="background:${d.colour};color:${textOn(d.colour)}">AB</span></td>
     <td><input type="color" value="${esc(d.colour)}" data-chg="dd" data-id="${d.id}" data-k="colour"></td>
     <td><input class="inp" style="min-width:180px" value="${esc(d.name)}" data-chg="dd" data-id="${d.id}" data-k="name"></td><td>${n}</td>
-    <td>${n ? '' : `<button class="icon-btn" data-act="dddel" data-id="${d.id}"><i class="ti ti-trash"></i></button>`}</td></tr>`; }).join('')}</tbody></table>`;
+    <td>${n ? '' : `<button class="icon-btn" data-act="dddel" data-id="${d.id}"><i class="ti ti-trash"></i></button>`}</td></tr>`; }).join('')}</tbody></table></div>`;
 }
 INP.dd = el => {
   const d = deptById(el.dataset.id); if (!d) return; d[el.dataset.k] = el.value;
   write('dept_save', { department: { id: d.id, [el.dataset.k]: el.value } }).then(r => { S.depts = r.departments; }).catch(() => {});
   if (el.dataset.k === 'colour') rerenderBody();
 };
+ACT.dddefaults = async () => {
+  const todo = S.depts.map(d => ({ d, c: defaultColourFor(d.name) })).filter(x => x.c && x.c.toLowerCase() !== String(x.d.colour).toLowerCase());
+  if (!todo.length) { toast('Colours already match the defaults'); return; }
+  todo.forEach(x => { x.d.colour = x.c; }); rerenderBody();
+  try { let r; for (const x of todo) r = await write('dept_save', { department: { id: x.d.id, colour: x.c } }); if (r) S.depts = r.departments; toast(`Updated ${todo.length} department${todo.length === 1 ? '' : 's'}`); rerenderBody(); } catch (e) {}
+};
 ACT.ddadd = () => {
   const m = openModal(`<h3>Add department</h3><div class="grid2"><div class="field"><span class="lbl">Name</span><input class="inp" id="daName"></div><div class="field"><span class="lbl">Colour</span><input type="color" id="daCol" value="#9AA0A6"></div></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="daGo">Add</button></div>`);
+  $('#daName', m).addEventListener('input', e => { const c = defaultColourFor(e.target.value); if (c) $('#daCol', m).value = c; });
   $('#daGo', m).onclick = async () => { try { const r = await write('dept_save', { department: { name: $('#daName', m).value, colour: $('#daCol', m).value } }); S.depts = r.departments; closeModal(); rerenderBody(); } catch (e) {} };
 };
 ACT.dddel = async el => { try { const r = await write('dept_delete', { id: el.dataset.id }); S.depts = r.departments; rerenderBody(); } catch (e) {} };
@@ -1379,7 +1809,7 @@ function listEditor(key, label, items, used) {
 function setWorkflow() {
   const c = S.cfg;
   return `<div style="max-width:620px">
-    ${listEditor('stages', 'Stages (board columns, in order)', c.stages, s => S.projects.filter(p => p.stage === s).length)}
+    ${listEditor('stages', 'Stages (project board groups, in order)', c.stages, s => S.projects.filter(p => p.stage === s).length)}
     ${listEditor('statuses', 'Statuses', c.statuses, s => S.projects.filter(p => p.status === s).length)}
     <div class="panel pad" style="margin-bottom:16px"><div class="lbl" style="margin-bottom:10px">Shown on the read-only live link</div>
       ${c.stages.map(s => `<label class="row" style="margin-bottom:6px"><input type="checkbox" class="toggle" data-chg="wf-pub" data-s="${esc(s)}" ${c.public_stages.includes(s) ? 'checked' : ''}> ${esc(s)}</label>`).join('')}</div>
@@ -1393,10 +1823,10 @@ ACT['wf-add'] = el => { const key = el.dataset.key, i = $('#wfNew-' + key), v = 
 INP['wf-pub'] = el => { const s = el.dataset.s, cur = S.cfg.public_stages.slice(); const arr = el.checked ? S.cfg.stages.filter(x => cur.includes(x) || x === s) : cur.filter(x => x !== s); if (!arr.length) { toast('Keep at least one stage visible', 'err'); rerenderBody(); return; } S.cfg.public_stages = arr; saveCfg('public_stages', arr).catch(rerenderBody); };
 INP['wf-fy'] = el => saveCfg('fy_start_month', Number(el.value)).catch(() => {});
 
-/* ---- closeout options ---- */
+/* ---- out processing options ---- */
 function setCloseout() {
   const opts = S.cfg.closeout_options || {};
-  return `<div class="muted" style="margin-bottom:12px">One option per line. A project can still hold an old value that is not in the list.</div>
+  return `<div class="muted" style="margin-bottom:12px">One option per line. A project can still hold an old value that is not in the list. A project can only be archived once every item here has a response other than blank, In progress, Awaiting or Stuck.</div>
   <div class="grid2" style="max-width:820px">${coFields().map(([k, l]) => `<div class="field"><span class="lbl">${esc(l)}</span><textarea class="txt" style="min-height:110px" data-chg="co-opt" data-k="${k}">${esc((opts[k] || []).join('\n'))}</textarea></div>`).join('')}</div>`;
 }
 INP['co-opt'] = el => { const next = Object.assign({}, S.cfg.closeout_options); next[el.dataset.k] = el.value.split('\n').map(s => s.trim()).filter(Boolean); S.cfg.closeout_options = next; saveCfg('closeout_options', next).then(() => toast('Options saved')).catch(() => {}); };
@@ -1409,7 +1839,7 @@ function setClients() {
   (S.ar.clients || []).forEach(n => { if (!(n in counts)) counts[n] = 0; });
   const missing = Object.keys(counts).filter(n => !known.has(norm(n))).sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
   return `<div class="muted" style="margin-bottom:12px;max-width:640px">${S.clients.length} clients are in the Project Code Generator sheet. These client names appear on projects but are not in it yet${S.ar.loaded ? '' : ' (archive still loading)'}.</div>
-  ${missing.length ? `<table class="tbl" style="min-width:420px;max-width:640px"><thead><tr><th>Client name</th><th>Live projects</th><th></th></tr></thead><tbody>${missing.map(n => `<tr><td class="strong">${esc(n)}</td><td>${counts[n]}</td><td><button class="btn btn-ghost btn-sm" data-act="rcadd" data-n="${esc(n)}">Add to code sheet</button></td></tr>`).join('')}</tbody></table>`
+  ${missing.length ? `<div class="tbl-wrap"><table class="sub-tbl" style="min-width:420px;max-width:640px"><thead><tr><th>Client name</th><th>Live projects</th><th></th></tr></thead><tbody>${missing.map(n => `<tr><td class="strong">${esc(n)}</td><td>${counts[n]}</td><td><button class="btn btn-ghost btn-sm" data-act="rcadd" data-n="${esc(n)}">Add to code sheet</button></td></tr>`).join('')}</tbody></table></div>`
     : `<div class="empty"><i class="ti ti-circle-check"></i>Every client has a code.</div>`}`;
 }
 ACT.rcadd = async el => {
@@ -1431,12 +1861,16 @@ function setSystem() {
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Build</div><div class="kv">
       <span class="muted">Front end</span><span>BOARD alpha ${APP_VERSION}</span>
       <span class="muted">Backend</span><span>${h ? esc(h.server_version || h.error || '') : 'Checking'}</span>
+      <span class="muted">Connection</span><span>${S.syncState === 'offline' ? 'Cannot reach the sheet' : 'Connected to the BOARD. Database sheet'}</span>
       <span class="muted">Data version</span><span>${S.version}</span>
       <span class="muted">Tabs (rows)</span><span>${esc(tabs)}</span>
       <span class="muted">Code sheet clients</span><span>${h ? esc(h.clients) : ''}</span>
-      <span class="muted">Feedback goes to</span><span>${h ? esc(h.feedback_to) : ''}</span></div></div>
+      <span class="muted">Feedback goes to</span><span>${h ? esc(h.feedback_to) : ''}</span>
+      <span class="muted">Who sees Settings</span><span>Admin and superadmin accounts. Everyone else does not see this page.</span>
+      <span class="muted">Edit periods</span><span>${epBackend() ? 'Saved in the sheet, shared with everyone' : 'Saved in each browser until the backend has edit_start and edit_end columns'}</span>
+      <span class="muted">Column sizes and sorting</span><span>Saved per browser</span></div></div>
     <div class="panel pad"><div class="lbl" style="margin-bottom:6px">Read-only live link</div>
-      <div class="muted" style="margin-bottom:10px">Anyone with this link can see the live projects without signing in. Budget, notes and closeout are never included.</div>
+      <div class="muted" style="margin-bottom:10px">Anyone with this link can see the live projects without signing in. Budget, notes and out processing are never included.</div>
       <div class="row"><input class="inp" id="roLink" readonly value="${esc(link)}"><button class="btn btn-ghost" data-act="rocopy">Copy</button></div>
       <div class="row" style="margin-top:10px"><button class="btn btn-plain btn-sm" data-act="rorotate">Make a new link (old one stops working)</button></div></div>
     <div class="panel pad"><div class="lbl" style="margin-bottom:6px">Alpha open door</div>
@@ -1463,16 +1897,15 @@ async function startReadonly(key) {
   S.readonly = true; S.readonlyKey = key; S.view = 'board';
   $('#app').innerHTML = `<div class="main">
     <div class="topbar">${logoHTML()}<h1 class="page-title" style="margin-left:6px">Live projects</h1><span class="pill pill-ro">Read only</span><span class="pill pill-alpha">Alpha</span><span class="spacer"></span>
-      <button class="icon-btn" data-act="theme" title="Light / dark"><i class="ti ti-moon"></i></button></div>
+      <button class="icon-btn" data-act="theme" title="Light / dark"><i class="ti theme-ic ti-moon"></i></button></div>
     <div class="content-wrap"><div class="content" id="content"><div class="skeleton">Loading live projects</div></div></div></div>`;
-  document.title = 'BOARD live (alpha)';
+  document.title = '\u{1F7E2} BOARD live (alpha)';
   try {
     const d = await apiPublic(key); S.version = d.version; loadPublic(d);
     if (!location.hash || location.hash === '#') location.hash = '#/board'; else route();
     route();
   } catch (e) { $('#content').innerHTML = `<div class="empty"><i class="ti ti-lock"></i>${esc(e.message || 'This link is not valid')}</div>`; }
 }
-
 
 boot();
 })();
