@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,800;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
-/* BOARD alpha 0.4. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
+/* BOARD alpha 0.5. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
 :root {
   color-scheme: light;
   --stp: #FF50BD; --stp-hover: #D93EA6; --stp-light: #FFE8F7; --stp-alpha: rgba(255,80,189,0.12);
@@ -132,8 +132,6 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .nav-item:hover { background: var(--color-background-tertiary); }
 .nav-item.on { background: var(--stp-alpha); color: var(--stp); }
 .nav-item.on i { color: var(--stp); }
-.nav-key { margin-left: auto; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); color: var(--color-text-secondary); font: 700 10px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; display: inline-grid; place-items: center; }
-.nav-item.on .nav-key { border-color: var(--stp); color: var(--stp); }
 kbd.k { font: 700 10px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; border: 0.5px solid currentColor; border-radius: 5px; padding: 2px 5px; opacity: .8; }
 .nav-group { margin: 14px 0 4px 12px; }
 .side-foot { margin-top: auto; display: flex; flex-direction: column; gap: 2px; padding-top: 12px; }
@@ -199,6 +197,10 @@ tr.stage-row.drop-hdr .stage-banner, tr.stage-empty.drop-hdr td { outline: 2px s
 .cell-inp:hover { background: var(--color-background-tertiary); }
 .cell-inp:focus { outline: 2px solid var(--stp); background: var(--color-background-primary); }
 .cell-inp.nm-inp { font-weight: 600; }
+.nm-wrap { display: flex; align-items: center; gap: 2px; min-width: 0; }
+.nm-wrap .nm-inp { flex: 1; min-width: 0; }
+.nm-mv { flex: none; width: 26px; height: 30px; opacity: .55; }
+.nm-mv:hover, tr.prow:hover .nm-mv { opacity: 1; }
 .cell-inp.num { text-align: right; font-variant-numeric: tabular-nums; }
 .cell-txt { display: block; padding: 6px 7px; overflow: hidden; text-overflow: ellipsis; }
 .cell-txt.nm-txt { font-weight: 600; }
@@ -224,6 +226,8 @@ button.lab-cell:hover { filter: brightness(.94); }
 .tl-pill { border: 0; background: var(--color-text-primary); color: #fff; border-radius: var(--r-pill); padding: 4px 14px; font-size: 12px; font-weight: 600; min-height: 26px; }
 .tl-pill:hover { background: #333; }
 .tl-pill.none { background: var(--color-background-tertiary); color: var(--color-text-secondary); font-weight: 400; }
+.tl-pill.overdue, .tl-pill.overdue:hover { background: var(--color-text-danger); color: #fff; }
+.tl-pill.overdue:hover { filter: brightness(.92); }
 
 /* stage banners */
 .stage-row td { padding: 0; border-bottom: 0; height: auto; overflow: visible; }
@@ -522,6 +526,41 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
   .wt-title { font-size: 24px; } .wt-body, .wt-grid, .wt-foot, .wt-size { padding-left: 16px; padding-right: 16px; }
   .wt-grid { grid-template-columns: 1fr; }
   .fin-tiles { padding: 12px 14px 4px; } .pods { padding: 12px 14px 90px; grid-template-columns: 1fr; } .pod-builder { margin: 12px 14px 0; left: 14px; }
+  /* 0.5 phones: every table turns into a stack of cards (name and open button on top, the rest in two columns) */
+  table.tv { display: block; width: auto !important; }
+  .tv colgroup, .tv thead, .tv tr.stage-spacer { display: none; }
+  .tv tbody { display: block; padding-bottom: 6px; }
+  .tv tr.stage-row { display: block; margin-top: 14px; } .tv tr.stage-row.first { margin-top: 0; }
+  .tv tr.stage-row td.stage-td, .tv tr.stage-empty, .tv tr.stage-empty td { display: block; }
+  .stage-banner { position: static; width: auto; max-width: none; height: 42px; padding: 0 12px 0 6px; }
+  .stage-banner .sub { display: none; }
+  .tv tr.prow { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px 10px; margin: 10px 12px 0; padding: 10px 12px 12px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); background: var(--color-background-primary); }
+  .tv tr.prow td { display: block; height: auto; border-bottom: 0; padding: 0; background: transparent !important; white-space: normal; overflow: visible; flex: 1 1 calc(50% - 10px); min-width: 130px; order: 2; position: static !important; left: auto !important; box-shadow: none !important; text-align: left; }
+  .tv tr.prow td:empty { display: none; }
+  .tv tr.prow td[data-l]::before { content: attr(data-l); display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-secondary); margin-bottom: 3px; }
+  .tv tr.prow td.sticky { order: 0; flex: 1 1 calc(100% - 56px); min-width: 0; }
+  .tv tr.prow td.sticky::before { display: none; }
+  .tv tr.prow td.act { order: 1; flex: 0 0 auto; min-width: 0; margin-left: auto; }
+  .tv tr.prow td.act::before { display: none; }
+  .tv tr.prow td.cc .av, .tv tr.prow td.cc .cell-btn { margin: 0; }
+  .tv tr.prow .cell-inp { background: var(--color-background-secondary); min-height: 36px; }
+  .tv tr.prow .nm-inp { font-size: 15px; }
+  .tv tr.prow .nm-mv { opacity: 1; width: 30px; }
+  .tv tr.prow .lab-cell { height: 36px; border-radius: 8px; }
+  .tv tr.prow .co-sel { min-height: 34px; }
+  .tv tr.prow .cell-txt { padding: 4px 0; }
+  .tv tr.prow .tl-pill { min-height: 32px; }
+  .tv tr.stage-empty td { padding: 12px 14px; }
+  /* toolbars: search on its own line, then two filters per row */
+  .toolbar { gap: 8px; }
+  .toolbar .search { flex: 1 1 100%; order: -1; }
+  .toolbar .sel-sm, .toolbar .seg { flex: 1 1 calc(50% - 8px); min-width: 0; }
+  .toolbar .btn-primary { flex: 1 1 100%; justify-content: center; }
+  .toolbar .spacer { display: none; }
+  .sort-chip { max-width: 100%; }
+  .fin-tiles { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .fin-tile .t2 { font-size: 24px; }
+  .pill-alpha, .pill-lock { display: none; }
 }
 @media (min-width: 861px) { .only-m { display: none !important; } }
 @media print { .side, .tabbar, .toolbar { display: none; } }
@@ -534,14 +573,14 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 (function () {
 'use strict';
 /* ================================================================
-   BOARD alpha 0.4. Core: config, state, colours, API, queue, shell, login, routing
+   BOARD alpha 0.5. Core: config, state, colours, API, queue, shell, login, routing
    ================================================================ */
 
 /* ---- CONFIG: your Apps Script web app URL ---- */
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '0.4.0-alpha';
+const APP_VERSION = '0.5.0-alpha';
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
 const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
 /* Sunday Treat logo, transparent PNG, embedded so no image file or path is needed. Dark text for light areas, white text for dark areas. */
@@ -713,7 +752,9 @@ const isAdmin = () => !S.readonly && S.me && S.me.rank >= 2;
 const closeoutStages = () => S.cfg.stages.slice(-2);
 const boardStages = () => { const c = closeoutStages(); return S.cfg.stages.filter(s => !c.includes(s)); };
 const liveStages = () => (S.cfg.public_stages && S.cfg.public_stages.length ? S.cfg.public_stages : boardStages());
-const projectById = id => S.projects.find(p => p.id === id) || null;
+/* a project made on this device shows up at once under a temporary id (tmp_...); TMP remembers the real id once the sheet has made it */
+const TMP = {}, isTmp = id => typeof id === 'string' && id.indexOf('tmp_') === 0;
+const projectById = id => S.projects.find(p => p.id === id) || (TMP[id] ? S.projects.find(p => p.id === TMP[id]) : null) || null;
 const bySort = (a, b) => (a.sort === '' || a.sort == null ? 1e9 : a.sort) - (b.sort === '' || b.sort == null ? 1e9 : b.sort);
 const sortedStage = stage => S.projects.filter(p => p.stage === stage).sort(bySort);
 const logoHTML = light => `<span class="brand-logo"><img src="${light ? LOGO_LIGHT : LOGO_DARK}" alt="Sunday Treat"></span>`;
@@ -821,7 +862,16 @@ function setSync(state) {
 let chain = Promise.resolve(), inflight = 0;
 function write(action, params) {
   inflight++; setSync('saving');
-  const p = chain.then(() => api(action, params)).then(res => {
+  const tmpOf = params && params._tmp;
+  const p = chain.then(() => {
+    if (params) {
+      params = Object.assign({}, params); delete params._tmp;
+      if (TMP[params.id]) params.id = TMP[params.id];
+      if (Array.isArray(params.ids)) params.ids = params.ids.map(i => TMP[i] || i);
+    }
+    return api(action, params);
+  }).then(res => {
+    if (tmpOf && res.project) TMP[tmpOf] = res.project.id;
     if (res.version != null) { if (res.version !== S.version + 1) schedule(refresh); S.version = Math.max(S.version, res.version); }
     return res;
   });
@@ -888,13 +938,12 @@ const TITLES = { mine: 'My projects', pipeline: 'Project board', closeout: 'Out 
 const brandName = () => `<span class="brand-name"><span class="emoji">\u{1F7E2}</span>BOARD</span>`;
 
 const navItems = () => NAV.filter(n => !n.admin || isAdmin());
-const navKey = id => { const i = navItems().findIndex(n => n.id === id); return i >= 0 && i < 9 ? String(i + 1) : ''; };
 function renderShell() {
   const app = $('#app');
   let nav = '', lastG = '';
-  navItems().forEach((n, i) => {
+  navItems().forEach(n => {
     if (n.group && n.group !== lastG) { nav += `<div class="lbl nav-group">${n.group}</div>`; lastG = n.group; }
-    nav += `<button class="nav-item" data-act="go" data-v="${n.id}" data-nav="${n.id}" title="Press ${i + 1}"><i class="ti ${n.icon}"></i>${n.label}${i < 9 ? `<span class="nav-key">${i + 1}</span>` : ''}</button>`;
+    nav += `<button class="nav-item" data-act="go" data-v="${n.id}" data-nav="${n.id}"><i class="ti ${n.icon}"></i>${n.label}</button>`;
   });
   app.innerHTML = `
     <nav class="side">
@@ -1025,9 +1074,6 @@ document.addEventListener('input', e => { const t = e.target.closest('[data-inp]
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { if ($('#modal')) closeModal(); else if ($('#pop')) closePop(); else if (S.drawer) closeDrawer(); else if (document.activeElement && document.activeElement.classList.contains('cell-inp')) { document.activeElement.value = document.activeElement.defaultValue; document.activeElement.blur(); } }
   else if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('cell-inp') && e.target.tagName === 'INPUT') e.target.blur();
-  else if (/^[1-9]$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey && S.me && !S.readonly && !$('#modal') && !$('#pop') && !(e.target && (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable))) {
-    const n = navItems()[Number(e.key) - 1]; if (n) { e.preventDefault(); if (S.drawer) closeDrawer(); go(n.id); }
-  }
   else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && S.view === 'closeout' && S.wt.on && !typing() && !$('#modal') && !S.drawer) { e.preventDefault(); wtGo(e.key === 'ArrowRight' ? 1 : -1); }
 });
 
@@ -1159,7 +1205,6 @@ function tableHTML(tid, colsIn, groups, rowFn, opt = {}) {
     body += `<tr class="stage-row${coll ? ' collapsed' : ''}${gi === 0 ? ' first' : ''}" data-stage="${esc(g.key)}"><td class="stage-td" colspan="${n}" style="background:${g.colour}" data-act="stagetoggle" data-t="${tid}" data-g="${esc(g.key)}"><div class="stage-banner">
       <i class="ti ti-chevron-down stage-chev"></i><span class="stage-title">${esc(g.title)}</span>
       <span class="count">${g.items.length}${g.total != null && g.total !== g.items.length ? ' / ' + g.total : ''}</span>
-      ${opt.add && canEdit() ? `<button class="btn btn-ghost btn-sm" data-act="newproject" data-stage="${esc(g.key)}"><i class="ti ti-plus"></i>New</button>` : ''}
       ${g.sub ? `<span class="sub">${g.sub}</span>` : ''}</div></td></tr>`;
     if (coll) return;
     if (g.items.length) body += g.items.map(p => rowFn(p, g, cols)).join('');
@@ -1171,7 +1216,7 @@ function tableHTML(tid, colsIn, groups, rowFn, opt = {}) {
 function td(c, g, inner, cls = '') {
   const strip = c.first && g ? `box-shadow:inset 5px 0 0 ${g.colour};` : '';
   const stick = c.sticky ? `left:${c.left}px;` : '';
-  return `<td class="${c.sticky ? 'sticky ' : ''}${cls}"${strip || stick ? ` style="${stick}${strip}"` : ''}>${inner}</td>`;
+  return `<td class="${c.sticky ? 'sticky ' : ''}${cls}"${c.l ? ` data-l="${esc(c.l)}"` : ''}${strip || stick ? ` style="${stick}${strip}"` : ''}>${inner}</td>`;
 }
 const withFirst = cols => cols.map((c, i) => Object.assign({}, c, { first: i === 0 }));
 
@@ -1222,9 +1267,9 @@ const PIPE_COLS = [
   { k: 'edit', l: 'Edit', tip: 'Edit lead', w: 116, min: 64, cc: 1 },
   { k: 'timeline', l: 'Edit timeline', tip: 'Edit timeline', w: 200, date: 1, cc: 1 },
   { k: 'budget', l: 'Budget', w: 120, num: 1, priv: 1 },
-  { k: 'margin', l: 'Profit margin', tip: 'Profit margin', w: 120, num: 1, priv: 1 },
+  { k: 'margin', l: 'Target PM', tip: 'Target profit margin', w: 120, num: 1, priv: 1 },
   { k: 'invoicing', l: 'Invoicing', w: 210, priv: 1 },
-  { k: 'act', l: '', w: 80, min: 80, nosort: 1, noresize: 1 }
+  { k: 'act', l: '', w: 52, min: 52, nosort: 1, noresize: 1 }
 ];
 function pipeCols() { return withFirst(PIPE_COLS.filter(c => (!c.ed || canEdit()) && (!c.priv || !S.readonly))); }
 function pipeVal(p, k) {
@@ -1275,10 +1320,16 @@ function leadCell(p, role, ed) {
   const inner = `<span class="lstack">${circ}${empty}</span>`;
   return ed ? `<button class="cell-btn" data-act="leadpick" data-id="${p.id}" data-role="${role}" title="${esc(label)}${names ? ': ' + esc(names) : ''}">${inner}</button>` : (list.length ? `<span title="${esc(names)}">${inner}</span>` : '');
 }
+/* the timeline goes red (with a warning) once the last day is today or has passed, unless the project is finished with */
+const TL_DONE = ['complete', 'cancelled project', 'failed pitch', 'awaiting handover', 'to be archived', 'archive'];
+function tlOverdue(p) {
+  if (!p || closeoutStages().includes(p.stage) || TL_DONE.includes(norm(p.status))) return false;
+  const e = epOf(p).e; return !!e && e <= todayStr();
+}
 function timelineCell(p, ed) {
-  const ep = epOf(p), txt = ep.s || ep.e ? frange(ep.s, ep.e) : '';
-  if (ed) return `<button class="tl-pill${txt ? '' : ' none'}" data-act="rpopen" data-id="${p.id}" title="Set the edit timeline">${txt ? esc(txt) : 'Set dates'}</button>`;
-  return txt ? `<span class="tl-pill">${esc(txt)}</span>` : '';
+  const ep = epOf(p), txt = ep.s || ep.e ? frange(ep.s, ep.e) : '', od = !!txt && tlOverdue(p), warn = od ? '\u26A0\uFE0F ' : '';
+  if (ed) return `<button class="tl-pill${txt ? '' : ' none'}${od ? ' overdue' : ''}" data-act="rpopen" data-id="${p.id}" title="${od ? 'Deadline is today or has passed. ' : ''}Set the edit timeline">${txt ? warn + esc(txt) : 'Set dates'}</button>`;
+  return txt ? `<span class="tl-pill${od ? ' overdue' : ''}"${od ? ' title="Deadline is today or has passed"' : ''}>${warn}${esc(txt)}</span>` : '';
 }
 function marginCell(p, ed) {
   const m = marginOf(p);
@@ -1289,7 +1340,7 @@ function pipeRow(p, g, cols) {
   const ed = canEdit();
   const cell = c => {
     switch (c.k) {
-      case 'name': return td(c, g, ed ? `<input class="cell-inp nm-inp" data-chg="cell" data-id="${p.id}" data-f="name" value="${esc(p.name)}" placeholder="Project name">` : `<span class="cell-txt nm-txt" data-act="open" data-id="${p.id}" style="cursor:pointer">${esc(p.name)}</span>`);
+      case 'name': return td(c, g, ed ? `<div class="nm-wrap"><button class="icon-btn nm-mv" data-act="movemenu" data-id="${p.id}" title="Move to a different stage by hand"><i class="ti ti-dots-vertical"></i></button><input class="cell-inp nm-inp" data-chg="cell" data-id="${p.id}" data-f="name" value="${esc(p.name)}" placeholder="Project name"></div>` : `<span class="cell-txt nm-txt" data-act="open" data-id="${p.id}" style="cursor:pointer">${esc(p.name)}</span>`);
       case 'client': return td(c, g, ed ? `<input class="cell-inp" list="dlClients" data-chg="cell" data-id="${p.id}" data-f="client" value="${esc(p.client)}" placeholder="Client">` : `<span class="cell-txt">${esc(p.client)}</span>`);
       case 'project_code': return td(c, g, ed ? `<input class="cell-inp" data-chg="cell" data-id="${p.id}" data-f="project_code" value="${esc(p.project_code)}" placeholder="Add code">` : `<span class="cell-txt">${esc(p.project_code)}</span>`);
       case 'status': return td(c, g, labCell(p.status, statusColour(p.status), `data-act="labpick" data-kind="status" data-id="${p.id}"`, ed), 'zp');
@@ -1298,7 +1349,7 @@ function pipeRow(p, g, cols) {
       case 'budget': return td(c, g, ed ? `<input type="text" inputmode="decimal" class="cell-inp num gbp-inp" data-chg="cell" data-id="${p.id}" data-f="budget" value="${esc(fmoney(numOf(p.budget)))}" placeholder="£0">` : `<span class="cell-txt num" style="text-align:right">${esc(fmoney(p.budget))}</span>`);
       case 'margin': return td(c, g, marginCell(p, ed));
       case 'invoicing': { const v = fget(p, 'invoicing'); return td(c, g, labCell(v, invColour(v), `data-act="labpick" data-kind="invoicing" data-id="${p.id}"`, ed), 'zp'); }
-      case 'act': return td(c, g, `<button class="icon-btn" data-act="open" data-id="${p.id}" title="Open details"><i class="ti ti-layout-sidebar-right"></i></button>${ed ? `<button class="icon-btn" data-act="movemenu" data-id="${p.id}" title="Move to a different stage by hand"><i class="ti ti-dots"></i></button>` : ''}`, 'act');
+      case 'act': return td(c, g, `<button class="icon-btn" data-act="open" data-id="${p.id}" title="Open details"><i class="ti ti-layout-sidebar-right"></i></button>`, 'act');
       default: return td(c, g, '');
     }
   };
@@ -1337,23 +1388,33 @@ ACT.labpick = el => {
   openPop(el, `<div class="lab-grid">${list.map(l => `<button class="lab-opt${l === cur ? ' cur' : ''}" style="background:${colOf(l)}" data-act="labset" data-kind="${kind}" data-id="${id}" data-v="${esc(l)}">${esc(l)}</button>`).join('')}</div>` +
     (cur ? `<div class="sep"></div><button data-act="labset" data-kind="${kind}" data-id="${id}" data-v=""><i class="ti ti-eraser"></i>Clear</button>` : ''));
 };
-/* Status drives the stage: Tendering goes to Tendering, Pre Production to Pre-production, Edit to Post Production, Awaiting Handover to Out Processing, Archive to To Archive.
-   Internal projects stay in their internal stage. Anything else (Awaiting KO, Awaiting Client Feedback...) leaves the project where it is. */
+/* Setting a status no longer moves a project around, with one exception: Complete sends it from the live stages to Out Processing
+   and leaves a "[Proxy] <name>" copy in To Archive. Internal projects and [Proxy] copies are left alone. Everything else is moved by hand. */
+const isProxy = p => /^\s*\[proxy\]/i.test((p && p.name) || '');
 function stageForStatus(p, status) {
-  if (!status || /internal/i.test(p.stage || '')) return null;
-  const st = S.cfg.stages, co = closeoutStages(); let t = null;
-  if (/^tender/i.test(status)) t = st.find(x => /tender/i.test(x));
-  else if (isPreStage(status)) t = st.find(isPreStage);
-  else if (/^(edit|post[\s-]?prod)/i.test(status)) t = isPostStage(p.stage) ? null : st.find(x => /post/i.test(x) && !/internal/i.test(x));
-  else if (/handover/i.test(status)) t = co[0];
-  else if (/^archive$/i.test(status)) t = co[1];
-  return t && t !== p.stage ? t : null;
+  if (!status || isProxy(p) || /internal/i.test(p.stage || '')) return null;
+  const co = closeoutStages();
+  return norm(status) === 'complete' && co[0] && !co.includes(p.stage) ? co[0] : null;
+}
+const proxyBusy = new Set();
+async function makeProxy(p) {
+  const co = closeoutStages(); if (!co[1] || !p || isProxy(p)) return;
+  const name = '[Proxy] ' + String(p.name || '').trim(), key = norm(name);
+  if (proxyBusy.has(key) || S.projects.some(q => norm(q.name) === key)) return;
+  proxyBusy.add(key);
+  try {
+    const fields = { name, stage: co[1], client: p.client || '', client_code: p.client_code || '', project_code: p.project_code || '', status: p.status || 'Complete', lead: p.lead || '', budget: p.budget == null ? '' : p.budget };
+    ['creative', 'production', 'edit'].forEach(r => { fields[r] = (p[r] || []).slice(); });
+    const d = await write('project_save', { fields });
+    if (d.project && !S.projects.some(q => q.id === d.project.id)) S.projects.push(d.project);
+    toast('Proxy copy added to ' + co[1]); bgRefresh();
+  } catch (e) { /* surfaced by write() */ } finally { proxyBusy.delete(key); }
 }
 async function setStatus(p, v, from) {
   if (from !== 'archive' && isPreStage(v) && !hasCode(p) && !await requireCode(p)) return false;
   saveFields(p.id, { status: v }, from, true);
   const t = from === 'archive' ? null : stageForStatus(p, v);
-  if (t) await moveProject(p.id, t);
+  if (t) { await moveProject(p.id, t); makeProxy(p); }
   return true;
 }
 ACT.labset = async el => {
@@ -1490,7 +1551,7 @@ async function requireCode(p) {
   if (!S.clients) { try { await loadClients(); } catch (e) {} }
   const c = findClient(p.client), guess = genCode(p.client_code || (c && c.code) || '', p.name);
   return new Promise(res => {
-    const m = openModal(`<h3>Project code needed</h3><div><b>${esc(p.name)}</b> cannot go into Pre Production until it has a project code. Enter it here, then it will move.</div>
+    const m = openModal(`<h3>Project code needed</h3><div><b>${esc(p.name)}</b> needs a project code before it can be set to Pre Production. Enter it here to carry on.</div>
       <div class="field"><span class="lbl">Project code</span><div class="row"><input class="inp" id="rcCodeIn" value="${esc(p.project_code || guess)}" placeholder="CLIENT_ProjectTitle"><button class="btn btn-ghost btn-sm" id="rcGen">Generate</button></div></div>
       <div class="errline" id="rcErr"></div>
       <div class="actions"><button class="btn btn-plain" data-r="0">Cancel</button><button class="btn btn-primary" data-r="1">Save code and continue</button></div>`);
@@ -1546,12 +1607,12 @@ function viewMine() {
   return `<div class="toolbar">${av(S.me.id, 'av-lg')}<div><div style="font-size:14px;font-weight:800">${esc(S.me.name)}</div><div class="muted" id="mineCount"></div></div>
     <div class="search" style="margin-left:8px"><i class="ti ti-search"></i><input class="inp" placeholder="Search my projects" value="${esc(S.mine.q)}" data-inp="mine-q"></div>
     <span id="sortChip">${sortChip('mine')}</span><span class="pill pill-lock" title="My projects is view only"><i class="ti ti-lock" style="font-size:12px;vertical-align:-2px"></i>&nbsp;View only</span><span class="spacer"></span>${collapseBtn('mine')}</div>
-    <div class="lock-note"><i class="ti ti-lock"></i><span><b>My projects is view only.</b> To change anything, edit it on the Project board.</span><span class="sp"></span><button class="btn btn-ghost btn-sm" data-act="go" data-v="pipeline">Go to Project board <kbd class="k">${navKey('pipeline')}</kbd></button></div>
+    <div class="lock-note"><i class="ti ti-lock"></i><span><b>My projects is view only.</b> To change anything, edit it on the Project board.</span><span class="sp"></span><button class="btn btn-ghost btn-sm" data-act="go" data-v="pipeline">Go to Project board</button></div>
     <div id="vb">${mineBody()}</div>`;
 }
 BODY.mine = mineBody;
 function mineBody() {
-  const q = norm(S.mine.q), mine = S.projects.filter(p => teamOf(p).includes(S.me.id) && (!q || norm(p.name + ' ' + p.client).includes(q)));
+  const q = norm(S.mine.q), mine = S.projects.filter(p => !isProxy(p) && teamOf(p).includes(S.me.id) && (!q || norm(p.name + ' ' + p.client).includes(q)));
   const val = (p, k) => k === 'role' ? norm(rolesOf(p, S.me.id)) : k === 'team' ? teamOf(p).length : k === 'timeline' ? epOf(p).s : norm(p[k]);
   const groups = S.cfg.stages.map(stage => { const items = sortRows(mine.filter(p => p.stage === stage).sort(bySort), 'mine', val); return { key: stage, title: stage, colour: stageColour(stage), items }; }).filter(g => g.items.length);
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('mine');
@@ -1765,10 +1826,10 @@ INP.co = el => {
 };
 
 /* ---- walkthrough: one project at a time, every question big on screen ---- */
-const wtQueue = () => S.wt.ids.map(projectById).filter(p => p && closeoutStages().includes(p.stage));
+const wtQueue = () => S.wt.ids.map(projectById).filter(p => p && !isProxy(p) && closeoutStages().includes(p.stage));
 function wtStart() {
   const stages = coStagesShown(), ids = [];
-  stages.forEach(s => S.projects.filter(p => p.stage === s && !canArchive(p)).sort(bySort).forEach(p => ids.push(p.id)));
+  stages.forEach(s => S.projects.filter(p => p.stage === s && !isProxy(p) && !canArchive(p)).sort(bySort).forEach(p => ids.push(p.id)));
   S.wt = { on: true, ids, i: 0 };
 }
 function wtRefresh() { const w = $('#wtWrap'); if (w) w.innerHTML = wtHTML(); const t = $('#coTable'); if (t) t.innerHTML = coTableHTML(); setVW(); }
@@ -1787,7 +1848,7 @@ ACT.wtpick = el => {
 function wtHTML() {
   const ed = canEdit(), F = coFields(), opts = S.cfg.closeout_options || {};
   if (!S.wt.on) {
-    const n = coStagesShown().reduce((a, s) => a + S.projects.filter(p => p.stage === s && !canArchive(p)).length, 0);
+    const n = coStagesShown().reduce((a, s) => a + S.projects.filter(p => p.stage === s && !isProxy(p) && !canArchive(p)).length, 0);
     return `<div class="wt"><div class="wt-idle"><div style="flex:1;min-width:220px"><div class="lbl">Team meeting mode</div><div class="big">Out processing walkthrough</div>
       <div class="muted">${n ? `${n} project${n === 1 ? '' : 's'} still ${n === 1 ? 'has' : 'have'} questions open. Go through them one at a time with every question on screen.` : 'Nothing has questions open right now.'}</div></div>
       <button class="btn btn-primary btn-lg" data-act="wtstart" ${n && ed ? '' : 'disabled'}><i class="ti ti-player-play"></i>Start walkthrough</button></div></div>`;
@@ -1843,7 +1904,7 @@ function viewFinance() {
 const finSelOpts = () => `<option value=""${!S.fin.inv ? ' selected' : ''}>Needs action</option><option value="__all"${S.fin.inv === '__all' ? ' selected' : ''}>Everything</option><option value="__none"${S.fin.inv === '__none' ? ' selected' : ''}>Not set</option>${INV_LABELS.map(l => `<option${S.fin.inv === l ? ' selected' : ''}>${esc(l)}</option>`).join('')}`;
 BODY.finance = finBody;
 function finBody() {
-  const all = S.projects, inv = p => fget(p, 'invoicing');
+  const all = S.projects.filter(p => !isProxy(p)), inv = p => fget(p, 'invoicing');
   const cnt = labs => all.filter(p => labs.includes(inv(p))).length;
   const tile = (key, t1, n, t3, col) => `<button class="fin-tile click${S.fin.inv === key ? ' sel' : ''}" style="background:${col}" data-act="fintile" data-g="${key}"><span class="t1">${t1}</span><span class="t2">${n}</span><span class="t3">${t3}</span></button>`;
   const a = cnt(INV_SEND), b = cnt(INV_PORTAL), c = cnt(INV_PAYWAIT), d = cnt(INV_ESTS);
@@ -2074,12 +2135,14 @@ function setDrawerSync(t) { const e = $('#dsync'); if (e) e.textContent = t; }
 const bgRefresh = debounce(() => { if (['pipeline', 'timeline', 'closeout', 'mine', 'archive', 'finance', 'pods'].includes(S.view) && !typing()) { rerenderBody(); } }, 250);
 
 function saveFields(id, fields, from, immediate) {
+  if (TMP[id]) id = TMP[id];
   const p = recordFor(id, from); if (!p || !canEdit()) return;
   Object.assign(p, fields);
   const key = (from === 'archive' ? 'a:' : 'p:') + id;
   pendingSave[key] = Object.assign(pendingSave[key] || {}, fields);
   clearTimeout(saveTimers[key]);
   const run = () => {
+    if (isTmp(id) && !TMP[id]) return; /* still being created: the edits wait here and go once it has a real id */
     const f = pendingSave[key]; delete pendingSave[key]; delete flushers[key]; if (!f) return;
     write('project_save', { id, fields: f, from: from === 'archive' ? 'archive' : undefined }).then(res => {
       const r = recordFor(id, from); if (r && res.project) ['fy', 'updated_at', 'updated_by', 'created_at'].forEach(k => { r[k] = res.project[k]; });
@@ -2149,7 +2212,7 @@ function drawerHTML(p, arch) {
       <div class="muted" style="font-size:11px">${ep.custom ? 'This is the edit period shown on Edit capacity.' : (ep.s ? 'Using the old project dates until you set a timeline.' : 'Not set yet.')}</div>`}
     ${pub ? '' : `<div class="sec-title"><span class="lbl">Finance</span></div>
     <div class="grid2"><div class="field"><span class="lbl">Budget (£)</span><input type="text" inputmode="decimal" class="inp gbp-inp" data-inp="pf" data-f="budget" value="${esc(fmoney(numOf(p.budget)))}" placeholder="£0" ${dis}></div>
-      ${arch ? '' : `<div class="field"><span class="lbl">Profit margin (%)</span><input type="number" step="0.1" class="inp" data-chg="pf-fin" data-k="profit_margin" value="${m == null ? '' : esc(m)}" ${dis}></div>`}</div>
+      ${arch ? '' : `<div class="field"><span class="lbl">Target PM (%)</span><input type="number" step="0.1" class="inp" data-chg="pf-fin" data-k="profit_margin" value="${m == null ? '' : esc(m)}" ${dis}></div>`}</div>
     ${arch ? '' : `<div class="field"><span class="lbl">Invoicing</span><select class="sel" data-chg="pf-fin" data-k="invoicing" ${dis}>${optList(INV_LABELS, invV, '-')}</select></div>`}
     <div class="field"><span class="lbl">Notes</span><textarea class="txt" data-inp="pf" data-f="notes" ${dis}>${esc(p.notes)}</textarea></div>
     <div class="sec-title"><span class="lbl">Out processing</span></div>
@@ -2283,18 +2346,37 @@ ACT.delproject = async el => {
 };
 
 /* ---------------- new project ---------------- */
-/* New project: create an empty record and open the full drawer so everything can be filled in at once */
+/* New project: the pane opens straight away on a temporary record while the sheet makes the real one.
+   Anything typed in the meantime is held, then saved against the real id the moment it arrives. */
 ACT.newproject = async el => {
   if (!canEdit() || S._creating) return; S._creating = true;
+  let stage = el && el.dataset && el.dataset.stage ? el.dataset.stage : S.cfg.stages[0];
+  if (isPreStage(stage)) { stage = S.cfg.stages.find(x => !isPreStage(x)) || S.cfg.stages[0]; toast('Add a project code to move it into Pre-production'); }
+  const tid = 'tmp_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const ph = { id: tid, name: 'New project', stage, client: '', client_code: '', project_code: '', status: '', lead: '', creative: [], production: [], edit: [], budget: '', notes: '', size_location: '', sort: '' };
+  S.projects.push(ph); renderView(); closePop();
+  openDrawer(tid); S.drawerNew = tid; refreshDrawer(true); setDrawerSync('Creating');
+  if (!S.clients) loadClients().then(() => { if (S.drawer === tid && !focusInDrawer()) refreshDrawer(); });
+  const n = $('#drawer .name-inp'); if (n) { n.focus(); n.select(); }
   try {
-    let stage = el && el.dataset && el.dataset.stage ? el.dataset.stage : S.cfg.stages[0];
-    if (isPreStage(stage)) { stage = S.cfg.stages.find(x => !isPreStage(x)) || S.cfg.stages[0]; toast('Add a project code to move it into Pre-production'); }
-    const d = await write('project_save', { fields: { name: 'New project', stage } });
-    S.projects.push(d.project); renderView(); closePop();
-    openDrawer(d.project.id); S.drawerNew = d.project.id; refreshDrawer(true);
-    if (!S.clients) loadClients().then(() => { if (S.drawer === d.project.id && !focusInDrawer()) refreshDrawer(); });
-    const n = $('#drawer .name-inp'); if (n) { n.focus(); n.select(); }
-  } catch (e) { /* surfaced by write() */ } finally { S._creating = false; }
+    const d = await write('project_save', { fields: { name: 'New project', stage }, _tmp: tid });
+    const mine = S.projects.find(x => x.id === tid), real = d.project;
+    if (!mine) { /* the list was refreshed from the sheet before we got here, so the real record is already in it */ return; }
+    const tk = 'p:' + tid, held = pendingSave[tk] || {};
+    delete pendingSave[tk]; clearTimeout(saveTimers[tk]); delete flushers[tk];
+    Object.assign(mine, real, held);
+    if (S.fx[tid]) { S.fx[real.id] = S.fx[tid]; delete S.fx[tid]; saveFx(); }
+    if (S.drawer === tid) S.drawer = real.id; if (S.drawerNew === tid) S.drawerNew = real.id;
+    if (Object.keys(held).length) saveFields(real.id, held, null, true); else setDrawerSync('Saved');
+    if (!typing()) { renderView(); } else S.stale = true;
+    if (S.drawer === real.id && !focusInDrawer()) refreshDrawer(true);
+  } catch (e) {
+    /* creation failed (write() has already shown why): take the temporary record back out */
+    S.projects = S.projects.filter(x => x.id !== tid);
+    delete pendingSave['p:' + tid]; clearTimeout(saveTimers['p:' + tid]); delete flushers['p:' + tid];
+    if (S.drawer === tid) closeDrawer(true);
+    renderView();
+  } finally { S._creating = false; }
 };
 
 /* ---------------- feedback ---------------- */
@@ -2491,7 +2573,7 @@ function setSystem() {
       <span class="muted">Who sees Settings</span><span>Admin and superadmin accounts. Everyone else does not see this page.</span>
       <span class="muted">Timeline</span><span>${where('edit_start')}</span>
       <span class="muted">Invoicing</span><span>${where('invoicing')}</span>
-      <span class="muted">Profit margin</span><span>${where('profit_margin')}</span>
+      <span class="muted">Target PM</span><span>${where('profit_margin')}</span>
       <span class="muted">Saved pods</span><span>Saved in each browser</span>
       <span class="muted">Column sizes and sorting</span><span>Saved per browser</span></div></div>
     <div class="panel pad"><div class="lbl" style="margin-bottom:6px">Read-only live link</div>
