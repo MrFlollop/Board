@@ -18,7 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,800;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
-/* BOARD alpha 0.6.1. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
+/* BOARD alpha 0.7.0. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
 :root {
   color-scheme: light;
   --stp: #FF50BD; --stp-hover: #D93EA6; --stp-light: #FFE8F7; --stp-alpha: rgba(255,80,189,0.12);
@@ -512,11 +512,15 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .healthbar { display: flex; align-items: flex-start; gap: 10px; padding: 9px 20px; background: var(--color-text-danger); color: #fff; font-size: 12px; font-weight: 600; flex: none; line-height: 1.45; }
 .healthbar i.ti { font-size: 17px; flex: none; } .healthbar ul { margin: 4px 0 0; padding-left: 18px; font-weight: 500; } .healthbar .sp { flex: 1; }
 .healthbar .btn { background: rgba(255,255,255,.22); color: #fff; min-height: 28px; padding: 4px 12px; } .healthbar .btn:hover { background: rgba(255,255,255,.34); }
-/* 0.6.1: celebration when a project is marked complete */
+/* 0.7.0: an out of date copy of the page shows a calmer bar */
+.healthbar.stale { background: var(--black); }
+/* 0.6.1: celebration when a project is marked complete (0.7.0: floppy disks when one is archived) */
 .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 95; overflow: hidden; }
 .confetti span { position: absolute; top: -70px; line-height: 1; animation-name: st-fall; animation-timing-function: cubic-bezier(.35,.1,.6,1); animation-fill-mode: forwards; will-change: transform; }
 @keyframes st-fall { to { transform: translateY(calc(100vh + 140px)) rotate(var(--r, 360deg)); } }
 @media (prefers-reduced-motion: reduce) { .confetti { display: none; } }
+/* 0.7.0: fixed statuses shown read-only in Settings */
+.status-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 
 /* ---------- mobile ---------- */
 @media (max-width: 860px) {
@@ -549,6 +553,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
   .wt-title { font-size: 24px; } .wt-body, .wt-grid, .wt-foot, .wt-size { padding-left: 16px; padding-right: 16px; }
   .wt-grid { grid-template-columns: 1fr; }
   .fin-tiles { padding: 12px 14px 4px; } .pods { padding: 12px 14px 90px; grid-template-columns: 1fr; } .pod-builder { margin: 12px 14px 0; left: 14px; }
+  .healthbar { padding: 9px 14px; }
   /* 0.5 phones: every table turns into a stack of cards (name and open button on top, the rest in two columns) */
   table.tv { display: block; width: auto !important; }
   .tv colgroup, .tv thead, .tv tr.stage-spacer { display: none; }
@@ -596,15 +601,15 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 (function () {
 'use strict';
 /* ================================================================
-   BOARD alpha 0.6.1. Core: config, state, colours, API, queue, shell, login, routing
+   BOARD alpha 0.7.0. Core: config, state, colours, API, queue, shell, login, routing
    ================================================================ */
 
 /* ---- CONFIG: your Apps Script web app URL ---- */
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '0.6.1-alpha';
-const MIN_SCHEMA = 7;   /* the backend must report at least this, or BOARD warns that changes may not save */
+const APP_VERSION = '0.7.0-alpha';
+const MIN_SCHEMA = 8;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
 const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
 /* Sunday Treat logo files, kept in the repo next to index.html. Dark text for light areas, white text for dark areas. If a file is missing, a text wordmark shows instead. */
@@ -634,7 +639,7 @@ const S = {
   projects: [], version: 0, readonly: false, readonlyKey: '', adminKey: '', health0: null,
   view: 'pipeline',
   f: { q: '', person: '', status: '' },
-  ec: { weeks: 2, internal: false, person: '' },
+  ec: { days: 10, internal: false, person: '' },
   co: { q: '', stage: '', incomplete: false },
   wt: { on: false, ids: [], i: 0 },
   fin: { q: '', inv: '' },
@@ -658,6 +663,12 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&a
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 const uniq = a => Array.from(new Set(a));
 const norm = s => String(s || '').trim().toLowerCase();
+/* compares two build numbers like 0.7.0-alpha: 1 when a is newer, -1 when older, 0 when the same */
+function vcmp(a, b) {
+  const pa = String(a || '').split(/[^0-9]+/).filter(Boolean).map(Number), pb = String(b || '').split(/[^0-9]+/).filter(Boolean).map(Number);
+  for (let i = 0; i < 3; i++) { const x = pa[i] || 0, y = pb[i] || 0; if (x !== y) return x > y ? 1 : -1; }
+  return 0;
+}
 
 /* 0.6.1: anything that arrives from the sheet with an odd id is set aside, so a stray edit in the sheet can never inject code into the page */
 const SAFE_ID = /^[A-Za-z0-9_-]{1,64}$/;
@@ -751,13 +762,15 @@ const teamOf = p => uniq(acctLeads(p).concat(acctCover(p) ? [acctCover(p)] : [],
 const LEAD_ROLES = [['lead', 'Account lead', 'Account'], ['creative', 'Creative lead', 'Creative'], ['production', 'Production lead', 'Production'], ['edit', 'Edit lead', 'Edit']];
 const leadOf = (p, role) => (role === 'lead' ? (p.lead || '') : ((p[role] || [])[0] || ''));
 
-/* ---------------- status + invoicing labels (Monday colours) ---------------- */
-const EXTRA_STATUSES = ['Complete', 'Awaiting Handover', 'Archive'];
-const statusList = () => S.cfg.statuses.concat(EXTRA_STATUSES.filter(s => !S.cfg.statuses.includes(s)));
+/* ---------------- status + invoicing labels (Monday colours) ----------------
+   0.7.0: statuses are part of BOARD's code, the same for everyone, and no longer edited in Settings.
+   Archiving is not a status: it happens from Out Processing. Keep this list in step with STATUSES in Code.gs. */
+const STATUSES = ['Writing Pitch', 'Tendering', 'Awaiting KO', 'Pre Production', 'Edit', 'Awaiting Client Feedback', 'Awaiting Handover', 'Complete', 'Failed Pitch', 'Cancelled Project'];
+const statusList = () => STATUSES.slice();
 const STATUS_COL = {
   'complete': '#BADB66', 'awaiting client feedback': '#70CE92', 'writing pitch': '#F1B7F1', 'tendering': '#99D4FC', 'failed pitch': '#D9707F',
   'awaiting ko': '#EB559F', 'pre production': '#F8D756', 'cancelled project': '#F09695', 'edit': '#6146A3',
-  'awaiting handover': '#E8873A', 'archive': '#797E91'
+  'awaiting handover': '#E8873A'
 };
 const LABEL_FALLBACK = ['#549DCA', '#87D4CC', '#F4BF73', '#9B7FD4', '#69D196'];
 function statusColour(s) {
@@ -765,8 +778,12 @@ function statusColour(s) {
   const c = STATUS_COL[norm(s)]; if (c) return legible(c, 2);
   const i = statusList().indexOf(s); return legible(LABEL_FALLBACK[(i < 0 ? 0 : i) % LABEL_FALLBACK.length], 2);
 }
-const INV_LABELS = ['Not invoiced', 'No Estimate', 'Estimate Pending', 'Estimate Accepted', 'Partially invoiced', 'Sent but not portal uploaded', 'Invoiced', 'Paid', 'n/a'];
-const INV_COL = { 'Not invoiced': '#F4BF73', 'No Estimate': '#797E91', 'n/a': '#999999', 'Estimate Accepted': '#549DCA', 'Partially invoiced': '#F7C1C1', 'Estimate Pending': '#F08A62', 'Sent but not portal uploaded': '#F19596', 'Invoiced': '#87D4CC', 'Paid': '#69D196' };
+/* 0.7.0: five invoicing labels. A new project starts blank (not set). Older labels are read as their nearest new one until upgradeTo070() rewrites the sheet. */
+const INV_LABELS = ['Not Invoiced', 'Partially Invoiced', 'Invoiced', 'Paid', 'N/A'];
+const INV_LEGACY = { 'not invoiced': 'Not Invoiced', 'no estimate': 'Not Invoiced', 'estimate pending': 'Not Invoiced', 'estimate accepted': 'Not Invoiced', 'partially invoiced': 'Partially Invoiced', 'sent but not portal uploaded': 'Invoiced', 'invoiced': 'Invoiced', 'paid': 'Paid', 'n/a': 'N/A', 'na': 'N/A' };
+const normInv = v => INV_LEGACY[norm(v)] || (v ? String(v) : '');
+const invOf = p => normInv(fget(p, 'invoicing'));
+const INV_COL = { 'Not Invoiced': '#F4BF73', 'Partially Invoiced': '#F08A62', 'Invoiced': '#87D4CC', 'Paid': '#69D196', 'N/A': '#999999' };
 const invColour = v => (v ? legible(INV_COL[v] || '#797E91', 2) : '#9AA0AB');
 /* a label that fills its whole cell, Monday style */
 function labCell(label, col, attrs, ed, blank) {
@@ -854,16 +871,17 @@ function openPop(anchor, html) {
 }
 function closePop() { $('#pop') && $('#pop').remove(); }
 
-/* ---------------- celebration (0.6.1): emoji rain when a project is marked complete ---------------- */
+/* ---------------- celebration: emoji rain when a project is marked complete (0.6.1), floppy disks when one is archived (0.7.0) ---------------- */
 const PARTY = ['\u{1F389}', '\u{1F973}', '\u{1F38A}', '\u{2728}', '\u{1F37E}', '\u{1F9E1}', '\u{1F496}', '\u{1F31F}'];
-function celebrate() {
+const FLOPPY = ['\u{1F4BE}'];
+function celebrate(set = PARTY) {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const box = document.createElement('div'); box.className = 'confetti'; box.setAttribute('aria-hidden', 'true');
   const n = innerWidth < 600 ? 45 : 90;
   let html = '';
   for (let i = 0; i < n; i++) {
     const left = Math.random() * 100, size = 20 + Math.random() * 26, dur = 2.2 + Math.random() * 2.2, delay = Math.random() * 1.4, rot = (Math.random() < .5 ? -1 : 1) * (180 + Math.random() * 540);
-    html += `<span style="left:${left.toFixed(2)}vw;font-size:${size.toFixed(0)}px;animation-duration:${dur.toFixed(2)}s;animation-delay:${delay.toFixed(2)}s;--r:${rot.toFixed(0)}deg">${PARTY[i % PARTY.length]}</span>`;
+    html += `<span style="left:${left.toFixed(2)}vw;font-size:${size.toFixed(0)}px;animation-duration:${dur.toFixed(2)}s;animation-delay:${delay.toFixed(2)}s;--r:${rot.toFixed(0)}deg">${set[i % set.length]}</span>`;
   }
   box.innerHTML = html; document.body.appendChild(box);
   setTimeout(() => box.remove(), 6000);
@@ -940,14 +958,18 @@ let notSaved = [];
 function renderHealthBar() {
   const bar = $('#healthbar'); if (!bar) return;
   const h = S.health0, bad = h && !h.ok, lost = notSaved.length, odd = isAdmin() && badRows.length;
-  bar.hidden = !bad && !lost && !odd; if (bar.hidden) return;
+  /* 0.7.0: the backend is newer than this page, so this browser is showing an old copy of BOARD */
+  const stale = !!h && h.server !== 'unknown' && vcmp(h.server, APP_VERSION) > 0;
+  bar.hidden = !bad && !lost && !odd && !stale; if (bar.hidden) return;
+  bar.classList.toggle('stale', stale && !bad && !lost && !odd);
+  const staleTxt = stale ? `This is an old copy of BOARD (${esc(APP_VERSION)}). Version ${esc(h.server)} is out. Reload the page to update.` : '';
   const old = h && h.schema < MIN_SCHEMA;
-  const why = old ? `The backend is version ${esc(h.server)}, but this BOARD needs 0.6.1 or newer.` : (h && !h.ok ? 'The BOARD. Database sheet is missing something BOARD needs.' : '');
+  const why = old ? `The backend is version ${esc(h.server)}, but this BOARD needs 0.7.0 or newer.` : (h && !h.ok ? 'The BOARD. Database sheet is missing something BOARD needs.' : '');
   const lostTxt = lost ? `Not saved: ${esc(uniq(notSaved).join(', '))}.` : '';
   const oddTxt = odd ? `${badRows.length} row${badRows.length === 1 ? '' : 's'} in the sheet ${badRows.length === 1 ? 'has' : 'have'} an id BOARD does not accept (${esc(uniq(badRows).join(', '))}), so ${badRows.length === 1 ? 'it is' : 'they are'} hidden. Ids can only use letters, numbers, - and _.` : '';
   const list = isAdmin() && h && h.problems.length ? `<ul>${h.problems.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
-  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo061().' : 'Oli has been emailed. Run upgradeTo061() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
-  bar.innerHTML = `<i class="ti ti-alert-triangle"></i><div><div>${why} ${lostTxt} ${oddTxt} ${fix}</div>${list}</div><span class="sp"></span>${lost ? '<button class="btn btn-sm" data-act="healthok">Dismiss</button>' : ''}`;
+  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo070().' : 'Oli has been emailed. Run upgradeTo070() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
+  bar.innerHTML = `<i class="ti ${stale && !bad ? 'ti-refresh' : 'ti-alert-triangle'}"></i><div><div>${staleTxt} ${why} ${lostTxt} ${oddTxt} ${fix}</div>${list}</div><span class="sp"></span>${stale ? '<button class="btn btn-sm" data-act="reload">Reload</button>' : ''}${lost ? '<button class="btn btn-sm" data-act="healthok">Dismiss</button>' : ''}`;
 }
 let refreshing = false;
 async function refresh() {
@@ -973,16 +995,12 @@ addEventListener('focus', poll);
 addEventListener('online', poll);
 addEventListener('offline', () => { if (S.token) setSync('offline'); });
 
-/* ---------------- seed new statuses / Freelancers department (admins only, once) ---------------- */
+/* ---------------- seed the Freelancers department (admins only, once) ---------------- */
 let seeded = false;
 async function seedDefaults() {
   if (seeded) return; seeded = true;
   try {
-    if (isAdmin()) {
-      const miss = EXTRA_STATUSES.filter(s => !S.cfg.statuses.includes(s));
-      if (miss.length) { const r = await write('config_save', { key: 'statuses', value: S.cfg.statuses.concat(miss) }); S.cfg = Object.assign(S.cfg, r.config); }
-      if (!S.depts.some(d => /freelanc/i.test(d.name))) { const r = await write('dept_save', { department: { name: 'Freelancers', colour: '#7D8493' } }); S.depts = r.departments; }
-    }
+    if (isAdmin() && !S.depts.some(d => /freelanc/i.test(d.name))) { const r = await write('dept_save', { department: { name: 'Freelancers', colour: '#7D8493' } }); if (Array.isArray(r.departments)) S.depts = cleanList(r.departments, 'department'); }
     await migrateLocalPods();
     renderView();
   } catch (e) { /* surfaced by write() */ }
@@ -1054,14 +1072,16 @@ function renderShell() {
 
 /* ---------------- stand-up lock ----------------
    Whoever starts it has the board for 15 minutes: they are the only person who can edit. Everyone else can still look.
-   Saved by the backend as the config key standup_lock_until ("ISO time|name|person id"), and enforced there too. */
+   Saved by the backend as the config key standup_lock_until ("ISO time|name|person id"), and enforced there too.
+   0.7.0: the holder is matched on their person id, ignoring stray spaces and capitals, and the backend says who holds it in every reply. */
 const LOCK_MIN = 15;
 let lockWas = null;
 function lockInfo() {
-  const parts = String((S.cfg || {}).standup_lock_until || '').split('|'), t = Date.parse(parts[0]);
-  return !isNaN(t) && t > Date.now() ? { until: t, by: parts[1] || '', id: parts[2] || '' } : null;
+  const parts = String((S.cfg || {}).standup_lock_until || '').split('|'), t = Date.parse(String(parts[0] || '').trim());
+  return !isNaN(t) && t > Date.now() ? { until: t, by: String(parts[1] || '').trim(), id: String(parts[2] || '').trim() } : null;
 }
-const isLockHolder = li => !!li && !!S.me && (li.id ? li.id === S.me.id : !!li.by && norm(li.by) === norm(S.me.name));
+const sameId = (a, b) => !!a && !!b && norm(a) === norm(b);
+const isLockHolder = li => !!li && !!S.me && (li.id ? sameId(li.id, S.me.id) : !!li.by && norm(li.by) === norm(S.me.name));
 const lockAllowsMe = () => { const li = lockInfo(); return !li || isLockHolder(li); };
 const lockKey = () => { const li = lockInfo(); return li ? li.until + '|' + li.id : ''; };
 const mmss = ms => { const t = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
@@ -1093,7 +1113,13 @@ setInterval(() => {
   const t = mmss(li.until - Date.now()); ['#lockT1', '#lockT2'].forEach(q => { const e = $(q); if (e) e.textContent = t; });
 }, 1000);
 async function setLock(minutes) {
-  try { flushAll(); const r = await write('standup_lock', { minutes }); S.cfg = Object.assign(S.cfg, r.config); } catch (e) { /* write() shows why */ }
+  try {
+    flushAll();
+    const r = await write('standup_lock', { minutes });
+    S.cfg = Object.assign(S.cfg, r.config);
+    /* the backend tells us who it thinks holds the lock. If that is us but this page disagrees, trust the backend's id for us. */
+    if (minutes > 0 && r.holder && S.me && r.holder !== S.me.id && sameId(r.holder, S.me.id)) S.me.id = r.holder;
+  } catch (e) { /* write() shows why */ }
   lockChanged();
 }
 function markNav() {
@@ -1148,10 +1174,16 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('change', e => { const t = e.target.closest('[data-chg]'); if (t && INP[t.dataset.chg]) INP[t.dataset.chg](t, e); });
 document.addEventListener('input', e => { const t = e.target.closest('[data-inp]'); if (t && INP[t.dataset.inp]) INP[t.dataset.inp](t, e); });
+/* 0.7.0: the number keys jump between pages again (1 is the first page in the sidebar, 2 the next, and so on). Nothing is shown for them. */
+const inField = t => !!t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable);
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { if ($('#modal')) closeModal(); else if ($('#pop')) closePop(); else if (S.drawer) closeDrawer(); else if (document.activeElement && document.activeElement.classList.contains('cell-inp')) { document.activeElement.value = document.activeElement.defaultValue; document.activeElement.blur(); } }
   else if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('cell-inp') && e.target.tagName === 'INPUT') e.target.blur();
   else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && S.view === 'closeout' && S.wt.on && !typing() && !$('#modal') && !S.drawer) { e.preventDefault(); wtGo(e.key === 'ArrowRight' ? 1 : -1); }
+  else if (/^[1-9]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey && !e.repeat && S.me && !S.readonly && !$('#modal') && !inField(e.target) && !inField(document.activeElement)) {
+    const n = navItems()[Number(e.key) - 1]; if (!n) return;
+    e.preventDefault(); closePop(); if (S.drawer) closeDrawer(); go(n.id);
+  }
 });
 
 ACT.standup = async () => {
@@ -1160,10 +1192,12 @@ ACT.standup = async () => {
   if (!canEditBase()) return;
   if (!await confirmBox(`Take the board for ${LOCK_MIN} minutes? Only you will be able to make changes. Everyone else can still look around, and sees that you have the board. You or an admin can unlock early.`, 'Take the board', false, 'Stand-up lock')) return;
   await setLock(LOCK_MIN);
+  if (lockInfo() && !lockAllowsMe()) toast('The lock is on but BOARD does not recognise you as the holder. Please send feedback.', 'err');
 };
 
 ACT.go = el => { closePop(); go(el.dataset.v); };
 ACT.signout = () => signOut();
+ACT.reload = () => location.reload();
 ACT.more = el => {
   const items = NAV.filter(n => (seesMoney() ? ['timeline', 'pods', 'archive', 'codes', 'settings'] : []).includes(n.id) && navOk(n));
   openPop(el, items.map(n => `<button data-act="go" data-v="${n.id}"><i class="ti ${n.icon}"></i>${n.label}</button>`).join('') +
@@ -1205,7 +1239,8 @@ async function showLogin(msg, kind) {
   if (!API) { $('#alphaNote').innerHTML = '<b>No backend connected.</b> Paste your Apps Script web app URL into <code>API_URL</code> at the top of index.html.'; return; }
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=ping').then(x => x.json());
-    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#alphaNote')) $('#alphaNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs 0.6.1. Oli: update Code.gs and run upgradeTo061().`;
+    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#alphaNote')) $('#alphaNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs 0.7.0. Oli: update Code.gs and run upgradeTo070().`;
+    else if (r && vcmp(r.server_version, APP_VERSION) > 0 && $('#alphaNote')) $('#alphaNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
   } catch (e) {}
 }
 async function fetchLogin(user, pass) {
@@ -1346,7 +1381,7 @@ const PIPE_COLS = [
   { k: 'timeline', l: 'Edit timeline', tip: 'Edit timeline', w: 200, date: 1, cc: 1 },
   { k: 'budget', l: 'Budget', w: 120, num: 1, priv: 1 },
   { k: 'margin', l: 'Target PM', tip: 'Target profit margin', w: 120, num: 1, priv: 1 },
-  { k: 'invoicing', l: 'Invoicing', w: 210, priv: 1 },
+  { k: 'invoicing', l: 'Invoicing', w: 190, priv: 1 },
   { k: 'act', l: '', w: 52, min: 52, nosort: 1, noresize: 1 }
 ];
 function pipeCols() { return withFirst(PIPE_COLS.filter(c => (!c.ed || canEdit()) && (!c.priv || seesMoney()))); }
@@ -1355,7 +1390,8 @@ function pipeVal(p, k) {
   if (k === 'timeline') return epOf(p).s || '';
   if (k === 'budget') return numOf(p.budget);
   if (k === 'margin') return marginOf(p);
-  if (k === 'invoicing') { const v = fget(p, 'invoicing'); return v ? INV_LABELS.indexOf(v) + 1 || 99 : ''; }
+  if (k === 'invoicing') { const v = invOf(p); if (!v) return ''; const i = INV_LABELS.indexOf(v); return i < 0 ? 99 : i + 1; }
+  if (k === 'status') { const i = STATUSES.indexOf(p.status); return p.status ? (i < 0 ? 99 : i + 1) : ''; }
   return norm(p[k]);
 }
 function roSeg(active) {
@@ -1399,7 +1435,7 @@ function leadCell(p, role, ed) {
   return ed ? `<button class="cell-btn" data-act="leadpick" data-id="${p.id}" data-role="${role}" title="${esc(label)}${names ? ': ' + esc(names) : ''}">${inner}</button>` : (list.length ? `<span title="${esc(names)}">${inner}</span>` : '');
 }
 /* the timeline goes red (with a warning) once the last day is today or has passed, unless the project is finished with */
-const TL_DONE = ['complete', 'cancelled project', 'failed pitch', 'awaiting handover', 'archive'];
+const TL_DONE = ['complete', 'cancelled project', 'failed pitch', 'awaiting handover'];
 function tlOverdue(p) {
   if (!p || closeoutStages().includes(p.stage) || TL_DONE.includes(norm(p.status))) return false;
   const e = epOf(p).e; return !!e && e <= todayStr();
@@ -1426,7 +1462,7 @@ function pipeRow(p, g, cols) {
       case 'timeline': return td(c, g, timelineCell(p, ed), 'cc');
       case 'budget': return td(c, g, ed ? `<input type="text" inputmode="decimal" class="cell-inp num gbp-inp" data-chg="cell" data-id="${p.id}" data-f="budget" value="${esc(fmoney(numOf(p.budget)))}" placeholder="£0">` : `<span class="cell-txt num" style="text-align:right">${esc(fmoney(p.budget))}</span>`);
       case 'margin': return td(c, g, marginCell(p, ed));
-      case 'invoicing': { const v = fget(p, 'invoicing'); return td(c, g, labCell(v, invColour(v), `data-act="labpick" data-kind="invoicing" data-id="${p.id}"`, ed), 'zp'); }
+      case 'invoicing': { const v = invOf(p); return td(c, g, labCell(v, invColour(v), `data-act="labpick" data-kind="invoicing" data-id="${p.id}"`, ed), 'zp'); }
       case 'act': return td(c, g, `<button class="icon-btn" data-act="open" data-id="${p.id}" title="Open details"><i class="ti ti-layout-sidebar-right"></i></button>`, 'act');
       default: return td(c, g, '');
     }
@@ -1460,8 +1496,8 @@ INP.fin = el => {
 ACT.labpick = el => {
   if (!canEdit()) return;
   const kind = el.dataset.kind, id = el.dataset.id, p = projectById(id); if (!p) return;
-  const list = kind === 'status' ? statusList().concat(p.status && !statusList().includes(p.status) ? [p.status] : []) : INV_LABELS;
-  const cur = kind === 'status' ? p.status : fget(p, 'invoicing');
+  const list = kind === 'status' ? statusList() : INV_LABELS;
+  const cur = kind === 'status' ? p.status : invOf(p);
   const colOf = kind === 'status' ? statusColour : invColour;
   openPop(el, `<div class="lab-grid">${list.map(l => `<button class="lab-opt${l === cur ? ' cur' : ''}" style="background:${colOf(l)}" data-act="labset" data-kind="${kind}" data-id="${id}" data-v="${esc(l)}">${esc(l)}</button>`).join('')}</div>` +
     (cur ? `<div class="sep"></div><button data-act="labset" data-kind="${kind}" data-id="${id}" data-v=""><i class="ti ti-eraser"></i>Clear</button>` : ''));
@@ -1483,7 +1519,7 @@ async function setStatus(p, v, from) {
   if (done && !await confirmBox(`Mark "${p.name}" as complete? It will move off the Project board to Out Processing, where the closeout checklist is worked through before it is archived.`, 'Mark complete', false, 'Project complete')) return false;
   saveFields(p.id, { status: v }, from, true);
   if (t) await moveProject(p.id, t);
-  if (done) { celebrate(); toast('\u{1F389} ' + p.name + ' is complete. Nice work.'); }
+  if (done) { celebrate(PARTY); toast('\u{1F389} ' + p.name + ' is complete. Nice work.'); }
   return true;
 }
 ACT.labset = async el => {
@@ -1695,9 +1731,10 @@ function mineBody() {
 INP['mine-q'] = el => { S.mine.q = el.value; rerenderBody(); };
 
 /* ================================================================
-   Edit capacity (Tools). Post production + freelancers, weekdays only, default view is the next 2 weeks
+   Edit capacity (Tools). Post production + freelancers, weekdays only.
+   0.7.0: sized in working days, and opens on today (not the Monday of this week). Default is the next 10 working days.
    ================================================================ */
-const TL_BEFORE = 4, TL_WEEKS = 40, WEEK_OPTS = [2, 4, 8, 12];
+const TL_BEFORE = 4, TL_WEEKS = 40, DAY_OPTS = [5, 10, 20, 40, 60];
 const tlLabelW = () => (innerWidth <= 860 ? 150 : 250);
 function monday(d) { const x = new Date(d.getTime()); const dow = (x.getUTCDay() + 6) % 7; return new Date(x.getTime() - dow * MS_DAY); }
 function isoWeek(d) { const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())); const dn = (t.getUTCDay() + 6) % 7; t.setUTCDate(t.getUTCDate() - dn + 3); const ft = new Date(Date.UTC(t.getUTCFullYear(), 0, 4)); return 1 + Math.round(((t - ft) / MS_DAY - 3 + ((ft.getUTCDay() + 6) % 7)) / 7); }
@@ -1720,15 +1757,15 @@ function ecStages() {
 const ecPeople = () => activePeople().filter(p => /post|freelanc/i.test((deptById(p.department) || {}).name || ''));
 function ecDayW() {
   const cw = ($('#content') || {}).clientWidth || (innerWidth - 236);
-  return Math.max(14, Math.floor((cw - tlLabelW() - 2) / (S.ec.weeks * 5)));
+  return Math.max(14, Math.floor((cw - tlLabelW() - 2) / (S.ec.days || 10)));
 }
 function viewEditCapacity() {
   const ppl = ecPeople();
   return `<div class="toolbar">
     ${roSeg('timeline')}
     <select class="sel sel-sm" data-chg="ec-person">${personOpts(S.ec.person, 'Everyone in post and freelancers', ppl)}</select>
-    <select class="sel sel-sm" data-chg="ec-weeks" title="How much time fits on screen">${WEEK_OPTS.map(w => `<option value="${w}"${w === S.ec.weeks ? ' selected' : ''}>Next ${w} weeks</option>`).join('')}</select>
-    <button class="btn btn-plain btn-sm" data-act="tltoday">This week</button>
+    <select class="sel sel-sm" data-chg="ec-days" title="How many working days fit on screen">${DAY_OPTS.map(d => `<option value="${d}"${d === S.ec.days ? ' selected' : ''}>Next ${d} working days</option>`).join('')}</select>
+    <button class="btn btn-plain btn-sm" data-act="tltoday">Today</button>
     ${hasInternal() ? `<label class="row muted" style="font-size:12px;gap:6px"><input type="checkbox" class="toggle" data-chg="ec-internal" ${S.ec.internal ? 'checked' : ''}> Include internal post production</label>` : ''}
   </div><div id="vb">${ecBody()}</div>`;
 }
@@ -1781,15 +1818,16 @@ function ecBody() {
   return `<div class="tl" style="width:${LW + W}px">${head}<div style="position:relative">${grid}${showToday ? `<div class="tl-today" style="left:${tx}px"></div>` : ''}${rows}</div>
     <div class="legend">${used.map(s => `<span><i style="background:${statusColour(s)}"></i>${esc(s)}</span>`).join('')}<span><i style="background:#D97706"></i>2 overlapping</span><span><i style="background:#DC2626"></i>3 or more overlapping</span><span class="muted">Drag a bar to move it, drag its ends to resize. The Timeline column on the Project board sets the same dates.</span></div></div>`;
 }
+/* 0.7.0: scrolls so today is the first day showing, with the next working days after it */
 function scrollTimelineToToday() {
   const c = $('#vb'); if (!c) return;
-  const dayW = S._dayW || ecDayW(), idx = Math.floor(wdIndex(todayStr(), tlStart(), 'start') / 5) * 5;
+  const dayW = S._dayW || ecDayW(), idx = wdIndex(todayStr(), tlStart(), 'start');
   c.scrollLeft = Math.max(0, idx * dayW);
 }
 ACT.tltoday = () => scrollTimelineToToday();
 INP['ec-person'] = el => { S.ec.person = el.value; rerenderBody(); };
 INP['ec-internal'] = el => { S.ec.internal = el.checked; rerenderBody(); };
-INP['ec-weeks'] = el => { S.ec.weeks = Number(el.value) || 2; rerenderBody(); scrollTimelineToToday(); };
+INP['ec-days'] = el => { S.ec.days = Number(el.value) || 10; rerenderBody(); scrollTimelineToToday(); };
 
 /* drag / resize timelines, click an empty row to create one */
 document.addEventListener('pointerdown', e => {
@@ -1948,18 +1986,19 @@ function wtHTML() {
 /* ================================================================
    Finance
    ================================================================ */
-/* Finance is a reminder pane: which invoices still need sending, uploading or chasing. No profit or budget numbers here. */
-const INV_SEND = ['Not invoiced', 'Estimate Accepted', 'Partially invoiced'];
-const INV_PORTAL = ['Sent but not portal uploaded'];
+/* Finance is a reminder pane: which invoices still need sending or chasing. No profit or budget numbers here.
+   0.7.0: built on the five invoicing labels. Needs action = Not Invoiced, Partially Invoiced and Invoiced (awaiting payment).
+   Projects with invoicing left blank (pitches, early tenders) stay out of Needs action; pick Not set to see them. */
+const INV_SEND = ['Not Invoiced'];
+const INV_PART = ['Partially Invoiced'];
 const INV_PAYWAIT = ['Invoiced'];
-const INV_ESTS = ['No Estimate', 'Estimate Pending'];
-const INV_ACTION = [].concat(INV_SEND, INV_PORTAL, INV_PAYWAIT, INV_ESTS);
-const INV_GROUPS = { 'g:send': INV_SEND, 'g:portal': INV_PORTAL, 'g:pay': INV_PAYWAIT, 'g:est': INV_ESTS };
+const INV_ACTION = [].concat(INV_SEND, INV_PART, INV_PAYWAIT);
+const INV_GROUPS = { 'g:send': INV_SEND, 'g:part': INV_PART, 'g:pay': INV_PAYWAIT };
 const FIN_COLS = [
   { k: 'name', l: 'Project', w: 320, min: 140, sticky: 1 }, { k: 'client', l: 'Client', w: 190 }, { k: 'stage', l: 'Stage', w: 170 },
-  { k: 'lead', l: 'Account', tip: 'Account lead', w: 120, cc: 1 }, { k: 'invoicing', l: 'Invoicing', w: 240 }
+  { k: 'lead', l: 'Account', tip: 'Account lead', w: 120, cc: 1 }, { k: 'invoicing', l: 'Invoicing', w: 220 }
 ];
-const finLabels = () => (!S.fin.inv ? INV_ACTION : S.fin.inv === '__all' ? [''].concat(INV_LABELS) : INV_GROUPS[S.fin.inv] || [S.fin.inv]);
+const finLabels = () => (!S.fin.inv ? INV_ACTION : S.fin.inv === '__all' ? [''].concat(INV_LABELS) : S.fin.inv === '__none' ? [''] : INV_GROUPS[S.fin.inv] || [S.fin.inv]);
 function viewFinance() {
   return `<div class="toolbar">
     <div class="search"><i class="ti ti-search"></i><input class="inp" placeholder="Search finance" value="${esc(S.fin.q)}" data-inp="fin-q"></div>
@@ -1970,18 +2009,17 @@ function viewFinance() {
 const finSelOpts = () => `<option value=""${!S.fin.inv ? ' selected' : ''}>Needs action</option><option value="__all"${S.fin.inv === '__all' ? ' selected' : ''}>Everything</option><option value="__none"${S.fin.inv === '__none' ? ' selected' : ''}>Not set</option>${INV_LABELS.map(l => `<option${S.fin.inv === l ? ' selected' : ''}>${esc(l)}</option>`).join('')}`;
 BODY.finance = finBody;
 function finBody() {
-  const all = S.projects.slice(), inv = p => fget(p, 'invoicing');
+  const all = S.projects.slice(), inv = p => invOf(p);
   const cnt = labs => all.filter(p => labs.includes(inv(p))).length;
   const tile = (key, t1, n, t3, col) => `<button class="fin-tile click${S.fin.inv === key ? ' sel' : ''}" style="background:${col}" data-act="fintile" data-g="${key}"><span class="t1">${t1}</span><span class="t2">${n}</span><span class="t3">${t3}</span></button>`;
-  const a = cnt(INV_SEND), b = cnt(INV_PORTAL), c = cnt(INV_PAYWAIT), d = cnt(INV_ESTS);
+  const a = cnt(INV_SEND), b = cnt(INV_PART), c = cnt(INV_PAYWAIT);
   const tiles = `<div class="fin-tiles">
-    ${tile('g:send', 'Waiting to be sent', a, 'Not invoiced, estimate accepted or part invoiced', invColour('Not invoiced'))}
-    ${tile('g:portal', 'Sent, not on the portal', b, 'Sent but not uploaded to the client portal', invColour('Sent but not portal uploaded'))}
-    ${tile('g:pay', 'Invoiced, awaiting payment', c, 'Invoiced, chase for payment', invColour('Invoiced'))}
-    ${tile('g:est', 'Waiting on an estimate', d, 'No estimate or estimate pending', invColour('Estimate Pending'))}</div>`;
-  const q = norm(S.fin.q), labs = S.fin.inv === '__none' ? [''] : finLabels();
+    ${tile('g:send', 'Not invoiced', a, 'Nothing invoiced yet', invColour('Not Invoiced'))}
+    ${tile('g:part', 'Partially invoiced', b, 'Some invoiced, the rest still to send', invColour('Partially Invoiced'))}
+    ${tile('g:pay', 'Invoiced, awaiting payment', c, 'Chase for payment', invColour('Invoiced'))}</div>`;
+  const q = norm(S.fin.q), labs = finLabels();
   const list = all.filter(p => (!q || norm(p.name + ' ' + p.client + ' ' + p.project_code).includes(q)) && labs.includes(inv(p)));
-  const val = (p, k) => k === 'stage' ? S.cfg.stages.indexOf(p.stage) : k === 'lead' ? norm((personById(leadOf(p, 'lead')) || {}).name) : k === 'invoicing' ? inv(p) : norm(p[k]);
+  const val = (p, k) => k === 'stage' ? S.cfg.stages.indexOf(p.stage) : k === 'lead' ? norm((personById(leadOf(p, 'lead')) || {}).name) : k === 'invoicing' ? INV_LABELS.indexOf(inv(p)) + 1 : norm(p[k]);
   const order = [''].concat(INV_LABELS).filter(l => labs.includes(l));
   const groups = order.map(l => ({ key: l || 'none', title: l || 'Not set', colour: invColour(l), items: sortRows(list.filter(p => inv(p) === l).sort(bySort), 'finance', val) })).filter(g => g.items.length);
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('finance');
@@ -2268,7 +2306,7 @@ function drawerHTML(p, arch) {
   const updBy = personById(p.updated_by), ep = epOf(p);
   const stList = statusList().concat(p.status && !statusList().includes(p.status) ? [p.status] : []);
   const archBtn = canArchive(p) ? '' : ' is-locked';
-  const m = marginOf(p), invV = fget(p, 'invoicing');
+  const m = marginOf(p), invV = invOf(p);
   return `
   ${locked ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>View only here. Edit it on the Project board.</span><span class="sp"></span>${canEditBase() ? `<button class="btn btn-ghost btn-sm" data-act="editonboard" data-id="${p.id}">Edit on Project board</button>` : ''}</div>` : (sl ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>Stand-up lock is on. Only ${esc(li.by || 'the person running stand-up')} can make changes right now.</span></div>` : '')}
   <div class="drawer-head"><div><div class="lbl">${arch ? 'Archived project' : (S.drawerNew === p.id ? 'New project' : 'Project')}</div></div><span class="sp"></span><span class="muted" style="font-size:11px;font-weight:600" id="dsync"></span>
@@ -2404,7 +2442,9 @@ ACT.archive = async el => {
       await write('project_archive', { id });
       S.projects = S.projects.filter(x => x.id !== id); S.ar.loaded = false; S.ar.fys = [];
       if (S.drawer === id) closeDrawer(true);
-      renderView(); toast('Sent to Archive');
+      renderView();
+      /* 0.7.0: floppy disks once it has safely landed in the Archive */
+      celebrate(FLOPPY); toast('\u{1F4BE} ' + p.name + ' is saved to the Archive');
     } catch (e) {}
   };
 };
@@ -2430,13 +2470,14 @@ ACT.delproject = async el => {
 
 /* ---------------- new project ---------------- */
 /* New project: the pane opens straight away on a temporary record while the sheet makes the real one.
-   Anything typed in the meantime is held, then saved against the real id the moment it arrives. */
+   Anything typed in the meantime is held, then saved against the real id the moment it arrives.
+   0.7.0: invoicing starts blank, as before. */
 ACT.newproject = async el => {
   if (!canEdit() || S._creating) return; S._creating = true;
   let stage = el && el.dataset && el.dataset.stage ? el.dataset.stage : S.cfg.stages[0];
   if (isPreStage(stage)) { stage = S.cfg.stages.find(x => !isPreStage(x)) || S.cfg.stages[0]; toast('Add a project code to move it into Pre-production'); }
   const tid = 'tmp_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  const ph = { id: tid, name: 'New project', stage, client: '', client_code: '', project_code: '', status: '', lead: '', creative: [], production: [], edit: [], budget: '', notes: '', size_location: '', sort: '' };
+  const ph = { id: tid, name: 'New project', stage, client: '', client_code: '', project_code: '', status: '', lead: '', creative: [], production: [], edit: [], budget: '', notes: '', size_location: '', sort: '', invoicing: '' };
   S.projects.push(ph); renderView(); closePop();
   openDrawer(tid); S.drawerNew = tid; refreshDrawer(true); setDrawerSync('Creating');
   if (seesMoney() && !S.clients) loadClients().then(() => { if (S.drawer === tid && !focusInDrawer()) refreshDrawer(); });
@@ -2591,17 +2632,23 @@ function listEditor(key, label, items, used, note) {
     ${items.map((s, i) => {
       const n = used(s), core = key === 'stages' && isCoreStage(s);
       const lockTitle = core ? ' title="Core stage. BOARD\'s automations depend on this name, so it cannot be renamed or removed."' : (n ? ' title="In use by ' + n + ' project(s), so it cannot be renamed"' : '');
-      return `<div class="row" style="margin-bottom:6px">${key === 'statuses' ? `<span style="width:14px;height:14px;border-radius:4px;flex:none;background:${statusColour(s)}"></span>` : ''}${core ? '<i class="ti ti-lock" style="color:var(--color-text-secondary)" title="Core stage"></i>' : ''}<input class="inp" maxlength="60" value="${esc(s)}" data-chg="wf-ren" data-key="${key}" data-i="${i}" ${n || core ? 'disabled' : ''}${lockTitle}>
+      return `<div class="row" style="margin-bottom:6px">${core ? '<i class="ti ti-lock" style="color:var(--color-text-secondary)" title="Core stage"></i>' : ''}<input class="inp" maxlength="60" value="${esc(s)}" data-chg="wf-ren" data-key="${key}" data-i="${i}" ${n || core ? 'disabled' : ''}${lockTitle}>
       <button class="icon-btn" data-act="wf-mv" data-key="${key}" data-i="${i}" data-d="-1" ${i === 0 ? 'disabled' : ''}><i class="ti ti-arrow-up"></i></button>
       <button class="icon-btn" data-act="wf-mv" data-key="${key}" data-i="${i}" data-d="1" ${i === items.length - 1 ? 'disabled' : ''}><i class="ti ti-arrow-down"></i></button>
       <button class="icon-btn" data-act="wf-del" data-key="${key}" data-i="${i}" ${n || core || items.length < 2 ? 'disabled' : ''} title="${core ? 'Core stage' : n ? 'In use' : 'Remove'}"><i class="ti ti-trash"></i></button></div>`; }).join('')}
     <div class="row" style="margin-top:8px"><input class="inp" placeholder="Add new" maxlength="60" id="wfNew-${key}"><button class="btn btn-ghost" data-act="wf-add" data-key="${key}">Add</button></div></div>`;
 }
+/* 0.7.0: statuses are fixed in BOARD's code, so Settings shows them but cannot change them */
+function statusPanel() {
+  return `<div class="panel pad" style="margin-bottom:16px"><div class="lbl" style="margin-bottom:10px">Statuses</div>
+    <div class="muted" style="font-size:12px;margin-bottom:12px">Statuses are built into BOARD, so they are the same for everyone and cannot be changed here. Complete moves a project to Out Processing and Pre Production moves it to the Pre-Production section. Archiving is not a status: it is done from Out Processing once every item is answered.</div>
+    <div class="status-chips">${STATUSES.map(s => lchip(s, statusColour(s))).join('')}</div></div>`;
+}
 function setWorkflow() {
   const c = S.cfg;
   return `<div style="max-width:620px">
     ${listEditor('stages', 'Stages (project board groups, in order)', c.stages, s => S.projects.filter(p => p.stage === s).length, 'The Out Processing stage is kept off the Project board and shown on its own page. Setting a project to Complete moves it there, and Pre Production moves it to the Pre-Production section. From Out Processing, projects go to the Archive. Those two stages are locked (they can be moved up and down, but not renamed or removed) because the automations depend on them.')}
-    ${listEditor('statuses', 'Statuses', c.statuses, s => S.projects.filter(p => p.status === s).length, 'Colours follow the Monday palette by name: Complete, Awaiting Client Feedback, Writing Pitch, Tendering, Failed Pitch, Awaiting KO, Pre Production, Cancelled Project and Edit already have theirs. Add any of those names here to use them.')}
+    ${statusPanel()}
     <div class="panel pad" style="margin-bottom:16px"><div class="lbl" style="margin-bottom:10px">Shown on the read-only live link</div>
       ${c.stages.map(s => `<label class="row" style="margin-bottom:6px"><input type="checkbox" class="toggle" data-chg="wf-pub" data-s="${esc(s)}" ${c.public_stages.includes(s) ? 'checked' : ''}> ${esc(s)}</label>`).join('')}</div>
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Financial year starts</div>
@@ -2648,8 +2695,8 @@ ACT.rcadd = async el => {
 function setSystem() {
   const h = S.health, link = S.adminKey ? `${location.origin}${location.pathname}?view=live&k=${S.adminKey}` : '';
   const tabs = h && h.tabs ? Object.keys(h.tabs).map(k => `${k}: ${h.tabs[k]}`).join('  |  ') : '';
-  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo061() once') : '';
-  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo061() once';
+  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo070() once') : '';
+  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo070() once';
   return `<div style="max-width:720px;display:flex;flex-direction:column;gap:16px">
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Build</div><div class="kv">
       <span class="muted">Front end</span><span>BOARD alpha ${APP_VERSION}</span>
@@ -2665,8 +2712,10 @@ function setSystem() {
       <span class="muted">Backups</span><span>${bk}</span>
       <span class="muted">Change log</span><span>Every change is recorded in the Log tab of the sheet: who, what and when. Passcodes are never logged.</span>
       <span class="muted">Project data</span><span>Saved in the sheet only. Nothing about projects is kept in a browser.</span>
+      <span class="muted">Statuses</span><span>Fixed in BOARD's code (${STATUSES.length} of them), the same for everyone</span>
       <span class="muted">Saved pods</span><span>Shared with the whole team, saved in the sheet</span>
-      <span class="muted">Column sizes and sorting</span><span>Your own layout, remembered by each browser. Changing them never affects anyone else.</span></div></div>
+      <span class="muted">Column sizes and sorting</span><span>Your own layout, remembered by each browser. Changing them never affects anyone else.</span>
+      <span class="muted">Shortcuts</span><span>Number keys 1 to 9 open the pages in sidebar order, when you are not typing in a box.</span></div></div>
     <div class="panel pad"><div class="lbl" style="margin-bottom:6px">Read-only live link</div>
       <div class="muted" style="margin-bottom:10px">Anyone with this link can see the live projects without signing in. Budget, finance, notes and out processing are never included. Treat it like a password: share it only with people who should see client names.</div>
       <div class="row"><input class="inp" id="roLink" readonly value="${esc(link)}"><button class="btn btn-ghost" data-act="rocopy">Copy</button></div>
