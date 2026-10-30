@@ -17,8 +17,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,800;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link rel="preload" as="image" href="logo-dark.png">
+<link rel="preload" as="image" href="logo-light.png">
 <style>
-/* BOARD alpha 0.7.0. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
+/* BOARD alpha 0.8.0. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
 :root {
   color-scheme: light;
   --stp: #FF50BD; --stp-hover: #D93EA6; --stp-light: #FFE8F7; --stp-alpha: rgba(255,80,189,0.12);
@@ -91,11 +93,12 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .inp-sm { padding-right: 10px; }
 .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .field > .lbl { padding-left: 2px; }
+.req { color: var(--stp); }
 .search { position: relative; flex: 1 1 180px; max-width: 280px; min-width: 130px; }
 .search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); font-size: 15px; pointer-events: none; }
 .search .inp { padding-left: 34px; border-radius: var(--r-pill); min-height: 32px; font-size: 12px; }
 
-/* ---------- avatars (white initials on every colour) ---------- */
+/* ---------- avatars ---------- */
 .av { --s: 28px; width: var(--s); height: var(--s); border-radius: 50%; display: inline-grid; place-items: center; flex: none; font-size: calc(var(--s) * .38); font-weight: 700; letter-spacing: .3px; line-height: 1; user-select: none; color: #fff; }
 .av-sm { --s: 24px; } .av-lg { --s: 34px; } .av-xl { --s: 44px; }
 .av-stack { display: inline-flex; flex-wrap: nowrap; }
@@ -110,6 +113,7 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .pill { display: inline-flex; align-items: center; border-radius: var(--r-pill); padding: 2px 9px; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
 .pill-alpha { background: var(--stp-alpha); color: var(--stp); }
 .pill-ro { background: var(--color-background-tertiary); color: var(--color-text-secondary); }
+.pill-beta { background: var(--black); color: #fff; padding: 1px 7px; font-size: 9px; letter-spacing: 1px; margin-left: auto; }
 .count { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); background: var(--color-background-tertiary); border-radius: var(--r-pill); padding: 1px 8px; }
 
 /* ---------- layout ---------- */
@@ -124,7 +128,6 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .brand-logo img { height: 46px; width: auto; display: block; }
 .brand-logo .wordmark { display: none; font-weight: 800; letter-spacing: 1.2px; font-size: 12px; text-transform: uppercase; line-height: 1.05; }
 .brand-logo.no-logo img { display: none !important; } .brand-logo.no-logo .wordmark { display: block; }
-/* BOARD lockup: sits beside the Sunday Treat logo at the same visual weight */
 .brand-name { display: flex; align-items: center; gap: 8px; height: 40px; padding-left: 12px; border-left: 1px solid var(--color-border-tertiary); font-weight: 900; font-size: 21px; letter-spacing: 1.6px; line-height: 1; white-space: nowrap; color: var(--color-text-primary); }
 .brand-dot { width: 11px; height: 11px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 0 3px rgba(34,197,94,.2); flex: none; }
 .lg-left .brand-row { display: flex; align-items: center; gap: 18px; }
@@ -141,7 +144,6 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .nav-item:hover { background: var(--color-background-tertiary); }
 .nav-item.on { background: var(--stp-alpha); color: var(--stp); }
 .nav-item.on i { color: var(--stp); }
-kbd.k { font: 700 10px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; border: 0.5px solid currentColor; border-radius: 5px; padding: 2px 5px; opacity: .8; }
 .nav-group { margin: 14px 0 4px 12px; }
 .side-foot { margin-top: auto; display: flex; flex-direction: column; gap: 2px; padding-top: 12px; }
 .userchip { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--r-md); }
@@ -178,6 +180,12 @@ kbd.k { font: 700 10px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospac
 .panel.pad { padding: 16px; }
 .empty { text-align: center; color: var(--color-text-secondary); padding: 48px 20px; }
 .empty i { font-size: 30px; display: block; margin-bottom: 8px; }
+.callout { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 14px 20px 0; padding: 11px 14px; background: var(--stp-alpha); border-radius: var(--r-md); font-size: 12px; line-height: 1.5; position: sticky; left: 20px; width: calc(var(--vw, 100vw) - 40px); max-width: calc(100vw - 40px); }
+.callout > i { font-size: 18px; color: var(--stp); flex: none; }
+.callout .tx { flex: 1; min-width: 220px; }
+.callout .tx b { color: var(--color-text-primary); }
+.callout.beta { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); }
+.callout.beta > i { color: var(--color-text-primary); }
 
 /* ---------- tables ---------- */
 table.tv { border-collapse: separate; border-spacing: 0; table-layout: fixed; }
@@ -191,17 +199,11 @@ table.tv { border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .tv th .rs:hover::after, .tv th .rs.on::after { background: var(--stp); width: 2px; left: 2px; }
 .tv td { padding: 3px 6px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: middle; overflow: hidden; white-space: nowrap; height: 40px; background: var(--color-background-primary); }
 .tv td.sticky { position: sticky; z-index: 5; }
-.tv th.sticky { position: sticky; z-index: 8; } /* above the other headers (4) so they slide underneath it */
+.tv th.sticky { position: sticky; z-index: 8; }
 .tv tr.prow:hover td { background: var(--color-background-secondary); }
 .tv td.hd { padding: 0; text-align: center; }
 .tv td.cc { text-align: center; }
 .tv td.zp { padding: 0; }
-.drag-h { display: inline-grid; place-items: center; width: 28px; height: 32px; color: var(--color-text-secondary); cursor: grab; opacity: .55; }
-.drag-h:hover { opacity: 1; color: var(--color-text-primary); }
-tr.prow.dragging td { opacity: .35; }
-tr.prow.drop-before td { box-shadow: inset 0 2px 0 var(--stp); }
-tr.prow.drop-after td { box-shadow: inset 0 -2px 0 var(--stp); }
-tr.stage-row.drop-hdr .stage-banner, tr.stage-empty.drop-hdr td { outline: 2px solid var(--stp); outline-offset: -2px; }
 .tv td.act { text-align: right; padding-right: 4px; }
 .cell-inp { width: 100%; border: 0; background: transparent; padding: 6px 7px; border-radius: 6px; min-height: 30px; font-size: 13px; text-overflow: ellipsis; }
 .cell-inp:hover { background: var(--color-background-tertiary); }
@@ -216,7 +218,6 @@ tr.stage-row.drop-hdr .stage-banner, tr.stage-empty.drop-hdr td { outline: 2px s
 .cell-txt.nm-txt { font-weight: 600; }
 .cell-btn { border: 0; background: transparent; border-radius: 8px; padding: 4px 6px; min-height: 30px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; max-width: 100%; font-size: 12px; font-weight: 600; }
 .cell-btn:hover { background: var(--color-background-tertiary); }
-.cell-btn.empty-l { color: var(--color-text-secondary); font-weight: 400; }
 .pct-wrap { display: flex; align-items: center; justify-content: flex-end; gap: 2px; }
 .pct-wrap .cell-inp { text-align: right; }
 .pct-wrap span { color: var(--color-text-secondary); font-size: 12px; padding-right: 8px; }
@@ -242,15 +243,12 @@ button.lab-cell:hover { filter: brightness(.94); }
 /* stage banners */
 .stage-row td { padding: 0; border-bottom: 0; height: auto; overflow: visible; }
 .stage-row td.stage-td { padding: 0; }
-.stage-row.first td.stage-td { border-top: 0; }
 .stage-spacer td { height: 14px; background: var(--color-background-primary); border-bottom: 0; padding: 0; }
 .stage-banner { display: flex; align-items: center; gap: 12px; padding: 0 14px 0 8px; height: 46px; color: #fff; cursor: pointer; user-select: none; position: sticky; left: 0; width: var(--vw, 100vw); max-width: 100%; }
 .stage-banner .stage-title { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.4px; }
 .stage-banner .count { background: rgba(255,255,255,.22); color: #fff; }
 .stage-banner .stage-chev { font-size: 18px; transition: transform .12s; color: #fff; }
 .stage-row.collapsed .stage-chev { transform: rotate(-90deg); }
-.stage-banner .btn-ghost { background: rgba(255,255,255,.2); color: #fff; }
-.stage-banner .btn-ghost:hover { background: rgba(255,255,255,.32); }
 .stage-banner .sub { margin-left: auto; font-size: 12px; font-weight: 600; opacity: .92; }
 .stage-empty td { color: var(--color-text-secondary); font-size: 12px; padding: 10px 14px; height: 36px; }
 .tv tr.rowlink { cursor: pointer; }
@@ -268,39 +266,40 @@ button.lab-cell:hover { filter: brightness(.94); }
 .bar > i { display: block; height: 100%; background: var(--stp); border-radius: 6px; transition: width .2s; }
 .btn.is-locked { opacity: .5; }
 
-/* walkthrough */
+/* meeting mode (0.8.0: calmer sizes, back / next sit in the top bar so they never move) */
 .wt { margin: 16px 20px 8px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-lg); background: var(--color-background-secondary); position: sticky; left: 20px; width: calc(var(--vw, 100vw) - 40px); max-width: calc(100vw - 40px); }
-.wt-idle { display: flex; align-items: center; gap: 18px; padding: 22px 26px; flex-wrap: wrap; }
-.wt-idle .big { font-size: 20px; font-weight: 800; letter-spacing: .3px; }
-.wt-top { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 0.5px solid var(--color-border-tertiary); flex-wrap: wrap; }
-.wt-dots { display: flex; gap: 4px; flex: 1; min-width: 80px; max-width: 420px; }
-.wt-dots i { flex: 1; height: 6px; border-radius: 6px; background: var(--color-background-tertiary); min-width: 4px; }
+.wt-idle { display: flex; align-items: center; gap: 18px; padding: 16px 20px; flex-wrap: wrap; }
+.wt-idle .big { font-size: 16px; font-weight: 800; letter-spacing: .2px; }
+.wt-top { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); flex-wrap: wrap; }
+.wt-dots { display: flex; gap: 4px; flex: 1; min-width: 80px; max-width: 360px; margin-left: 4px; }
+.wt-dots i { flex: 1; height: 5px; border-radius: 5px; background: var(--color-background-tertiary); min-width: 4px; }
 .wt-dots i.done { background: var(--color-text-success); } .wt-dots i.now { background: var(--stp); }
-.wt-body { padding: 22px 26px 10px; }
-.wt-title { font-size: 34px; font-weight: 900; letter-spacing: .2px; line-height: 1.15; margin: 4px 0 6px; word-break: break-word; }
-.wt-sub { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 14px; font-weight: 600; color: var(--color-text-secondary); }
-.wt-sub .bar { max-width: 220px; height: 8px; }
-.wt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; padding: 14px 26px 6px; }
-.wt-q { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
-.wt-q.todo { border: 2px solid var(--stp); padding: 13px 15px 15px; }
+.wt-body { padding: 16px 20px 6px; }
+.wt-title { font-size: 22px; font-weight: 800; letter-spacing: .1px; line-height: 1.2; margin: 3px 0 5px; word-break: break-word; }
+.wt-sub { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 12px; font-weight: 600; color: var(--color-text-secondary); }
+.wt-sub .bar { max-width: 180px; height: 6px; }
+.wt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; padding: 12px 20px 6px; }
+.wt-q { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+.wt-q.todo { border: 1.5px solid var(--stp); padding: 9.5px 11.5px 11.5px; }
 .wt-q.done { background: var(--color-background-secondary); }
+.wt-q.locked { opacity: .6; }
 .wt-q .qh { display: flex; align-items: center; gap: 8px; }
-.wt-q .qn { font-size: 16px; font-weight: 800; letter-spacing: .2px; }
-.wt-q .qs { margin-left: auto; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+.wt-q .qn { font-size: 13px; font-weight: 800; letter-spacing: .2px; }
+.wt-q .qs { margin-left: auto; font-size: 10px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; }
 .wt-q.todo .qs { color: var(--stp); } .wt-q.done .qs { color: var(--color-text-success); }
-.wt-opts { display: flex; flex-wrap: wrap; gap: 8px; }
-.wt-opt { border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); border-radius: var(--r-pill); padding: 10px 16px; min-height: 44px; font-size: 14px; font-weight: 700; }
+.wt-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.wt-opt { border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); border-radius: var(--r-pill); padding: 5px 12px; min-height: 30px; font-size: 12px; font-weight: 700; }
 .wt-opt:hover { background: var(--color-background-tertiary); }
+.wt-opt[disabled] { opacity: .45; cursor: not-allowed; }
 .wt-opt.sel { color: #fff; border-color: transparent; }
 .wt-opt.sel.ok { background: var(--color-text-success); } .wt-opt.sel.warn { background: var(--color-text-warning); } .wt-opt.sel.bad { background: var(--color-text-danger); } .wt-opt.sel.na { background: #8A8A94; }
-.wt-foot { display: flex; align-items: center; gap: 10px; padding: 14px 26px 22px; flex-wrap: wrap; }
-.wt-ready { display: flex; align-items: center; gap: 10px; background: var(--ok-bg); color: var(--color-text-success); border-radius: var(--r-md); padding: 10px 14px; font-weight: 700; font-size: 13px; }
-.wt-end { padding: 36px 26px; text-align: center; }
-.wt-end .big { font-size: 26px; font-weight: 900; margin-bottom: 6px; }
-.wt-size { display: flex; align-items: center; gap: 10px; padding: 4px 26px 0; }
-.wt-size .inp { max-width: 420px; }
+.wt-note { margin: 4px 20px 0; padding: 8px 12px; border-radius: var(--r-md); background: var(--warn-bg); font-size: 12px; font-weight: 600; }
+.wt-foot { display: flex; align-items: center; gap: 10px; padding: 10px 20px 16px; flex-wrap: wrap; }
+.wt-ready { display: flex; align-items: center; gap: 8px; background: var(--ok-bg); color: var(--color-text-success); border-radius: var(--r-md); padding: 7px 12px; font-weight: 700; font-size: 12px; }
+.wt-end { padding: 28px 20px; text-align: center; }
+.wt-end .big { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
 
-/* ---------- edit capacity ---------- */
+/* ---------- edit capacity (0.8.0: days, not weeks) ---------- */
 .tl { position: relative; min-width: max-content; }
 .tl-row { display: flex; height: 34px; border-bottom: 0.5px solid var(--color-border-tertiary); }
 .tl-row.grp { height: 46px; background: var(--color-background-secondary); }
@@ -311,32 +310,39 @@ button.lab-cell:hover { filter: brightness(.94); }
 .tl-track { position: relative; flex: none; }
 .tl-track.free { cursor: copy; }
 .tl-grid { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(to right, var(--color-border-tertiary) 0.5px, transparent 0.5px); }
-.tl-bar { position: absolute; top: 7px; height: 20px; border-radius: 6px; cursor: grab; touch-action: none; }
+.tl-bh { position: absolute; top: 0; bottom: 0; pointer-events: none; background: repeating-linear-gradient(135deg, rgba(17,17,17,.07) 0 4px, rgba(17,17,17,.02) 4px 8px); z-index: 1; }
+.tl-bar { position: absolute; top: 7px; height: 20px; border-radius: 6px; cursor: grab; touch-action: none; z-index: 2; }
 .tl-bar.ro { cursor: pointer; }
 .tl-bar.moving { opacity: .8; box-shadow: 0 0 0 2px var(--stp); cursor: grabbing; }
 .tl-h { position: absolute; top: 0; bottom: 0; width: 8px; cursor: ew-resize; }
 .tl-h.l { left: 0; } .tl-h.r { right: 0; }
-.tl-bar-lbl { position: absolute; top: 7px; height: 20px; line-height: 20px; font-size: 12px; white-space: nowrap; pointer-events: none; padding-left: 5px; }
+.tl-bar-lbl { position: absolute; top: 7px; height: 20px; line-height: 20px; font-size: 12px; white-space: nowrap; pointer-events: none; padding-left: 5px; z-index: 2; }
 .tl-free { position: absolute; top: 7px; height: 20px; line-height: 20px; font-size: 11px; color: var(--color-text-secondary); white-space: nowrap; padding-left: 8px; pointer-events: none; position: sticky; left: 262px; }
 .tl-head { position: sticky; top: 0; z-index: 6; background: var(--color-background-primary); }
 .tl-head .tl-row { height: 28px; }
+.tl-head .tl-row.days { height: 40px; }
 .tl-head .tl-label { z-index: 7; }
 .tl-cell { flex: none; font-size: 11px; font-weight: 600; color: var(--color-text-secondary); text-align: center; line-height: 28px; border-left: 0.5px solid var(--color-border-tertiary); overflow: hidden; white-space: nowrap; }
-.tl-cell.now { background: var(--stp); color: #fff; border-radius: var(--r-pill); line-height: 22px; margin-top: 3px; height: 22px; border-left: 0; }
+.tl-cell.d { line-height: 1.15; padding-top: 5px; height: 40px; }
+.tl-cell.d small { display: block; font-size: 9px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; opacity: .8; }
+.tl-cell.d.mon { border-left: 1px solid var(--color-text-secondary); }
+.tl-cell.d.hol { background: rgba(17,17,17,.07); }
+.tl-cell.now { background: var(--stp); color: #fff; border-radius: 8px; margin: 2px 1px; height: 36px; padding-top: 3px; border-left: 0; }
 .tl-today { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--stp); z-index: 3; pointer-events: none; }
 .tl-heat { position: absolute; top: 0; bottom: 0; opacity: .22; pointer-events: none; }
 .legend { display: flex; gap: 8px 16px; flex-wrap: wrap; padding: 14px 20px 24px; font-size: 12px; position: sticky; left: 0; width: max-content; max-width: calc(100vw - 280px); }
 .legend span { display: inline-flex; align-items: center; gap: 7px; }
 .legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.legend i.hol { border-radius: 2px; background: repeating-linear-gradient(135deg, rgba(17,17,17,.3) 0 2px, rgba(17,17,17,.08) 2px 4px); }
 
 /* ---------- finance + pods ---------- */
 .fin-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; padding: 16px 20px 4px; position: sticky; left: 0; width: var(--vw, auto); }
 .fin-tile { border-radius: var(--r-md); padding: 12px 14px; color: #fff; display: flex; flex-direction: column; gap: 2px; text-shadow: 0 1px 1px rgba(0,0,0,.12); }
 .fin-tile .t1 { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; opacity: .95; }
-.fin-tile .t2 { font-size: 24px; font-weight: 900; line-height: 1.15; }
+.fin-tile .t2 { font-size: 30px; font-weight: 900; line-height: 1.15; }
 .fin-tile .t3 { font-size: 12px; font-weight: 600; opacity: .95; }
-.fin-tile.plain { background: var(--color-background-secondary); color: var(--color-text-primary); text-shadow: none; border: 0.5px solid var(--color-border-tertiary); }
-.fin-tile.plain .t1 { color: var(--color-text-secondary); }
+.fin-tile.click { cursor: pointer; border: 0; text-align: left; font-family: inherit; }
+.fin-tile.click.sel { outline: 3px solid var(--color-text-primary); outline-offset: 1px; }
 .pods { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; padding: 16px 20px 40px; }
 .pod { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-lg); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
 .pod-h { display: flex; align-items: center; gap: 12px; }
@@ -358,7 +364,7 @@ button.lab-cell:hover { filter: brightness(.94); }
 .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100vw); background: var(--color-background-primary); border-left: 0.5px solid var(--color-border-tertiary); z-index: 51; display: flex; flex-direction: column; }
 .drawer-head { display: flex; align-items: center; gap: 10px; padding: 12px 16px 12px 20px; border-bottom: 0.5px solid var(--color-border-tertiary); padding-top: calc(12px + var(--safe-t)); }
 .drawer-body { flex: 1; overflow-y: auto; padding: 18px 20px 28px; display: flex; flex-direction: column; gap: 16px; -webkit-overflow-scrolling: touch; }
-.drawer-foot { padding: 12px 20px calc(12px + var(--safe-b)); border-top: 0.5px solid var(--color-border-tertiary); display: flex; gap: 8px; flex-wrap: wrap; }
+.drawer-foot { padding: 12px 20px calc(12px + var(--safe-b)); border-top: 0.5px solid var(--color-border-tertiary); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .drawer-body > * { flex-shrink: 0; }
 .name-inp { font-size: 18px; font-weight: 800; border: 0; padding: 6px 4px; min-height: 40px; line-height: 1.3; background: transparent; border-radius: 6px; margin-left: -4px; width: calc(100% + 4px); }
 .name-inp:focus { outline: 2px solid var(--stp); }
@@ -385,13 +391,12 @@ button.lab-cell:hover { filter: brightness(.94); }
 .pop .sep { height: 0.5px; background: var(--color-border-tertiary); margin: 4px 2px; }
 .pop .sub { font-size: 10px; color: var(--color-text-secondary); margin-left: auto; font-weight: 600; }
 .pop .grp-lbl { padding: 6px 10px 2px; }
-.pop .tick { width: 16px; display: inline-grid; place-items: center; color: var(--stp); }
 .toasts { position: fixed; z-index: 90; left: 50%; transform: translateX(-50%); bottom: calc(22px + var(--safe-b)); display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
 .toast { background: var(--black); color: #fff; padding: 9px 16px; border-radius: var(--r-pill); font-size: 12px; font-weight: 600; border: 0.5px solid rgba(255,255,255,.2); max-width: 92vw; }
 .toast.err { background: var(--color-text-danger); }
 
-/* ---------- date range picker ---------- */
-.rp { width: 308px; padding: 10px 10px 8px; }
+/* ---------- date range picker (0.8.0: no week numbers, stays open, bank holidays dotted) ---------- */
+.rp { width: 296px; padding: 10px 10px 8px; }
 .rp-h { display: flex; align-items: center; justify-content: space-between; padding: 2px 4px 8px; font-weight: 700; font-size: 13px; }
 .rp-h span { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); }
 .rp-in { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -402,8 +407,6 @@ button.lab-cell:hover { filter: brightness(.94); }
 .rp-cal { width: 100%; border-collapse: separate; border-spacing: 0 2px; table-layout: fixed; }
 .rp-cal th { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); height: 28px; text-align: center; }
 .rp-cal td { height: 34px; text-align: center; padding: 0; }
-.rp-cal td.wk { font-size: 11px; color: var(--color-text-secondary); font-weight: 600; background: var(--color-background-tertiary); }
-.rp-cal tr:first-child td.wk { border-radius: 8px 8px 0 0; } .rp-cal tr:last-child td.wk { border-radius: 0 0 8px 8px; }
 .rp-d { width: 100%; height: 32px; border: 0; background: transparent; font-size: 13px; font-weight: 600; border-radius: 0; position: relative; }
 .rp-d:hover { background: var(--color-background-tertiary); }
 .rp-d.out { color: var(--color-text-secondary); opacity: .5; font-weight: 400; }
@@ -411,7 +414,10 @@ button.lab-cell:hover { filter: brightness(.94); }
 .rp-d.in { background: var(--stp-alpha); }
 .rp-d.ends { background: var(--stp); color: #fff; border-radius: 8px; }
 .rp-d.today::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 2px; background: currentColor; border-radius: 2px; }
+.rp-d.bh::before { content: ''; position: absolute; top: 3px; right: 6px; width: 5px; height: 5px; border-radius: 50%; background: var(--color-text-danger); }
 .rp-f { display: flex; align-items: center; gap: 8px; padding: 8px 2px 0; }
+.rp-key { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--color-text-secondary); padding: 6px 2px 0; }
+.rp-key i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-text-danger); display: inline-block; }
 
 /* ---------- login (split screen) ---------- */
 .login { position: fixed; inset: 0; display: grid; grid-template-columns: 1fr 1fr; background: #F7F3EB; overflow: auto; }
@@ -432,7 +438,6 @@ button.lab-cell:hover { filter: brightness(.94); }
 .lg-check input { accent-color: var(--stp); width: 16px; height: 16px; }
 .lg-msg { font-size: 12.5px; min-height: 18px; color: var(--color-text-secondary); } .lg-msg.err { color: var(--color-text-danger); font-weight: 600; }
 .lg-form .btn-primary { height: 48px; font-size: 14px; border-radius: 10px; }
-.lg-note { font-size: 11px; line-height: 1.5; color: var(--color-text-secondary); }
 .lg-right .love { margin-top: 6px; }
 .alpha-note { background: var(--stp-alpha); border-radius: var(--r-md); padding: 10px 12px; font-size: 12px; line-height: 1.5; }
 .alpha-note b { color: var(--stp); }
@@ -457,7 +462,6 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .skeleton { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%; color: var(--color-text-secondary); font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; font-size: 11px; gap: 14px; }
 .skeleton .brand-logo { height: 64px; } .skeleton .brand-logo img { height: 64px; }
 .skeleton .brand-logo .wordmark { text-align: center; font-size: 14px; }
-.ro-banner { padding: 6px 20px; background: var(--stp-alpha); color: var(--stp); font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
 .mine-head { display: flex; align-items: center; gap: 12px; padding: 14px 20px 0; flex-wrap: wrap; }
 .sub-tbl { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 720px; }
 .sub-tbl th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--color-text-secondary); padding: 10px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; }
@@ -467,14 +471,10 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .sort-chip button { border: 0; background: transparent; color: inherit; width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; padding: 0; }
 .note-bar { padding: 8px 20px; font-size: 12px; color: var(--color-text-secondary); background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); position: sticky; left: 0; }
 .page-end { height: 40px; }
-
 .pct-good { color: var(--color-text-success); } .pct-mid { color: var(--color-text-warning); } .pct-low { color: var(--color-text-danger); }
 .av-lead { --s: 28px; }
 .tv td.cc .av, .tv td.cc .cell-btn { margin: 0 auto; }
 .nm-sub { font-size: 11px; color: var(--color-text-secondary); overflow: hidden; text-overflow: ellipsis; }
-
-
-/* ---------- 0.4 additions ---------- */
 .lock-note { display: flex; align-items: center; gap: 10px; padding: 9px 20px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 12px; position: sticky; left: 0; flex: none; flex-wrap: wrap; }
 .lock-note i.ti-lock { font-size: 16px; color: var(--color-text-secondary); } .lock-note .sp { flex: 1; }
 .content.fixed > .lock-note { position: static; }
@@ -488,7 +488,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .drawer-lock { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 16px; background: var(--stp-alpha); font-size: 12px; font-weight: 600; flex: none; }
 .drawer-lock .sp { flex: 1; }
 .gbp-inp { text-align: right; font-variant-numeric: tabular-nums; }
-.lstack { display: inline-flex; align-items: center; vertical-align: middle; position: relative; z-index: 0; isolation: isolate; } /* keeps the avatar layering inside its own cell */
+.lstack { display: inline-flex; align-items: center; vertical-align: middle; position: relative; z-index: 0; isolation: isolate; }
 .lstack .av-w { position: relative; display: inline-flex; }
 .lstack .av-w + .av-w { margin-left: -9px; }
 .lstack .av { box-shadow: 0 0 0 2px var(--color-background-primary); }
@@ -503,24 +503,20 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .pop .pop-seg button { flex: 1; border: 0.5px solid var(--color-border-tertiary); background: transparent; border-radius: var(--r-pill); padding: 5px 8px; font-size: 11px; font-weight: 700; }
 .pop .pop-seg button.on { background: var(--stp-alpha); border-color: var(--stp); color: var(--stp); }
 .pop .pop-empty { padding: 8px 10px; font-size: 12px; color: var(--color-text-secondary); }
-.pop .tick { width: 16px; }
-.fin-tile.click { cursor: pointer; border: 0; text-align: left; font-family: inherit; }
-.fin-tile.click.sel { outline: 3px solid var(--color-text-primary); outline-offset: 1px; }
-.fin-tile .t2 { font-size: 30px; }
+.pop .tick { width: 16px; display: inline-grid; place-items: center; color: var(--stp); }
 .pill-lock { background: var(--color-background-tertiary); color: var(--color-text-secondary); }
-/* 0.6: backend health bar */
 .healthbar { display: flex; align-items: flex-start; gap: 10px; padding: 9px 20px; background: var(--color-text-danger); color: #fff; font-size: 12px; font-weight: 600; flex: none; line-height: 1.45; }
 .healthbar i.ti { font-size: 17px; flex: none; } .healthbar ul { margin: 4px 0 0; padding-left: 18px; font-weight: 500; } .healthbar .sp { flex: 1; }
 .healthbar .btn { background: rgba(255,255,255,.22); color: #fff; min-height: 28px; padding: 4px 12px; } .healthbar .btn:hover { background: rgba(255,255,255,.34); }
-/* 0.7.0: an out of date copy of the page shows a calmer bar */
 .healthbar.stale { background: var(--black); }
-/* 0.6.1: celebration when a project is marked complete (0.7.0: floppy disks when one is archived) */
 .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 95; overflow: hidden; }
 .confetti span { position: absolute; top: -70px; line-height: 1; animation-name: st-fall; animation-timing-function: cubic-bezier(.35,.1,.6,1); animation-fill-mode: forwards; will-change: transform; }
 @keyframes st-fall { to { transform: translateY(calc(100vh + 140px)) rotate(var(--r, 360deg)); } }
 @media (prefers-reduced-motion: reduce) { .confetti { display: none; } }
-/* 0.7.0: fixed statuses shown read-only in Settings */
 .status-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.client-hit { font-size: 11px; color: var(--color-text-secondary); padding-left: 2px; }
+.draft-help { font-size: 12px; color: var(--color-text-secondary); flex: 1; min-width: 160px; }
+.draft-help.ok { color: var(--color-text-success); font-weight: 600; }
 
 /* ---------- mobile ---------- */
 @media (max-width: 860px) {
@@ -550,11 +546,11 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
   .sync { font-size: 10px; }
   .page-end { height: 90px; }
   .wt { margin: 12px 14px 8px; left: 14px; width: calc(var(--vw, 100vw) - 28px); max-width: calc(100vw - 28px); }
-  .wt-title { font-size: 24px; } .wt-body, .wt-grid, .wt-foot, .wt-size { padding-left: 16px; padding-right: 16px; }
+  .callout { margin: 12px 14px 0; left: 14px; width: calc(var(--vw, 100vw) - 28px); max-width: calc(100vw - 28px); }
+  .wt-title { font-size: 19px; } .wt-body, .wt-grid, .wt-foot { padding-left: 14px; padding-right: 14px; }
   .wt-grid { grid-template-columns: 1fr; }
   .fin-tiles { padding: 12px 14px 4px; } .pods { padding: 12px 14px 90px; grid-template-columns: 1fr; } .pod-builder { margin: 12px 14px 0; left: 14px; }
   .healthbar { padding: 9px 14px; }
-  /* 0.5 phones: every table turns into a stack of cards (name and open button on top, the rest in two columns) */
   table.tv { display: block; width: auto !important; }
   .tv colgroup, .tv thead, .tv tr.stage-spacer { display: none; }
   .tv tbody { display: block; padding-bottom: 6px; }
@@ -579,7 +575,6 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
   .tv tr.prow .cell-txt { padding: 4px 0; }
   .tv tr.prow .tl-pill { min-height: 32px; }
   .tv tr.stage-empty td { padding: 12px 14px; }
-  /* toolbars: search on its own line, then two filters per row */
   .toolbar { gap: 8px; }
   .toolbar .search { flex: 1 1 100%; order: -1; }
   .toolbar .sel-sm, .toolbar .seg { flex: 1 1 calc(50% - 8px); min-width: 0; }
@@ -601,18 +596,18 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 (function () {
 'use strict';
 /* ================================================================
-   BOARD alpha 0.7.0. Core: config, state, colours, API, queue, shell, login, routing
+   BOARD alpha 0.8.0. Core: config, state, colours, API, queue, shell, login, routing
    ================================================================ */
 
 /* ---- CONFIG: your Apps Script web app URL ---- */
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '0.7.0-alpha';
-const MIN_SCHEMA = 8;   /* the backend must report at least this, or BOARD warns that changes may not save */
+const APP_VERSION = '0.8.0-alpha';
+const MIN_SCHEMA = 9;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
 const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
-/* Sunday Treat logo files, kept in the repo next to index.html. Dark text for light areas, white text for dark areas. If a file is missing, a text wordmark shows instead. */
+/* Sunday Treat logo files, kept in the repo next to index.html. If a file will not load, BOARD tries once more, then shows a text wordmark. */
 const LOGO_DARK = 'logo-dark.png';
 const LOGO_LIGHT = 'logo-light.png';
 const POLL_MS = 20000;
@@ -631,11 +626,12 @@ const sstore = {
 };
 const tokenGet = () => store.get('board_token') || sstore.get('board_token');
 const tokenDel = () => { store.del('board_token'); sstore.del('board_token'); };
+/* 0.8.0: the build a sign-in belongs to is remembered with it, so a new index.html signs everyone out once and they see what is new */
 const tokenSet = (t, remember) => { tokenDel(); (remember ? store : sstore).set('board_token', t); };
 const jparse = (s, d) => { try { const v = JSON.parse(s); return v && typeof v === 'object' ? v : d; } catch (e) { return d; } };
 
 const S = {
-  token: null, me: null, people: [], depts: [], cfg: { stages: [], statuses: [], closeout_fields: [], closeout_options: {}, public_stages: [], fy_start_month: 4, pods: [] },
+  token: null, me: null, people: [], depts: [], cfg: { stages: [], statuses: [], closeout_fields: [], closeout_options: {}, public_stages: [], fy_start_month: 4, pods: [], bank_holiday_extra: [] },
   projects: [], version: 0, readonly: false, readonlyKey: '', adminKey: '', health0: null,
   view: 'pipeline',
   f: { q: '', person: '', status: '' },
@@ -648,11 +644,9 @@ const S = {
   mine: { q: '' },
   clients: null, codes: { mode: 'existing', client: '', title: '', newName: '', newCode: '' },
   settingsTab: 'people', health: null,
-  drawer: null, dragging: false, stale: false, syncState: 'saved', lastSync: null,
-  /* column widths, sorting and collapsed stages are your own layout, kept in this browser only. No project data. */
+  drawer: null, draft: null, dragging: false, stale: false, syncState: 'saved', lastSync: null,
   ui: Object.assign({ widths: {}, sort: {}, collapsed: {} }, jparse(store.get('board_ui'), {}))
 };
-/* 0.6: project fields are only ever saved in the sheet now. Clear out anything older builds kept in this browser. */
 ['board_fx', 'board_ep', 'board_lock'].forEach(k => store.del(k));
 function saveUI() { store.set('board_ui', JSON.stringify(S.ui)); }
 
@@ -663,14 +657,14 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&a
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 const uniq = a => Array.from(new Set(a));
 const norm = s => String(s || '').trim().toLowerCase();
-/* compares two build numbers like 0.7.0-alpha: 1 when a is newer, -1 when older, 0 when the same */
+/* compares two build numbers like 0.8.0-alpha: 1 when a is newer, -1 when older, 0 when the same */
 function vcmp(a, b) {
   const pa = String(a || '').split(/[^0-9]+/).filter(Boolean).map(Number), pb = String(b || '').split(/[^0-9]+/).filter(Boolean).map(Number);
   for (let i = 0; i < 3; i++) { const x = pa[i] || 0, y = pb[i] || 0; if (x !== y) return x > y ? 1 : -1; }
   return 0;
 }
 
-/* 0.6.1: anything that arrives from the sheet with an odd id is set aside, so a stray edit in the sheet can never inject code into the page */
+/* anything that arrives from the sheet with an odd id is set aside, so a stray edit in the sheet can never inject code into the page */
 const SAFE_ID = /^[A-Za-z0-9_-]{1,64}$/;
 const okId = v => SAFE_ID.test(String(v == null ? '' : v));
 let badRows = [];
@@ -696,6 +690,45 @@ const gbp = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP',
 const fmoney = n => (n === '' || n == null || isNaN(n) ? '' : gbp.format(n));
 const numOf = v => (v === '' || v == null || isNaN(Number(v)) ? null : Number(v));
 
+/* ---------------- UK bank holidays (England and Wales), 0.8.0 ----------------
+   Worked out from the rules, so they are right for any year (checked to 2030 and beyond) with no list to keep up.
+   One-off extra days (a coronation, a jubilee) are added by the backend, which checks gov.uk twice a year and stores any it finds in the Config key bank_holiday_extra. */
+function easterSunday(y) {
+  const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const mo = Math.floor((h + l - 7 * m + 114) / 31), da = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(Date.UTC(y, mo - 1, da));
+}
+function bhRules(y) {
+  const out = {}, D = (m, d) => new Date(Date.UTC(y, m, d)), add = (dt, n) => new Date(dt.getTime() + n * MS_DAY);
+  const wk = dt => { const w = dt.getUTCDay(); return w === 0 || w === 6; };
+  const nextFree = dt => { while (wk(dt) || out[ymd(dt)]) dt = add(dt, 1); return dt; };
+  const firstMon = m => { let d = D(m, 1); while (d.getUTCDay() !== 1) d = add(d, 1); return d; };
+  const lastMon = m => { let d = D(m + 1, 0); while (d.getUTCDay() !== 1) d = add(d, -1); return d; };
+  const set = (dt, name) => { out[ymd(dt)] = name; };
+  set(nextFree(D(0, 1)), "New Year's Day");
+  const easter = easterSunday(y);
+  set(add(easter, -2), 'Good Friday'); set(add(easter, 1), 'Easter Monday');
+  set(firstMon(4), 'Early May bank holiday'); set(lastMon(4), 'Spring bank holiday'); set(lastMon(7), 'Summer bank holiday');
+  /* Boxing Day first, so a Sunday 25th gives Monday 26th (Boxing Day) and Tuesday 27th (Christmas Day substitute) */
+  const bx = nextFree(D(11, 26)); set(bx, 'Boxing Day');
+  const xm = nextFree(D(11, 25)); set(xm, 'Christmas Day');
+  return out;
+}
+const BH_CACHE = {};
+function bhMap() {
+  const extra = (S.cfg && S.cfg.bank_holiday_extra) || [], key = JSON.stringify(extra);
+  if (BH_CACHE.key === key && BH_CACHE.map) return BH_CACHE.map;
+  const map = {}, y0 = new Date().getFullYear();
+  for (let y = y0 - 2; y <= 2035; y++) Object.assign(map, bhRules(y));
+  (Array.isArray(extra) ? extra : []).forEach(x => {
+    const d = typeof x === 'string' ? x : x && x.d, n = typeof x === 'string' ? 'Bank holiday' : (x && x.n) || 'Bank holiday';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d || '')) map[d] = String(n).slice(0, 60);
+  });
+  BH_CACHE.key = key; BH_CACHE.map = map; return map;
+}
+const bhName = s => bhMap()[s] || '';
+
 /* ---------------- colour: everything is white text, so shades are pulled down until they read ---------------- */
 function lumOf(hex) {
   const n = parseInt(hex.slice(1), 16), c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
@@ -704,7 +737,6 @@ function lumOf(hex) {
 const toHex = (r, g, b) => '#' + [r, g, b].map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
 const legMemo = {};
 function legible(hex, min = 3) {
-  /* only real hex colours ever reach a style attribute */
   if (!/^#[0-9a-f]{6}$/i.test(hex || '')) return '#797E91';
   const key = hex + min; if (legMemo[key]) return legMemo[key];
   const n = parseInt(hex.slice(1), 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
@@ -713,7 +745,6 @@ function legible(hex, min = 3) {
   return (legMemo[key] = out);
 }
 
-/* Departments (circles + stage banners). Defaults chosen to sit well under white text. */
 const DEPT_DEFAULTS = [
   [/tender/i, '#2F8FE0'], [/pre[\s-]?prod/i, '#CC8400'], [/post|edit/i, '#7B4FD0'],
   [/client|account/i, '#1F9D5C'], [/admin/i, '#D03F4B'], [/freelanc/i, '#7D8493']
@@ -753,18 +784,14 @@ function avStack(ids, size = 'av-sm', max = 4) {
   return `<span class="av-stack">${shown.map(i => av(i, size)).join('')}${extra > 0 ? `<span class="av ${size} av-more">+${extra}</span>` : ''}</span>`;
 }
 const splitIds = v => (Array.isArray(v) ? v : String(v || '').split(',')).map(x => String(x).trim()).filter(Boolean).filter(okId);
-/* Account lead can be several people (lead + lead_more) with one AL cover (lead_cover) who shows at the front while the others are on leave */
 const acctLeads = p => uniq([p.lead].concat(splitIds(fget(p, 'lead_more'))).filter(Boolean));
 const acctCover = p => fget(p, 'lead_cover') || '';
 const roleIds = (p, role) => (role === 'lead' ? acctLeads(p) : (p[role] || []).slice());
 const teamOf = p => uniq(acctLeads(p).concat(acctCover(p) ? [acctCover(p)] : [], p.creative || [], p.production || [], p.edit || []).filter(Boolean));
-/* Leads: account lead is the existing "lead" field. Creative / production / edit lead is the first person in that list. */
 const LEAD_ROLES = [['lead', 'Account lead', 'Account'], ['creative', 'Creative lead', 'Creative'], ['production', 'Production lead', 'Production'], ['edit', 'Edit lead', 'Edit']];
 const leadOf = (p, role) => (role === 'lead' ? (p.lead || '') : ((p[role] || [])[0] || ''));
 
-/* ---------------- status + invoicing labels (Monday colours) ----------------
-   0.7.0: statuses are part of BOARD's code, the same for everyone, and no longer edited in Settings.
-   Archiving is not a status: it happens from Out Processing. Keep this list in step with STATUSES in Code.gs. */
+/* ---------------- status + invoicing labels (Monday colours) ---------------- */
 const STATUSES = ['Writing Pitch', 'Tendering', 'Awaiting KO', 'Pre Production', 'Edit', 'Awaiting Client Feedback', 'Awaiting Handover', 'Complete', 'Failed Pitch', 'Cancelled Project'];
 const statusList = () => STATUSES.slice();
 const STATUS_COL = {
@@ -778,47 +805,47 @@ function statusColour(s) {
   const c = STATUS_COL[norm(s)]; if (c) return legible(c, 2);
   const i = statusList().indexOf(s); return legible(LABEL_FALLBACK[(i < 0 ? 0 : i) % LABEL_FALLBACK.length], 2);
 }
-/* 0.7.0: five invoicing labels. A new project starts blank (not set). Older labels are read as their nearest new one until upgradeTo070() rewrites the sheet. */
 const INV_LABELS = ['Not Invoiced', 'Partially Invoiced', 'Invoiced', 'Paid', 'N/A'];
 const INV_LEGACY = { 'not invoiced': 'Not Invoiced', 'no estimate': 'Not Invoiced', 'estimate pending': 'Not Invoiced', 'estimate accepted': 'Not Invoiced', 'partially invoiced': 'Partially Invoiced', 'sent but not portal uploaded': 'Invoiced', 'invoiced': 'Invoiced', 'paid': 'Paid', 'n/a': 'N/A', 'na': 'N/A' };
 const normInv = v => INV_LEGACY[norm(v)] || (v ? String(v) : '');
 const invOf = p => normInv(fget(p, 'invoicing'));
 const INV_COL = { 'Not Invoiced': '#F4BF73', 'Partially Invoiced': '#F08A62', 'Invoiced': '#87D4CC', 'Paid': '#69D196', 'N/A': '#999999' };
 const invColour = v => (v ? legible(INV_COL[v] || '#797E91', 2) : '#9AA0AB');
-/* a label that fills its whole cell, Monday style */
+/* 0.8.0: a project is "invoiced enough" for out processing once it is Invoiced, Paid or N/A */
+const INV_DONE = ['Invoiced', 'Paid', 'N/A'];
+const invOk = p => INV_DONE.includes(invOf(p));
 function labCell(label, col, attrs, ed, blank) {
   if (!label) return ed ? `<button class="lab-cell" style="background:var(--color-background-tertiary);color:var(--color-text-secondary);text-shadow:none" ${attrs}><span>${esc(blank || '-')}</span></button>` : '';
   return ed ? `<button class="lab-cell" style="background:${col}" ${attrs}><span>${esc(label)}</span></button>` : `<div class="lab-cell" style="background:${col}"><span>${esc(label)}</span></div>`;
 }
-/* a smaller label for places that are not table cells */
 const lchip = (label, col) => (label ? `<span class="lchip" style="background:${col}">${esc(label)}</span>` : '');
 
-/* 0.6.1: during a stand-up lock, only the person who started it can edit. Everyone else can look. */
 const canEdit = () => !S.readonly && S.me && S.me.rank >= 1 && lockAllowsMe();
 const canEditBase = () => !S.readonly && S.me && S.me.rank >= 1;
 const isAdmin = () => !S.readonly && S.me && S.me.rank >= 2;
-/* viewers (freelancers) get a basic, view only board: no money, no out processing, no admin tools */
 const seesMoney = () => !S.readonly && !!S.me && S.me.rank >= 1;
 const isViewer = () => !S.readonly && !!S.me && S.me.rank < 1;
-/* Out Processing is the one stage kept off the Project board. Archive is the end of the line. */
 const isOutStage = s => /out[\s-]?proc|closeout|handover/i.test(s || '');
 const isCoreStage = s => /out[\s-]?proc/i.test(s || '') || isPreStage(s);
 const closeoutStages = () => { const o = S.cfg.stages.filter(isOutStage); return o.length ? o : S.cfg.stages.slice(-1); };
 const boardStages = () => { const c = closeoutStages(); return S.cfg.stages.filter(s => !c.includes(s)); };
 const liveStages = () => (S.cfg.public_stages && S.cfg.public_stages.length ? S.cfg.public_stages : boardStages());
-/* a project made on this device shows up at once under a temporary id (tmp_...); TMP remembers the real id once the sheet has made it */
 const TMP = {}, isTmp = id => typeof id === 'string' && id.indexOf('tmp_') === 0;
 const projectById = id => S.projects.find(p => p.id === id) || (TMP[id] ? S.projects.find(p => p.id === TMP[id]) : null) || null;
 const bySort = (a, b) => (a.sort === '' || a.sort == null ? 1e9 : a.sort) - (b.sort === '' || b.sort == null ? 1e9 : b.sort);
 const sortedStage = stage => S.projects.filter(p => p.stage === stage).sort(bySort);
-const logoHTML = light => `<span class="brand-logo"><img src="${light ? LOGO_LIGHT : LOGO_DARK}" alt="Sunday Treat" onerror="this.parentNode.classList.add('no-logo')"><span class="wordmark">Sunday<br>Treat</span></span>`;
+/* 0.8.0: the logo tries a second time before it gives up, so one slow load no longer leaves the text wordmark behind */
+const logoHTML = light => { const f = light ? LOGO_LIGHT : LOGO_DARK; return `<span class="brand-logo"><img src="${f}?v=${APP_VERSION}" alt="Sunday Treat" data-f="${f}" onload="this.parentNode.classList.remove('no-logo')" onerror="stLogoFail(this)"><span class="wordmark">Sunday<br>Treat</span></span>`; };
+window.stLogoFail = img => {
+  if (!img.dataset.r) { img.dataset.r = '1'; setTimeout(() => { img.src = img.dataset.f + '?r=' + Date.now(); }, 1500); }
+  else img.parentNode.classList.add('no-logo');
+};
 
 /* ---------------- project fields (all saved in the sheet) ---------------- */
 function fget(p, k) { return p[k] == null ? '' : p[k]; }
 const fsetMany = (id, obj) => saveFields(id, obj, null, true);
 const fset = (id, k, v) => fsetMany(id, { [k]: v });
 
-/* edit period = the Timeline column. Falls back to the old Start / End dates until a timeline is set. */
 function epOf(p) {
   const s = fget(p, 'edit_start'), e = fget(p, 'edit_end');
   if (s || e) return { s: s || e, e: e || s, custom: true };
@@ -830,7 +857,6 @@ function epSet(id, s, e) {
   fsetMany(id, f);
 }
 const marginOf = p => numOf(fget(p, 'profit_margin'));
-const profitOf = p => { const b = numOf(p.budget), m = marginOf(p); return b == null || m == null ? null : b * m / 100; };
 const marginCls = m => (m == null ? '' : m >= 30 ? 'pct-good' : m >= 15 ? 'pct-mid' : 'pct-low');
 
 /* ---------------- toasts, modals, popovers ---------------- */
@@ -871,7 +897,7 @@ function openPop(anchor, html) {
 }
 function closePop() { $('#pop') && $('#pop').remove(); }
 
-/* ---------------- celebration: emoji rain when a project is marked complete (0.6.1), floppy disks when one is archived (0.7.0) ---------------- */
+/* ---------------- celebration ---------------- */
 const PARTY = ['\u{1F389}', '\u{1F973}', '\u{1F38A}', '\u{2728}', '\u{1F37E}', '\u{1F9E1}', '\u{1F496}', '\u{1F31F}'];
 const FLOPPY = ['\u{1F4BE}'];
 function celebrate(set = PARTY) {
@@ -893,12 +919,13 @@ async function api(action, params = {}) {
   const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 40000);
   let res;
   try {
-    res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action, token: S.token }, params)), signal: ctl.signal });
+    res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action, token: S.token, cv: APP_VERSION }, params)), signal: ctl.signal });
   } catch (e) { throw new Error(e.name === 'AbortError' ? 'The server took too long to answer' : 'Cannot reach the server'); }
   finally { clearTimeout(to); }
   let data; try { data = await res.json(); } catch (e) { throw new Error('The server sent something unexpected'); }
   if (!data.ok) {
     if (data.error === 'AUTH') { onAuthLost(); throw new Error('Session expired. Please sign in again.'); }
+    if (/has been updated/i.test(data.error || '')) { showUpdateScreen(); throw new Error('BOARD has been updated. Please reload.'); }
     throw new Error(data.error || 'Something went wrong');
   }
   return data;
@@ -920,7 +947,6 @@ function setSync(state) {
   el.innerHTML = `<span class="dot"></span><span class="sync-long">${t[0]}</span><span class="sync-short">${t[1]}</span>`;
 }
 
-/* serial write queue so edits always land in order */
 let chain = Promise.resolve(), inflight = 0;
 function write(action, params) {
   inflight++; setSync('saving');
@@ -953,22 +979,20 @@ function applyBootstrap(d) {
   S.health0 = { schema: Number(d.schema_version || 0), ok: d.schema_ok !== false && Number(d.schema_version || 0) >= MIN_SCHEMA, server: d.server_version || 'unknown', problems: (d.schema && d.schema.problems) || [] };
   renderHealthBar();
 }
-/* ---------------- backend health: never let a broken sheet fail quietly again ---------------- */
 let notSaved = [];
 function renderHealthBar() {
   const bar = $('#healthbar'); if (!bar) return;
   const h = S.health0, bad = h && !h.ok, lost = notSaved.length, odd = isAdmin() && badRows.length;
-  /* 0.7.0: the backend is newer than this page, so this browser is showing an old copy of BOARD */
   const stale = !!h && h.server !== 'unknown' && vcmp(h.server, APP_VERSION) > 0;
   bar.hidden = !bad && !lost && !odd && !stale; if (bar.hidden) return;
   bar.classList.toggle('stale', stale && !bad && !lost && !odd);
   const staleTxt = stale ? `This is an old copy of BOARD (${esc(APP_VERSION)}). Version ${esc(h.server)} is out. Reload the page to update.` : '';
   const old = h && h.schema < MIN_SCHEMA;
-  const why = old ? `The backend is version ${esc(h.server)}, but this BOARD needs 0.7.0 or newer.` : (h && !h.ok ? 'The BOARD. Database sheet is missing something BOARD needs.' : '');
+  const why = old ? `The backend is version ${esc(h.server)}, but this BOARD needs 0.8.0 or newer.` : (h && !h.ok ? 'The BOARD. Database sheet is missing something BOARD needs.' : '');
   const lostTxt = lost ? `Not saved: ${esc(uniq(notSaved).join(', '))}.` : '';
   const oddTxt = odd ? `${badRows.length} row${badRows.length === 1 ? '' : 's'} in the sheet ${badRows.length === 1 ? 'has' : 'have'} an id BOARD does not accept (${esc(uniq(badRows).join(', '))}), so ${badRows.length === 1 ? 'it is' : 'they are'} hidden. Ids can only use letters, numbers, - and _.` : '';
   const list = isAdmin() && h && h.problems.length ? `<ul>${h.problems.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
-  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo070().' : 'Oli has been emailed. Run upgradeTo070() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
+  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo080().' : 'Oli has been emailed. Run upgradeTo080() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
   bar.innerHTML = `<i class="ti ${stale && !bad ? 'ti-refresh' : 'ti-alert-triangle'}"></i><div><div>${staleTxt} ${why} ${lostTxt} ${oddTxt} ${fix}</div>${list}</div><span class="sp"></span>${stale ? '<button class="btn btn-sm" data-act="reload">Reload</button>' : ''}${lost ? '<button class="btn btn-sm" data-act="healthok">Dismiss</button>' : ''}`;
 }
 let refreshing = false;
@@ -979,7 +1003,7 @@ async function refresh() {
 function typing() { const a = document.activeElement; return !!(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.closest('.content') && a.type !== 'checkbox'); }
 function softRender() {
   if (S.dragging || typing()) { S.stale = true; return; }
-  S.stale = false; renderLockUI(); renderView(); if (S.drawer) refreshDrawer();
+  S.stale = false; renderLockUI(); renderView(); if (S.drawer && !S.draft) refreshDrawer();
 }
 document.addEventListener('focusout', () => setTimeout(() => { if (S.stale && !typing() && !S.dragging) softRender(); }, 60));
 async function poll() {
@@ -995,7 +1019,6 @@ addEventListener('focus', poll);
 addEventListener('online', poll);
 addEventListener('offline', () => { if (S.token) setSync('offline'); });
 
-/* ---------------- seed the Freelancers department (admins only, once) ---------------- */
 let seeded = false;
 async function seedDefaults() {
   if (seeded) return; seeded = true;
@@ -1005,7 +1028,6 @@ async function seedDefaults() {
     renderView();
   } catch (e) { /* surfaced by write() */ }
 }
-/* 0.6.1: pods used to live in each browser. Any found here are added to the shared list once, then removed from this browser. */
 async function migrateLocalPods() {
   const local = (jparse(store.get('board_pods'), { list: [] }).list) || [];
   if (!local.length) { store.del('board_pods'); return; }
@@ -1025,14 +1047,13 @@ const NAV = [
   { id: 'finance', label: 'Finance', icon: 'ti-coin-pound', team: 1 },
   { id: 'archive', label: 'Archive', icon: 'ti-archive', team: 1 },
   { id: 'timeline', label: 'Edit capacity', icon: 'ti-calendar-stats', group: 'Tools' },
-  { id: 'pods', label: 'Pod capacity', icon: 'ti-users-group', group: 'Tools', team: 1 },
+  { id: 'pods', label: 'Pod capacity', icon: 'ti-users-group', group: 'Tools', team: 1, beta: 1 },
   { id: 'codes', label: 'Code generator', icon: 'ti-barcode', group: 'Tools', team: 1 },
   { id: 'settings', label: 'Settings', icon: 'ti-settings', admin: true, group: 'Admin' }
 ];
-const TITLES = { mine: 'My projects', pipeline: 'Project board', closeout: 'Out processing', finance: 'Finance', archive: 'Archive', timeline: 'Edit capacity', pods: 'Pod capacity', codes: 'Code generator', settings: 'Settings', board: 'Live projects' };
+const TITLES = { mine: 'My projects', pipeline: 'Project board', closeout: 'Out processing', finance: 'Finance', archive: 'Archive', timeline: 'Edit capacity', pods: 'Pod capacity (beta)', codes: 'Code generator', settings: 'Settings', board: 'Live projects' };
 const brandName = () => `<span class="brand-name"><span class="brand-dot"></span>BOARD</span>`;
 const brandRow = light => `<span class="brand-row">${logoHTML(light)}${brandName()}</span>`;
-/* team pages are for staff (editor and up); viewers only get the basic board pages */
 const navOk = n => (!n.admin || isAdmin()) && (!n.team || seesMoney());
 const navItems = () => NAV.filter(navOk);
 function renderShell() {
@@ -1040,7 +1061,7 @@ function renderShell() {
   let nav = '', lastG = '';
   navItems().forEach(n => {
     if (n.group && n.group !== lastG) { nav += `<div class="lbl nav-group">${n.group}</div>`; lastG = n.group; }
-    nav += `<button class="nav-item" data-act="go" data-v="${n.id}" data-nav="${n.id}"><i class="ti ${n.icon}"></i>${n.label}</button>`;
+    nav += `<button class="nav-item" data-act="go" data-v="${n.id}" data-nav="${n.id}"><i class="ti ${n.icon}"></i>${n.label}${n.beta ? '<span class="pill pill-beta">Beta</span>' : ''}</button>`;
   });
   app.innerHTML = `
     <nav class="side">
@@ -1070,10 +1091,7 @@ function renderShell() {
   lockWas = null; renderLockUI(); lockWas = lockKey(); renderHealthBar();
 }
 
-/* ---------------- stand-up lock ----------------
-   Whoever starts it has the board for 15 minutes: they are the only person who can edit. Everyone else can still look.
-   Saved by the backend as the config key standup_lock_until ("ISO time|name|person id"), and enforced there too.
-   0.7.0: the holder is matched on their person id, ignoring stray spaces and capitals, and the backend says who holds it in every reply. */
+/* ---------------- stand-up lock ---------------- */
 const LOCK_MIN = 15;
 let lockWas = null;
 function lockInfo() {
@@ -1103,7 +1121,7 @@ function renderLockUI() {
 }
 function lockChanged() {
   renderLockUI(); lockWas = lockKey(); closePop();
-  if ($('#content')) { S.stale = false; renderView(); if (S.drawer) refreshDrawer(true); }
+  if ($('#content')) { S.stale = false; renderView(); if (S.drawer && !S.draft) refreshDrawer(true); }
 }
 setInterval(() => {
   if (!S.me) return;
@@ -1117,7 +1135,6 @@ async function setLock(minutes) {
     flushAll();
     const r = await write('standup_lock', { minutes });
     S.cfg = Object.assign(S.cfg, r.config);
-    /* the backend tells us who it thinks holds the lock. If that is us but this page disagrees, trust the backend's id for us. */
     if (minutes > 0 && r.holder && S.me && r.holder !== S.me.id && sameId(r.holder, S.me.id)) S.me.id = r.holder;
   } catch (e) { /* write() shows why */ }
   lockChanged();
@@ -1174,10 +1191,9 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('change', e => { const t = e.target.closest('[data-chg]'); if (t && INP[t.dataset.chg]) INP[t.dataset.chg](t, e); });
 document.addEventListener('input', e => { const t = e.target.closest('[data-inp]'); if (t && INP[t.dataset.inp]) INP[t.dataset.inp](t, e); });
-/* 0.7.0: the number keys jump between pages again (1 is the first page in the sidebar, 2 the next, and so on). Nothing is shown for them. */
 const inField = t => !!t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable);
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { if ($('#modal')) closeModal(); else if ($('#pop')) closePop(); else if (S.drawer) closeDrawer(); else if (document.activeElement && document.activeElement.classList.contains('cell-inp')) { document.activeElement.value = document.activeElement.defaultValue; document.activeElement.blur(); } }
+  if (e.key === 'Escape') { if ($('#modal')) closeModal(); else if ($('#pop')) closePop(); else if (S.drawer) requestCloseDrawer(); else if (document.activeElement && document.activeElement.classList.contains('cell-inp')) { document.activeElement.value = document.activeElement.defaultValue; document.activeElement.blur(); } }
   else if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('cell-inp') && e.target.tagName === 'INPUT') e.target.blur();
   else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && S.view === 'closeout' && S.wt.on && !typing() && !$('#modal') && !S.drawer) { e.preventDefault(); wtGo(e.key === 'ArrowRight' ? 1 : -1); }
   else if (/^[1-9]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey && !e.repeat && S.me && !S.readonly && !$('#modal') && !inField(e.target) && !inField(document.activeElement)) {
@@ -1200,7 +1216,7 @@ ACT.signout = () => signOut();
 ACT.reload = () => location.reload();
 ACT.more = el => {
   const items = NAV.filter(n => (seesMoney() ? ['timeline', 'pods', 'archive', 'codes', 'settings'] : []).includes(n.id) && navOk(n));
-  openPop(el, items.map(n => `<button data-act="go" data-v="${n.id}"><i class="ti ${n.icon}"></i>${n.label}</button>`).join('') +
+  openPop(el, items.map(n => `<button data-act="go" data-v="${n.id}"><i class="ti ${n.icon}"></i>${n.label}${n.beta ? ' (beta)' : ''}</button>`).join('') +
     `<div class="sep"></div><button data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button><button data-act="mypass"><i class="ti ti-key"></i>Change my passcode</button><button data-act="signout"><i class="ti ti-logout"></i>Sign out</button><div class="sep"></div><div class="tagline tagline-i" style="padding:6px 10px">${LOVE}</div>`);
 };
 
@@ -1239,12 +1255,12 @@ async function showLogin(msg, kind) {
   if (!API) { $('#alphaNote').innerHTML = '<b>No backend connected.</b> Paste your Apps Script web app URL into <code>API_URL</code> at the top of index.html.'; return; }
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=ping').then(x => x.json());
-    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#alphaNote')) $('#alphaNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs 0.7.0. Oli: update Code.gs and run upgradeTo070().`;
+    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#alphaNote')) $('#alphaNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs 0.8.0. Oli: update Code.gs and run upgradeTo080().`;
     else if (r && vcmp(r.server_version, APP_VERSION) > 0 && $('#alphaNote')) $('#alphaNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
   } catch (e) {}
 }
 async function fetchLogin(user, pass) {
-  const res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'login', user, pass }) }).catch(() => { throw new Error('Cannot reach the server'); });
+  const res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'login', user, pass, cv: APP_VERSION }) }).catch(() => { throw new Error('Cannot reach the server'); });
   const d = await res.json(); if (!d.ok) throw new Error(d.error || 'Could not sign in'); return d;
 }
 
@@ -1255,6 +1271,34 @@ async function loadApp() {
   if (!location.hash || location.hash === '#') location.hash = '#/pipeline';
   route();
   seedDefaults();
+  whatsNew();
+}
+
+/* ---------------- update gate and "what is new" (0.8.0) ----------------
+   The backend refuses pages older than its minimum version with a "BOARD has been updated" message. A page that gets that shows this screen instead of half working.
+   After an update, each browser shows the list below once, the next time BOARD opens, so people see what changed. Nobody is signed out. */
+function showUpdateScreen() {
+  S.updating = true;
+  $('#app').innerHTML = `<div class="skeleton" style="padding:24px">${brandRow()}<div style="max-width:380px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.6;color:var(--color-text-primary)"><b style="font-size:18px">BOARD has been updated</b><br>This page is an older copy. Reload it to carry on. You will not lose anything.</div><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD</button></div>`;
+}
+const WHATS_NEW = [
+  ['ti-calendar-stats', 'Edit capacity in working days', 'No weekends and no week numbers. UK bank holidays are shaded (England and Wales).'],
+  ['ti-calendar-event', 'Calendar picker stays open', 'It now stays on screen after you pick the last day. Click anywhere else to close it.'],
+  ['ti-coin-pound', 'Finance shows everything at once', 'Every invoicing section is on the page, Paid included. Only Live projects and Out processing appear here, so check the Archive for the rest.'],
+  ['ti-checklist', 'Invoicing is part of Out processing', 'Items unlock once a project is invoiced, and nothing goes to the Archive until everything, invoicing included, is done.'],
+  ['ti-presentation', 'Meeting mode', 'The walkthrough is now Meeting mode: smaller controls, with Back and Next at the top so they stay put.'],
+  ['ti-plus', 'New projects are confirmed', 'The New project form only adds to the board when you press Add to board. It needs a client, project code and account lead.'],
+  ['ti-users-group', 'Pod capacity is in beta', 'We are not sure of the best way to use it yet, so please tell us what you think.'],
+  ['ti-circle-check', 'Paid asks first', 'Marking an invoice as Paid now asks you to confirm.']
+];
+function whatsNew() {
+  if (!S.me || S.readonly) return;
+  const seen = store.get('board_seen') || sstore.get('board_seen');
+  if (seen === APP_VERSION) return;
+  store.set('board_seen', APP_VERSION); sstore.set('board_seen', APP_VERSION);
+  openModal(`<h3>What is new in ${esc(APP_VERSION.replace('-alpha', ''))}</h3><div class="muted">Here is what changed since you last looked.</div>
+    <div style="display:flex;flex-direction:column;gap:10px">${WHATS_NEW.map(w => `<div class="row" style="align-items:flex-start;gap:10px"><i class="ti ${w[0]}" style="color:var(--stp);margin-top:1px"></i><div><b>${esc(w[1])}</b><div class="muted">${esc(w[2])}</div></div></div>`).join('')}</div>
+    <div class="actions"><button class="btn btn-primary" data-act="closemodal">Got it</button></div>`, 'wide');
 }
 
 /* ---------------- boot ---------------- */
@@ -1262,7 +1306,7 @@ async function boot() {
   const q = new URLSearchParams(location.search);
   if (q.get('view') === 'live' && q.get('k')) { return startReadonly(q.get('k')); }
   S.token = tokenGet();
-  if (S.token && API) { try { await loadApp(); return; } catch (e) { S.token = null; tokenDel(); } }
+  if (S.token && API) { try { await loadApp(); return; } catch (e) { if (S.updating) return; S.token = null; tokenDel(); } }
   showLogin('');
 }
 
@@ -1526,8 +1570,8 @@ ACT.labset = async el => {
   closePop();
   const kind = el.dataset.kind, id = el.dataset.id, v = el.dataset.v, p = projectById(id); if (!p || !canEdit()) return;
   if (kind === 'status') await setStatus(p, v, null);
-  else fset(id, 'invoicing', v);
-  if (S.view === 'finance') rerenderBody();
+  else await setInvoicing(id, v);
+  if (S.view === 'finance' || S.view === 'closeout') rerenderBody();
 };
 
 /* Lead picker: search box at the top, tick several people. Account lead also has an AL cover tab. */
@@ -1589,8 +1633,9 @@ INP['f-person'] = el => { S.f.person = el.value; rerenderBody(); };
 INP['f-status'] = el => { S.f.status = el.value; rerenderBody(); };
 ACT.open = el => { if (S.dragging || S._noOpen) return; openDrawer(el.dataset.id, el.dataset.from); };
 
-/* ---------------- timeline range picker (Monday style) ---------------- */
-const RP = { id: null, s: '', e: '', step: 's', y: 0, m: 0 };
+/* ---------------- timeline range picker (Monday style) ----------------
+   0.8.0: no week numbers, bank holidays marked, and it stays open after the last day is picked (it saves straight away). Click anywhere else to close it. */
+const RP = { id: null, s: '', e: '', step: 's', saved: false, y: 0, m: 0 };
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const rpFmt = s => { const d = pd(s); return d ? `${String(d.getUTCDate()).padStart(2, '0')}/${String(d.getUTCMonth() + 1).padStart(2, '0')}/${d.getUTCFullYear()}` : ''; };
 function rpParse(t) {
@@ -1605,50 +1650,54 @@ function rpHTML() {
   let rows = '';
   for (let r = 0; r < 6; r++) {
     const mon = new Date(gs.getTime() + r * 7 * MS_DAY);
-    rows += `<tr><td class="wk">${isoWeek(mon)}</td>`;
+    rows += '<tr>';
     for (let c = 0; c < 7; c++) {
-      const d = new Date(mon.getTime() + c * MS_DAY), s = ymd(d), out = d.getUTCMonth() !== RP.m;
-      const cls = ['rp-d', out ? 'out' : '', c > 4 ? 'we' : '', s === today ? 'today' : '', lo && s >= lo && s <= hi ? 'in' : '', s === RP.s || (RP.e && s === RP.e) ? 'ends' : ''].filter(Boolean).join(' ');
-      rows += `<td><button class="${cls}" data-act="rpday" data-d="${s}">${d.getUTCDate()}</button></td>`;
+      const d = new Date(mon.getTime() + c * MS_DAY), s = ymd(d), out = d.getUTCMonth() !== RP.m, bh = bhName(s);
+      const cls = ['rp-d', out ? 'out' : '', c > 4 ? 'we' : '', bh ? 'bh' : '', s === today ? 'today' : '', lo && s >= lo && s <= hi ? 'in' : '', s === RP.s || (RP.e && s === RP.e) ? 'ends' : ''].filter(Boolean).join(' ');
+      rows += `<td><button class="${cls}" data-act="rpday" data-d="${s}"${bh ? ` title="${esc(bh)}"` : ''}>${d.getUTCDate()}</button></td>`;
     }
     rows += '</tr>';
   }
-  const yr = new Date().getFullYear();
-  return `<div class="rp"><div class="rp-h">Edit timeline<span>${RP.step === 's' ? 'Pick the first day' : 'Now pick the last day'}</span></div>
+  const yr = new Date().getFullYear(), hint = RP.step === 'e' ? 'Now pick the last day' : (RP.saved ? 'Saved. Click a day to start again' : 'Pick the first day');
+  return `<div class="rp"><div class="rp-h">Edit timeline<span>${hint}</span></div>
     <div class="rp-in"><input class="inp${RP.step === 's' ? ' act' : ''}" data-chg="rp-in" data-w="s" value="${rpFmt(RP.s)}" placeholder="dd/mm/yyyy"><input class="inp${RP.step === 'e' ? ' act' : ''}" data-chg="rp-in" data-w="e" value="${rpFmt(RP.e)}" placeholder="dd/mm/yyyy"></div>
     <div class="rp-nav"><button class="icon-btn" data-act="rpnav" data-d="-1"><i class="ti ti-chevron-left"></i></button>
       <select class="sel" data-chg="rp-m">${MONTHS.map((m, i) => `<option value="${i}"${i === RP.m ? ' selected' : ''}>${m}</option>`).join('')}</select>
-      <select class="sel" data-chg="rp-y">${[...Array(7)].map((_, i) => yr - 2 + i).concat(RP.y < yr - 2 || RP.y > yr + 4 ? [RP.y] : []).sort().map(y => `<option${y === RP.y ? ' selected' : ''}>${y}</option>`).join('')}</select>
+      <select class="sel" data-chg="rp-y">${[...Array(9)].map((_, i) => yr - 2 + i).concat(RP.y < yr - 2 || RP.y > yr + 6 ? [RP.y] : []).sort().map(y => `<option${y === RP.y ? ' selected' : ''}>${y}</option>`).join('')}</select>
       <span class="sp"></span><button class="icon-btn" data-act="rpnav" data-d="1"><i class="ti ti-chevron-right"></i></button></div>
-    <table class="rp-cal"><thead><tr><th></th>${['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(d => `<th>${d}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>
+    <table class="rp-cal"><thead><tr>${['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(d => `<th>${d}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>
+    <div class="rp-key"><i></i>UK bank holiday</div>
     <div class="rp-f"><button class="btn btn-plain btn-sm" data-act="rpclear">Clear</button><span class="sp"></span><button class="btn btn-ghost btn-sm" data-act="rptoday">Today</button></div></div>`;
 }
 const rpDraw = () => { const p = $('#pop'); if (p) p.innerHTML = rpHTML(); };
 ACT.rpopen = el => {
   const p = projectById(el.dataset.id); if (!p || !canEdit()) return;
   const ep = epOf(p), base = pd(ep.s) || pd(todayStr());
-  Object.assign(RP, { id: p.id, s: ep.s, e: ep.e, step: 's', y: base.getUTCFullYear(), m: base.getUTCMonth() });
+  Object.assign(RP, { id: p.id, s: ep.s, e: ep.e, step: 's', saved: false, y: base.getUTCFullYear(), m: base.getUTCMonth() });
   openPop(el, rpHTML());
 };
+/* saves the range but leaves the picker open, ready for another go */
 function rpCommit() {
   const lo = RP.s <= RP.e ? RP.s : RP.e, hi = RP.s <= RP.e ? RP.e : RP.s;
-  closePop(); epSet(RP.id, lo, hi); if (S.view !== 'closeout') rerenderBody(); if (S.drawer === RP.id) refreshDrawer(true);
+  RP.s = lo; RP.e = hi; RP.step = 's'; RP.saved = true;
+  epSet(RP.id, lo, hi); if (S.view !== 'closeout') rerenderBody(); if (S.drawer === RP.id) refreshDrawer(true);
+  rpDraw();
 }
 ACT.rpday = el => {
   const d = el.dataset.d;
-  if (RP.step === 's') { RP.s = d; RP.e = ''; RP.step = 'e'; rpDraw(); }
+  if (RP.step === 's') { RP.s = d; RP.e = ''; RP.step = 'e'; RP.saved = false; rpDraw(); }
   else { RP.e = d; rpCommit(); }
 };
 ACT.rpnav = el => { RP.m += Number(el.dataset.d); if (RP.m < 0) { RP.m = 11; RP.y--; } if (RP.m > 11) { RP.m = 0; RP.y++; } rpDraw(); };
 ACT.rptoday = () => { const d = pd(todayStr()); RP.y = d.getUTCFullYear(); RP.m = d.getUTCMonth(); rpDraw(); };
-ACT.rpclear = () => { closePop(); epSet(RP.id, '', ''); rerenderBody(); if (S.drawer === RP.id) refreshDrawer(true); };
+ACT.rpclear = () => { RP.s = ''; RP.e = ''; RP.step = 's'; RP.saved = true; epSet(RP.id, '', ''); rerenderBody(); if (S.drawer === RP.id) refreshDrawer(true); rpDraw(); };
 INP['rp-m'] = el => { RP.m = Number(el.value); rpDraw(); };
 INP['rp-y'] = el => { RP.y = Number(el.value); rpDraw(); };
 INP['rp-in'] = el => {
   const v = rpParse(el.value), w = el.dataset.w;
   if (!v) { rpDraw(); return; }
   RP[w] = v; const d = pd(v); RP.y = d.getUTCFullYear(); RP.m = d.getUTCMonth();
-  if (RP.s && RP.e) rpCommit(); else { RP.step = w === 's' ? 'e' : 's'; rpDraw(); }
+  if (RP.s && RP.e) rpCommit(); else { RP.step = w === 's' ? 'e' : 's'; RP.saved = false; rpDraw(); }
 };
 
 /* ---------------- pre-production needs a project code ---------------- */
@@ -1732,19 +1781,19 @@ INP['mine-q'] = el => { S.mine.q = el.value; rerenderBody(); };
 
 /* ================================================================
    Edit capacity (Tools). Post production + freelancers, weekdays only.
-   0.7.0: sized in working days, and opens on today (not the Monday of this week). Default is the next 10 working days.
+   0.8.0: a column for every working day (no weekends, no week numbers), with UK bank holidays shaded. Opens on today.
    ================================================================ */
-const TL_BEFORE = 4, TL_WEEKS = 40, DAY_OPTS = [5, 10, 20, 40, 60];
+const TL_BEFORE = 4, TL_WEEKS = 40, DAY_OPTS = [5, 10, 20, 40, 60], DOW3 = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 const tlLabelW = () => (innerWidth <= 860 ? 150 : 250);
 function monday(d) { const x = new Date(d.getTime()); const dow = (x.getUTCDay() + 6) % 7; return new Date(x.getTime() - dow * MS_DAY); }
-function isoWeek(d) { const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())); const dn = (t.getUTCDay() + 6) % 7; t.setUTCDate(t.getUTCDate() - dn + 3); const ft = new Date(Date.UTC(t.getUTCFullYear(), 0, 4)); return 1 + Math.round(((t - ft) / MS_DAY - 3 + ((ft.getUTCDay() + 6) % 7)) / 7); }
 function tlStart() { return new Date(monday(pd(todayStr())).getTime() - TL_BEFORE * 7 * MS_DAY); }
 function wdIndex(str, start, mode) {
   const d = pd(str), days = Math.floor((d - start) / MS_DAY), w = Math.floor(days / 7), dow = days - w * 7;
   if (dow > 4) return mode === 'start' ? (w + 1) * 5 : w * 5 + 4;
   return w * 5 + dow;
 }
-const idxDate = i => ymd(new Date(tlStart().getTime() + (Math.floor(i / 5) * 7 + (((i % 5) + 5) % 5)) * MS_DAY));
+const dayDate = (start, i) => new Date(start.getTime() + (Math.floor(i / 5) * 7 + (((i % 5) + 5) % 5)) * MS_DAY);
+const idxDate = i => ymd(dayDate(tlStart(), i));
 const hasInternal = () => S.cfg.stages.some(s => isPostStage(s) && /internal/i.test(s));
 function ecStages() {
   let st = S.cfg.stages.filter(isPostStage);
@@ -1774,19 +1823,22 @@ function ecBody() {
   const LW = tlLabelW(), dayW = ecDayW(), start = tlStart(), totalDays = TL_WEEKS * 5, W = totalDays * dayW, today = todayStr();
   S._dayW = dayW;
   const stages = ecStages(), people = ecPeople().filter(p => !S.ec.person || p.id === S.ec.person), projs = S.projects.filter(p => stages.includes(p.stage));
-  const todayIdx = wdIndex(today, start, 'start'), curWeek = Math.floor(todayIdx / 5);
-  let months = '', weeks = '', lastKey = '', span = 0, spanLbl = '';
-  const flush = () => { if (span) months += `<div class="tl-cell" style="width:${span * 5 * dayW}px;font-weight:700;color:var(--color-text-primary);text-align:left;overflow:visible"><span style="position:sticky;left:${LW + 10}px;padding-left:0">${spanLbl}</span></div>`; };
-  for (let w = 0; w < TL_WEEKS; w++) {
-    const m = new Date(start.getTime() + w * 7 * MS_DAY), key = m.getUTCFullYear() + '-' + m.getUTCMonth();
-    if (key !== lastKey) { flush(); lastKey = key; span = 0; spanLbl = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(m); }
+  const todayIdx = wdIndex(today, start, 'start');
+  /* header: one cell per working day, grouped under the month */
+  const mFmt = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  let months = '', days = '', holCols = '', lastKey = '', span = 0, spanLbl = '';
+  const flush = () => { if (span) months += `<div class="tl-cell" style="width:${span * dayW}px;font-weight:700;color:var(--color-text-primary);text-align:left;overflow:visible"><span style="position:sticky;left:${LW + 10}px;padding-left:0">${spanLbl}</span></div>`; };
+  for (let i = 0; i < totalDays; i++) {
+    const d = dayDate(start, i), s = ymd(d), key = d.getUTCFullYear() + '-' + d.getUTCMonth(), dow = i % 5, hol = bhName(s);
+    if (key !== lastKey) { flush(); lastKey = key; span = 0; spanLbl = mFmt.format(d); }
     span++;
-    const fri = new Date(m.getTime() + 4 * MS_DAY), wk = isoWeek(m), wide = 5 * dayW >= 120;
-    weeks += `<div class="tl-cell ${w === curWeek ? 'now' : ''}" style="width:${5 * dayW}px">W${wk}${wide ? ` ${m.getUTCDate()} - ${fri.getUTCDate()}` : ''}</div>`;
+    const num = d.getUTCDate(), txt = dayW >= 34 ? `<small>${DOW3[dow]}</small>${num}` : dayW >= 20 ? String(num) : (dow === 0 ? String(num) : '');
+    days += `<div class="tl-cell d${dow === 0 ? ' mon' : ''}${hol ? ' hol' : ''}${i === todayIdx ? ' now' : ''}" style="width:${dayW}px" title="${esc(DOW3[dow] + ' ' + fdate(s) + (hol ? ': ' + hol : ''))}">${txt}</div>`;
+    if (hol) holCols += `<div class="tl-bh" style="left:${LW + i * dayW}px;width:${dayW}px" title="${esc(hol)}"></div>`;
   }
   flush();
   const head = `<div class="tl-head"><div class="tl-row"><div class="tl-label"></div><div style="display:flex;width:${W}px">${months}</div></div>
-    <div class="tl-row"><div class="tl-label"></div><div style="display:flex;width:${W}px">${weeks}</div></div></div>`;
+    <div class="tl-row days"><div class="tl-label"></div><div style="display:flex;width:${W}px">${days}</div></div></div>`;
   const ed = canEdit();
   const span_ = p => { const ep = epOf(p); if (!pd(ep.s) && !pd(ep.e)) return null; let s = wdIndex(ep.s || ep.e, start, 'start'), e = wdIndex(ep.e || ep.s, start, 'end'); if (e < s) e = s; return { s, e, ep }; };
   const bar = p => {
@@ -1812,13 +1864,13 @@ function ecBody() {
     });
   });
   if (!people.length) rows = `<div class="empty" style="position:sticky;left:0"><i class="ti ti-users"></i>No one in the Post or Freelancers departments yet. Add people in Settings and set their department.</div>`;
-  const grid = `<div class="tl-grid" style="left:${LW}px;right:auto;width:${W}px;background-size:${dayW * 5}px 100%"></div>`;
+  const grid = `<div class="tl-grid" style="left:${LW}px;right:auto;width:${W}px;background-size:${dayW >= 18 ? dayW : dayW * 5}px 100%"></div>`;
   const tx = LW + todayIdx * dayW + dayW / 2, showToday = todayIdx >= 0 && todayIdx < totalDays;
   const used = uniq(projs.map(p => p.status).filter(Boolean));
-  return `<div class="tl" style="width:${LW + W}px">${head}<div style="position:relative">${grid}${showToday ? `<div class="tl-today" style="left:${tx}px"></div>` : ''}${rows}</div>
-    <div class="legend">${used.map(s => `<span><i style="background:${statusColour(s)}"></i>${esc(s)}</span>`).join('')}<span><i style="background:#D97706"></i>2 overlapping</span><span><i style="background:#DC2626"></i>3 or more overlapping</span><span class="muted">Drag a bar to move it, drag its ends to resize. The Timeline column on the Project board sets the same dates.</span></div></div>`;
+  return `<div class="tl" style="width:${LW + W}px">${head}<div style="position:relative">${grid}${holCols}${showToday ? `<div class="tl-today" style="left:${tx}px"></div>` : ''}${rows}</div>
+    <div class="legend">${used.map(s => `<span><i style="background:${statusColour(s)}"></i>${esc(s)}</span>`).join('')}<span><i style="background:#D97706"></i>2 overlapping</span><span><i style="background:#DC2626"></i>3 or more overlapping</span><span><i class="hol"></i>UK bank holiday (England and Wales)</span><span class="muted">Drag a bar to move it, drag its ends to resize. The Timeline column on the Project board sets the same dates.</span></div></div>`;
 }
-/* 0.7.0: scrolls so today is the first day showing, with the next working days after it */
+/* scrolls so today is the first day showing, with the next working days after it */
 function scrollTimelineToToday() {
   const c = $('#vb'); if (!c) return;
   const dayW = S._dayW || ecDayW(), idx = wdIndex(todayStr(), tlStart(), 'start');
@@ -1866,15 +1918,33 @@ document.addEventListener('pointerdown', e => {
 });
 
 /* ================================================================
-   Out processing (+ the walkthrough pane for team meetings)
+   Out processing (+ Meeting mode)
+   0.8.0: invoicing is part of it. The checklist items only unlock once a project is Invoiced, Paid or N/A,
+   and a project cannot go to the Archive until invoicing and every item are done.
    ================================================================ */
 const coFields = () => S.cfg.closeout_fields || [];
 function coClass(v) { const x = norm(v); if (!x) return ''; if (x === 'stuck') return 'co-bad'; if (x === 'in progress' || x.includes('awaiting')) return 'co-warn'; if (x === 'n/a') return 'co-na'; return 'co-ok'; }
 const coDone = v => { const x = norm(v); return !!x && x !== 'stuck' && x !== 'in progress' && !x.includes('awaiting'); };
-const coOutstanding = p => coFields().filter(([k]) => !coDone(p[k])).map(([, l]) => l);
+const coOutstanding = p => (invOk(p) ? [] : ['Invoicing']).concat(coFields().filter(([k]) => !coDone(p[k])).map(([, l]) => l));
 const canArchive = p => coOutstanding(p).length === 0;
-const coDoneCount = p => coFields().filter(([k]) => coDone(p[k])).length;
+const coTotal = () => coFields().length + 1;
+const coDoneCount = p => coFields().filter(([k]) => coDone(p[k])).length + (invOk(p) ? 1 : 0);
 const coStagesShown = () => closeoutStages();
+const coPct = p => Math.round(coDoneCount(p) / coTotal() * 100);
+/* a done answer is only allowed once the project is invoiced (clearing it or saying in progress is always fine) */
+const coBlocked = (p, k, v) => !invOk(p) && coFields().some(([f]) => f === k) && coDone(v) && coDone(p[k]) === false;
+const coLockMsg = 'Invoice this project first. The items unlock once Invoicing is Invoiced, Paid or N/A.';
+const coOptions = (list, v, locked) => `<option value="">-</option>` + list.map(o => `<option value="${esc(o)}"${o === v ? ' selected' : ''}${locked && coDone(o) && o !== v ? ' disabled' : ''}>${esc(o)}</option>`).join('');
+
+/* every invoicing change goes through here, so Paid always asks first */
+async function setInvoicing(id, v, from) {
+  const p = recordFor(id, from); if (!p || !canEdit()) return false;
+  const cur = normInv(fget(p, 'invoicing'));
+  if (v === cur) return true;
+  if (v === 'Paid' && !await confirmBox(`Mark the invoice for "${p.name}" as paid? This tells everyone the money has landed.`, 'Yes, it is paid', false, 'Invoice paid')) return false;
+  saveFields(id, { invoicing: v }, from === 'archive' ? 'archive' : null, true);
+  return true;
+}
 
 function viewCloseout() {
   return `<div class="toolbar">
@@ -1887,24 +1957,25 @@ BODY.closeout = coBody;
 function coBody() { return `<div id="wtWrap">${wtHTML()}</div><div id="coTable">${coTableHTML()}</div>`; }
 function coTableHTML() {
   const q = norm(S.co.q), F = coFields(), ed = canEdit(), stages = coStagesShown();
-  const cols = withFirst([{ k: 'name', l: 'Project', w: 280, min: 140, sticky: 1 }, { k: 'progress', l: 'Progress', w: 140 }]
+  const cols = withFirst([{ k: 'name', l: 'Project', w: 280, min: 140, sticky: 1 }, { k: 'progress', l: 'Progress', w: 140 }, { k: 'invoicing', l: 'Invoicing', w: 180 }]
     .concat(F.map(([k, l]) => ({ k, l, w: 150 }))).concat([{ k: 'size_location', l: 'Size + Location', w: 220 }, { k: 'act', l: '', w: 130, min: 100, nosort: 1, noresize: 1 }]));
   const opts = S.cfg.closeout_options || {};
-  const val = (p, k) => k === 'progress' ? coDoneCount(p) : norm(p[k]);
+  const val = (p, k) => k === 'progress' ? coDoneCount(p) : k === 'invoicing' ? (invOf(p) ? INV_LABELS.indexOf(invOf(p)) + 1 : '') : norm(p[k]);
   const groups = stages.map(stage => {
     const all = S.projects.filter(p => p.stage === stage), items = sortRows(all.filter(p => (!q || norm(p.name + ' ' + p.client).includes(q)) && (!S.co.incomplete || !canArchive(p))).sort(bySort), 'closeout', val);
     return { key: stage, title: stage, colour: stageColour(stage), items, total: all.length };
   });
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('closeout');
   return tableHTML('closeout', cols, groups, (p, g, cs) => {
-    const done = coDoneCount(p);
+    const done = coDoneCount(p), locked = !invOk(p);
     return `<tr class="prow" data-id="${p.id}">${cs.map(c => {
       if (c.k === 'name') return td(c, g, `<div class="nm co-name" style="cursor:pointer;overflow:hidden;text-overflow:ellipsis" data-act="open" data-id="${p.id}">${esc(p.name)}</div><div class="nm-sub">${esc(p.client)}</div>`);
-      if (c.k === 'progress') return td(c, g, `<div class="row" style="gap:8px"><div class="bar"><i class="co-bar" style="width:${F.length ? Math.round(done / F.length * 100) : 0}%"></i></div><span class="muted co-cnt" style="font-size:11px">${done}/${F.length}</span></div>`);
+      if (c.k === 'progress') return td(c, g, `<div class="row" style="gap:8px"><div class="bar"><i class="co-bar" style="width:${coPct(p)}%"></i></div><span class="muted co-cnt" style="font-size:11px">${done}/${coTotal()}</span></div>`);
+      if (c.k === 'invoicing') { const v = invOf(p); return td(c, g, labCell(v, invColour(v), `data-act="labpick" data-kind="invoicing" data-id="${p.id}"`, ed), 'zp'); }
       if (c.k === 'size_location') return td(c, g, `<input class="cell-inp" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="-">`);
-      if (c.k === 'act') return td(c, g, ed ? `<button class="btn btn-ghost btn-sm co-arch${canArchive(p) ? '' : ' is-locked'}" data-act="archive" data-id="${p.id}" title="${canArchive(p) ? 'Send to the Archive' : 'Every item needs a response first'}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Archive</button>` : '');
+      if (c.k === 'act') return td(c, g, ed ? `<button class="btn btn-ghost btn-sm co-arch${canArchive(p) ? '' : ' is-locked'}" data-act="archive" data-id="${p.id}" title="${canArchive(p) ? 'Send to the Archive' : 'Invoicing and every item need a final response first'}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Archive</button>` : '');
       const v = p[c.k] || '', list = (opts[c.k] || []).slice(); if (v && !list.includes(v)) list.push(v);
-      return td(c, g, `<select class="sel co-sel ${coClass(v)}" data-chg="co" data-id="${p.id}" data-k="${c.k}" ${ed ? '' : 'disabled'}>${optList(list, v, '-')}</select>`);
+      return td(c, g, `<select class="sel co-sel ${coClass(v)}" data-chg="co" data-id="${p.id}" data-k="${c.k}" ${ed ? '' : 'disabled'}${locked ? ` style="opacity:.7" title="${esc(coLockMsg)}"` : ''}>${coOptions(list, v, locked)}</select>`);
     }).join('')}</tr>`;
   }) + `<div class="page-end"></div>`;
 }
@@ -1914,22 +1985,23 @@ INP['co-inc'] = el => { S.co.incomplete = el.checked; rerenderBody(); };
 /* keeps the progress bar, count and archive button in step the moment a response changes (also while the select still has focus) */
 function coAfterChange(id) {
   const p = projectById(id); if (!p) return;
-  const F = coFields(), done = coDoneCount(p), ok = canArchive(p);
+  const done = coDoneCount(p), ok = canArchive(p);
   $$(`#coTable tr.prow[data-id="${id}"]`).forEach(tr => {
-    const b = $('.co-bar', tr); if (b) b.style.width = (F.length ? Math.round(done / F.length * 100) : 0) + '%';
-    const n = $('.co-cnt', tr); if (n) n.textContent = `${done}/${F.length}`;
-    const a = $('.co-arch', tr); if (a) { a.classList.toggle('is-locked', !ok); a.title = ok ? 'Send to the Archive' : 'Every item needs a response first'; const ic = $('i', a); if (ic) ic.className = 'ti ' + (ok ? 'ti-archive' : 'ti-lock'); }
+    const b = $('.co-bar', tr); if (b) b.style.width = coPct(p) + '%';
+    const n = $('.co-cnt', tr); if (n) n.textContent = `${done}/${coTotal()}`;
+    const a = $('.co-arch', tr); if (a) { a.classList.toggle('is-locked', !ok); a.title = ok ? 'Send to the Archive' : 'Invoicing and every item need a final response first'; const ic = $('i', a); if (ic) ic.className = 'ti ' + (ok ? 'ti-archive' : 'ti-lock'); }
   });
 }
 INP.co = el => {
-  const id = el.dataset.id, k = el.dataset.k;
+  const id = el.dataset.id, k = el.dataset.k, p = projectById(id); if (!p) return;
+  if (coBlocked(p, k, el.value)) { el.value = p[k] || ''; toast(coLockMsg, 'err'); return; }
   saveFields(id, { [k]: el.value }, null, true);
   if (el.tagName === 'SELECT') el.className = 'sel co-sel ' + coClass(el.value);
   coAfterChange(id);
   const w = $('#wtWrap'); if (w) w.innerHTML = wtHTML();
 };
 
-/* ---- walkthrough: one project at a time, every question big on screen ---- */
+/* ---- meeting mode: one project at a time. Back and Next live in the top bar so they never move. ---- */
 const wtQueue = () => S.wt.ids.map(projectById).filter(p => p && closeoutStages().includes(p.stage));
 function wtStart() {
   const stages = coStagesShown(), ids = [];
@@ -1945,88 +2017,97 @@ ACT.wtstart = () => { wtStart(); wtRefresh(); };
 ACT.wtexit = () => { S.wt = { on: false, ids: [], i: 0 }; wtRefresh(); };
 ACT.wtgo = el => wtGo(Number(el.dataset.d));
 ACT.wtjump = el => { S.wt.i = Number(el.dataset.i); wtRefresh(); };
-ACT.wtpick = el => {
+ACT.wtpick = async el => {
   const id = el.dataset.id, k = el.dataset.k, v = el.dataset.v, p = projectById(id); if (!p || !canEdit()) return;
-  saveFields(id, { [k]: p[k] === v ? '' : v }, null, true); wtRefresh();
+  const next = p[k] === v ? '' : v;
+  if (coBlocked(p, k, next)) { toast(coLockMsg, 'err'); return; }
+  saveFields(id, { [k]: next }, null, true); wtRefresh();
+};
+ACT.wtinv = async el => {
+  const id = el.dataset.id, p = projectById(id); if (!p || !canEdit()) return;
+  const v = el.dataset.v, next = invOf(p) === v ? '' : v;
+  if (!await setInvoicing(id, next)) return;
+  wtRefresh();
 };
 function wtHTML() {
   const ed = canEdit(), F = coFields(), opts = S.cfg.closeout_options || {};
   if (!S.wt.on) {
     const n = coStagesShown().reduce((a, s) => a + S.projects.filter(p => p.stage === s && !canArchive(p)).length, 0);
-    return `<div class="wt"><div class="wt-idle"><div style="flex:1;min-width:220px"><div class="lbl">Team meeting mode</div><div class="big">Out processing walkthrough</div>
-      <div class="muted">${n ? `${n} project${n === 1 ? '' : 's'} still ${n === 1 ? 'has' : 'have'} questions open. Go through them one at a time with every question on screen.` : 'Nothing has questions open right now.'}</div></div>
-      <button class="btn btn-primary btn-lg" data-act="wtstart" ${n && ed ? '' : 'disabled'}><i class="ti ti-player-play"></i>Start walkthrough</button></div></div>`;
+    return `<div class="wt"><div class="wt-idle"><div style="flex:1;min-width:220px"><div class="lbl">Meeting mode</div><div class="big">Out processing meeting</div>
+      <div class="muted">${n ? `${n} project${n === 1 ? '' : 's'} still ${n === 1 ? 'has' : 'have'} something open. Go through them one at a time with every question on screen.` : 'Nothing has questions open right now.'}</div></div>
+      <button class="btn btn-primary" data-act="wtstart" ${n && ed ? '' : 'disabled'}><i class="ti ti-player-play"></i>Start meeting mode</button></div></div>`;
   }
   const q = wtQueue(), n = q.length;
   const dots = q.map((p, i) => `<i class="${canArchive(p) ? 'done' : ''}${i === S.wt.i ? ' now' : ''}" data-act="wtjump" data-i="${i}" title="${esc(p.name)}" style="cursor:pointer"></i>`).join('');
-  const top = `<div class="wt-top"><span class="lbl">Walkthrough</span><span class="count">${Math.min(S.wt.i + 1, n)} of ${n}</span><div class="wt-dots">${dots}</div><span class="sp"></span>
-    <button class="btn btn-plain btn-sm" data-act="wtexit"><i class="ti ti-x"></i>Exit</button></div>`;
-  if (!n || S.wt.i >= n) {
-    return `<div class="wt">${top}<div class="wt-end"><div class="big">\u{1F389} That is the lot</div><div class="muted" style="margin-bottom:16px">${n ? 'You have been through every project in this walkthrough.' : 'Nothing left to go through.'}</div>
-      <div class="row wrap" style="justify-content:center">${n ? `<button class="btn btn-plain" data-act="wtgo" data-d="-1"><i class="ti ti-arrow-left"></i>Back</button>` : ''}<button class="btn btn-primary" data-act="wtexit">Back to the full list</button></div></div></div>`;
+  const atEnd = !n || S.wt.i >= n;
+  const top = `<div class="wt-top"><button class="btn btn-plain btn-sm" data-act="wtgo" data-d="-1" ${S.wt.i === 0 || !n ? 'disabled' : ''}><i class="ti ti-arrow-left"></i>Back</button>
+    <button class="btn btn-primary btn-sm" data-act="wtgo" data-d="1" ${atEnd ? 'disabled' : ''}>${S.wt.i >= n - 1 ? 'Finish' : 'Next project'}<i class="ti ti-arrow-right"></i></button>
+    <span class="count">${Math.min(S.wt.i + 1, Math.max(n, 1))} of ${n}</span><div class="wt-dots">${dots}</div><span class="sp"></span>
+    <span class="lbl hide-m">Meeting mode</span><button class="btn btn-plain btn-sm" data-act="wtexit"><i class="ti ti-x"></i>Exit</button></div>`;
+  if (atEnd) {
+    return `<div class="wt">${top}<div class="wt-end"><div class="big">\u{1F389} That is the lot</div><div class="muted" style="margin-bottom:14px">${n ? 'You have been through every project in this meeting.' : 'Nothing left to go through.'}</div>
+      <button class="btn btn-primary" data-act="wtexit">Back to the full list</button></div></div>`;
   }
-  const p = q[S.wt.i], done = coDoneCount(p), ok = canArchive(p);
+  const p = q[S.wt.i], done = coDoneCount(p), ok = canArchive(p), locked = !invOk(p), inv = invOf(p);
+  const invCard = `<div class="wt-q ${invOk(p) ? 'done' : 'todo'}"><div class="qh"><span class="qn">Invoicing</span><span class="qs">${invOk(p) ? 'Done' : (inv ? esc(inv) : 'To answer')}</span></div>
+    <div class="wt-opts">${INV_LABELS.map(o => `<button class="wt-opt${inv === o ? ' sel ' + (o === 'N/A' ? 'na' : o === 'Not Invoiced' ? 'bad' : o === 'Partially Invoiced' ? 'warn' : 'ok') : ''}" data-act="wtinv" data-id="${p.id}" data-v="${esc(o)}" ${ed ? '' : 'disabled'}>${esc(o)}</button>`).join('')}</div></div>`;
   const cards = F.map(([k, l]) => {
     const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]);
     const isDone = coDone(p[k]);
-    return `<div class="wt-q ${isDone ? 'done' : 'todo'}"><div class="qh"><span class="qn">${esc(l)}</span><span class="qs">${isDone ? 'Done' : (p[k] ? esc(p[k]) : 'To answer')}</span></div>
-      <div class="wt-opts">${list.map(o => { const c = coClass(o).replace('co-', ''); return `<button class="wt-opt${p[k] === o ? ' sel ' + (c || 'ok') : ''}" data-act="wtpick" data-id="${p.id}" data-k="${k}" data-v="${esc(o)}" ${ed ? '' : 'disabled'}>${esc(o)}</button>`; }).join('')}</div></div>`;
+    return `<div class="wt-q ${isDone ? 'done' : 'todo'}${locked && !isDone ? ' locked' : ''}"><div class="qh"><span class="qn">${esc(l)}</span><span class="qs">${isDone ? 'Done' : (p[k] ? esc(p[k]) : 'To answer')}</span></div>
+      <div class="wt-opts">${list.map(o => { const c = coClass(o).replace('co-', ''); const off = !ed || (locked && coDone(o) && p[k] !== o); return `<button class="wt-opt${p[k] === o ? ' sel ' + (c || 'ok') : ''}" data-act="wtpick" data-id="${p.id}" data-k="${k}" data-v="${esc(o)}" ${off ? 'disabled' : ''}>${esc(o)}</button>`; }).join('')}</div></div>`;
   }).join('');
   return `<div class="wt">${top}
     <div class="wt-body"><div class="lbl">${esc(p.stage)}${p.client ? ' · ' + esc(p.client) : ''}</div><div class="wt-title">${esc(p.name)}</div>
-      <div class="wt-sub"><span>${done} of ${F.length} answered</span><div class="bar"><i style="width:${F.length ? Math.round(done / F.length * 100) : 0}%"></i></div></div></div>
-    <div class="wt-grid">${cards}
+      <div class="wt-sub"><span>${done} of ${coTotal()} done</span><div class="bar"><i style="width:${coPct(p)}%"></i></div></div></div>
+    ${locked ? `<div class="wt-note"><i class="ti ti-lock" style="vertical-align:-3px"></i> Start with Invoicing. The other items unlock once it is Invoiced, Paid or N/A.</div>` : ''}
+    <div class="wt-grid">${invCard}${cards}
       <div class="wt-q ${p.size_location ? 'done' : 'todo'}"><div class="qh"><span class="qn">Size + Location</span><span class="qs">${p.size_location ? 'Done' : 'To answer'}</span></div>
-        <input class="inp" style="min-height:44px;font-size:14px" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="e.g. 2TB, Edit drive 3, Shelf B"></div></div>
-    <div class="wt-foot"><button class="btn btn-plain btn-lg" data-act="wtgo" data-d="-1" ${S.wt.i === 0 ? 'disabled' : ''}><i class="ti ti-arrow-left"></i>Back</button>
-      <button class="btn btn-primary btn-lg" data-act="wtgo" data-d="1">${S.wt.i === n - 1 ? 'Finish' : 'Next project'}<i class="ti ti-arrow-right"></i></button>
-      ${ok ? `<span class="wt-ready"><i class="ti ti-circle-check"></i>Every question answered</span>${ed ? `<button class="btn btn-secondary btn-lg" data-act="archive" data-id="${p.id}"><i class="ti ti-archive"></i>Send to Archive</button>` : ''}` : `<span class="muted" style="font-weight:600">${F.length - done} still to answer. Arrow keys also move between projects.</span>`}</div></div>`;
+        <input class="inp" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="e.g. 2TB, Edit drive 3, Shelf B"></div></div>
+    <div class="wt-foot">${ok ? `<span class="wt-ready"><i class="ti ti-circle-check"></i>Everything is done</span>${ed ? `<button class="btn btn-secondary btn-sm" data-act="archive" data-id="${p.id}"><i class="ti ti-archive"></i>Send to Archive</button>` : ''}` : `<span class="muted" style="font-weight:600;font-size:12px">${coOutstanding(p).length} still to do. The arrow keys also move between projects.</span>`}</div></div>`;
 }
 
 /* ================================================================
    Finance
+   A reminder pane for invoices. No profit or budget numbers here.
+   0.8.0: every invoicing section shows at once, like the Live projects board, and Paid is included.
+   Only projects in Live projects or Out processing appear. Anything in the Archive is found in the Archive.
    ================================================================ */
-/* Finance is a reminder pane: which invoices still need sending or chasing. No profit or budget numbers here.
-   0.7.0: built on the five invoicing labels. Needs action = Not Invoiced, Partially Invoiced and Invoiced (awaiting payment).
-   Projects with invoicing left blank (pitches, early tenders) stay out of Needs action; pick Not set to see them. */
-const INV_SEND = ['Not Invoiced'];
-const INV_PART = ['Partially Invoiced'];
-const INV_PAYWAIT = ['Invoiced'];
-const INV_ACTION = [].concat(INV_SEND, INV_PART, INV_PAYWAIT);
-const INV_GROUPS = { 'g:send': INV_SEND, 'g:part': INV_PART, 'g:pay': INV_PAYWAIT };
+const FIN_ORDER = ['Not Invoiced', 'Partially Invoiced', 'Invoiced', 'Paid', 'N/A', ''];
+const FIN_SUB = { 'Not Invoiced': 'Needs an invoice', 'Partially Invoiced': 'The rest still needs sending', 'Invoiced': 'Awaiting payment', 'Paid': 'Money received', 'N/A': 'No invoice needed', '': 'Invoicing not set yet' };
 const FIN_COLS = [
   { k: 'name', l: 'Project', w: 320, min: 140, sticky: 1 }, { k: 'client', l: 'Client', w: 190 }, { k: 'stage', l: 'Stage', w: 170 },
   { k: 'lead', l: 'Account', tip: 'Account lead', w: 120, cc: 1 }, { k: 'invoicing', l: 'Invoicing', w: 220 }
 ];
-const finLabels = () => (!S.fin.inv ? INV_ACTION : S.fin.inv === '__all' ? [''].concat(INV_LABELS) : S.fin.inv === '__none' ? [''] : INV_GROUPS[S.fin.inv] || [S.fin.inv]);
 function viewFinance() {
+  /* the first time, Not set and N/A start folded away so the sections that need action are what you see */
+  if (!S.ui.finInit) { S.ui.finInit = 1; ['finance:none', 'finance:N/A'].forEach(k => { if (!(k in S.ui.collapsed)) S.ui.collapsed[k] = true; }); saveUI(); }
   return `<div class="toolbar">
     <div class="search"><i class="ti ti-search"></i><input class="inp" placeholder="Search finance" value="${esc(S.fin.q)}" data-inp="fin-q"></div>
     <select class="sel sel-sm" data-chg="fin-inv" id="finSel">${finSelOpts()}</select>
     <span id="sortChip">${sortChip('finance')}</span><span class="spacer"></span>${collapseBtn('finance')}
   </div><div id="vb">${finBody()}</div>`;
 }
-const finSelOpts = () => `<option value=""${!S.fin.inv ? ' selected' : ''}>Needs action</option><option value="__all"${S.fin.inv === '__all' ? ' selected' : ''}>Everything</option><option value="__none"${S.fin.inv === '__none' ? ' selected' : ''}>Not set</option>${INV_LABELS.map(l => `<option${S.fin.inv === l ? ' selected' : ''}>${esc(l)}</option>`).join('')}`;
+const finSelOpts = () => `<option value=""${!S.fin.inv ? ' selected' : ''}>All sections</option>${INV_LABELS.map(l => `<option${S.fin.inv === l ? ' selected' : ''}>${esc(l)}</option>`).join('')}<option value="__none"${S.fin.inv === '__none' ? ' selected' : ''}>Not set</option>`;
 BODY.finance = finBody;
 function finBody() {
   const all = S.projects.slice(), inv = p => invOf(p);
-  const cnt = labs => all.filter(p => labs.includes(inv(p))).length;
-  const tile = (key, t1, n, t3, col) => `<button class="fin-tile click${S.fin.inv === key ? ' sel' : ''}" style="background:${col}" data-act="fintile" data-g="${key}"><span class="t1">${t1}</span><span class="t2">${n}</span><span class="t3">${t3}</span></button>`;
-  const a = cnt(INV_SEND), b = cnt(INV_PART), c = cnt(INV_PAYWAIT);
-  const tiles = `<div class="fin-tiles">
-    ${tile('g:send', 'Not invoiced', a, 'Nothing invoiced yet', invColour('Not Invoiced'))}
-    ${tile('g:part', 'Partially invoiced', b, 'Some invoiced, the rest still to send', invColour('Partially Invoiced'))}
-    ${tile('g:pay', 'Invoiced, awaiting payment', c, 'Chase for payment', invColour('Invoiced'))}</div>`;
-  const q = norm(S.fin.q), labs = finLabels();
-  const list = all.filter(p => (!q || norm(p.name + ' ' + p.client + ' ' + p.project_code).includes(q)) && labs.includes(inv(p)));
+  const cnt = l => all.filter(p => inv(p) === l).length;
+  const tile = (l, t1, t3) => `<button class="fin-tile click${S.fin.inv === l ? ' sel' : ''}" style="background:${invColour(l)}" data-act="fintile" data-g="${esc(l)}"><span class="t1">${t1}</span><span class="t2">${cnt(l)}</span><span class="t3">${t3}</span></button>`;
+  const callout = `<div class="callout"><i class="ti ti-info-circle"></i><span class="tx"><b>Only projects in Live projects or Out processing appear here.</b> Can’t find what you’re looking for? Check the archive instead.</span><button class="btn btn-secondary btn-sm" data-act="go" data-v="archive"><i class="ti ti-archive"></i>Open the Archive</button></div>`;
+  const tiles = `<div class="fin-tiles">${tile('Not Invoiced', 'Not invoiced', 'Needs an invoice')}${tile('Partially Invoiced', 'Partially invoiced', 'The rest still to send')}${tile('Invoiced', 'Invoiced', 'Awaiting payment')}${tile('Paid', 'Paid', 'Money received')}</div>`;
+  const q = norm(S.fin.q), f = S.fin.inv;
+  const show = l => !f || (f === '__none' ? l === '' : f === l);
   const val = (p, k) => k === 'stage' ? S.cfg.stages.indexOf(p.stage) : k === 'lead' ? norm((personById(leadOf(p, 'lead')) || {}).name) : k === 'invoicing' ? INV_LABELS.indexOf(inv(p)) + 1 : norm(p[k]);
-  const order = [''].concat(INV_LABELS).filter(l => labs.includes(l));
-  const groups = order.map(l => ({ key: l || 'none', title: l || 'Not set', colour: invColour(l), items: sortRows(list.filter(p => inv(p) === l).sort(bySort), 'finance', val) })).filter(g => g.items.length);
+  const match = p => !q || norm(p.name + ' ' + p.client + ' ' + p.project_code).includes(q);
+  const groups = FIN_ORDER.filter(show).map(l => {
+    const mine = all.filter(p => inv(p) === l);
+    return { key: l || 'none', title: l || 'Not set', colour: invColour(l), sub: FIN_SUB[l], items: sortRows(mine.filter(match).sort(bySort), 'finance', val), total: mine.length };
+  });
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('finance');
   const sel = $('#finSel'); if (sel) sel.innerHTML = finSelOpts();
-  if (!groups.length) return `${tiles}<div class="empty"><i class="ti ti-circle-check"></i>${S.fin.inv ? 'No projects match.' : 'Nothing waiting. Every invoice is up to date.'}</div>`;
   const ed = canEdit();
-  return tiles + `<div style="height:14px"></div>` + tableHTML('finance', withFirst(FIN_COLS), groups, (p, g, cols) => `<tr class="prow" data-id="${p.id}">${cols.map(c => {
+  return callout + tiles + `<div style="height:14px"></div>` + tableHTML('finance', withFirst(FIN_COLS), groups, (p, g, cols) => `<tr class="prow" data-id="${p.id}">${cols.map(c => {
     switch (c.k) {
       case 'name': return td(c, g, `<span class="cell-txt nm-txt" data-act="open" data-id="${p.id}" style="cursor:pointer">${esc(p.name)}</span>`);
       case 'client': return td(c, g, `<span class="cell-txt">${esc(p.client)}</span>`);
@@ -2040,6 +2121,9 @@ function finBody() {
 ACT.fintile = el => { const g = el.dataset.g; S.fin.inv = S.fin.inv === g ? '' : g; rerenderBody(); };
 INP['fin-q'] = el => { S.fin.q = el.value; rerenderBody(); };
 INP['fin-inv'] = el => { S.fin.inv = el.value; rerenderBody(); };
+
+/* Pod capacity is in beta: say so, and ask for feedback */
+const podsBetaNote = () => `<div class="callout beta"><i class="ti ti-flask"></i><span class="tx"><b>Pod capacity is in beta.</b> We are not clear on the best way to use this, and we are very open to hearing feedback from people.</span><button class="btn btn-secondary btn-sm" data-act="feedback"><i class="ti ti-message-circle"></i>Give feedback</button></div>`;
 
 /* ================================================================
    Pod capacity (Tools): groups of people and how many live projects each group is working on
@@ -2089,7 +2173,7 @@ function podsBody() {
     ${sel.length >= 2 ? `<div class="muted" style="font-size:12px;margin-top:8px">Preview: ${liveProjects().filter(p => { const t = teamOf(p); return sel.every(id => t.includes(id)); }).length} live project(s) have all ${sel.length} of them on the team.</div>` : ''}</div>`;
   const sect = (title, sub, list, custom) => `<div style="padding:18px 20px 0;position:sticky;left:0;width:var(--vw,auto)"><div class="lbl">${title}</div><div class="muted" style="font-size:12px;margin-top:2px">${sub}</div></div>
     ${list.length ? `<div class="pods" style="padding-top:12px">${list.map(p => podCard(p, custom)).join('')}</div>` : `<div class="empty" style="position:sticky;left:0;width:var(--vw,auto)"><i class="ti ti-users-group"></i>${custom ? 'No saved pods yet. Build one above, or save one of the teams below.' : 'No teams to show yet.'}</div>`}`;
-  return builder + sect('Team pods', 'Projects that include everyone in the pod. Everyone sees the same saved pods.', mine, true) +
+  return podsBetaNote() + builder + sect('Team pods', 'Projects that include everyone in the pod. Everyone sees the same saved pods.', mine, true) +
     sect('Teams on live projects', 'Each exact group of people that is on a live project, busiest first.', auto, false) + `<div class="page-end"></div>`;
 }
 ACT.podtoggle = el => { const id = el.dataset.id, i = S.pod.sel.indexOf(id); if (i >= 0) S.pod.sel.splice(i, 1); else S.pod.sel.push(id); rerenderBody(); };
@@ -2123,7 +2207,7 @@ ACT.poddel = async el => {
    ================================================================ */
 const ARCH_COLS = [
   { k: 'name', l: 'Project', w: 300, min: 140, sticky: 1 }, { k: 'client', l: 'Client', w: 190 }, { k: 'fy', l: 'Year', w: 110 },
-  { k: 'archive', l: 'Archived', w: 150, date: 1 }, { k: 'size_location', l: 'Size + Location', w: 240 }, { k: 'progress', l: 'Out processing', w: 140 }
+  { k: 'archive', l: 'Archived', w: 150, date: 1 }, { k: 'invoicing', l: 'Invoicing', w: 190 }, { k: 'size_location', l: 'Size + Location', w: 240 }, { k: 'progress', l: 'Out processing', w: 140 }
 ];
 function viewArchive() {
   const a = S.ar;
@@ -2140,7 +2224,7 @@ function arBody() {
   const a = S.ar, F = coFields();
   if (a.loading && !a.rows.length) return `<div class="skeleton" style="height:240px">Loading archive</div>`;
   if (!a.rows.length) return `<div class="empty"><i class="ti ti-archive-off"></i>No archived projects match.</div>`;
-  const val = (r, k) => k === 'progress' ? F.filter(([f]) => coDone(r[f])).length : norm(r[k]);
+  const val = (r, k) => k === 'progress' ? F.filter(([f]) => coDone(r[f])).length : k === 'invoicing' ? (normInv(r.invoicing) ? INV_LABELS.indexOf(normInv(r.invoicing)) + 1 : '') : norm(r[k]);
   const fys = uniq(a.rows.map(r => r.fy || '')).sort((x, y) => String(y).localeCompare(String(x), 'en-GB', { numeric: true }));
   const groups = fys.map(fy => { const all = a.rows.filter(r => (r.fy || '') === fy); return { key: fy || 'none', title: fyTitle(fy), colour: '#5F6672', items: sortRows(all, 'archive', val), total: all.length }; });
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('archive');
@@ -2149,8 +2233,9 @@ function arBody() {
       const done = F.filter(([k]) => coDone(r[k])).length;
       return `<tr class="prow rowlink" data-act="open" data-id="${r.id}" data-from="archive">${cols.map(c => td(c, g, ({
         name: `<span class="cell-txt nm-txt">${esc(r.name)}</span>`, client: `<span class="cell-txt">${esc(r.client)}</span>`, fy: `<span class="cell-txt">${esc(r.fy)}</span>`,
-        archive: `<span class="cell-txt">${esc(r.archive)}</span>`, size_location: `<span class="cell-txt">${esc(r.size_location)}</span>`, progress: `<span class="muted" style="font-size:11px;padding:0 7px">${done}/${F.length}</span>`
-      })[c.k])).join('')}</tr>`;
+        archive: `<span class="cell-txt">${esc(r.archive)}</span>`, size_location: `<span class="cell-txt">${esc(r.size_location)}</span>`, progress: `<span class="muted" style="font-size:11px;padding:0 7px">${done}/${F.length}</span>`,
+        invoicing: labCell(normInv(r.invoicing), invColour(normInv(r.invoicing)), '', false, 'Not set')
+      })[c.k], c.k === 'invoicing' ? 'zp' : '')).join('')}</tr>`;
     }) +
     (a.rows.length < a.total ? `<div style="padding:16px 20px;position:sticky;left:0"><button class="btn btn-plain" data-act="armore">${a.loading ? 'Loading' : 'Load more'}</button></div>` : '') +
     `<div class="page-end"></div>`;
@@ -2194,7 +2279,7 @@ async function loadClients() {
 function viewCodes() {
   const c = S.codes, mode = c.mode;
   const list = (S.clients || []).map(x => `<option value="${esc(x.name)}">${esc(x.code)}</option>`).join('');
-  return `<div class="pad" style="max-width:980px"><div class="grid2" style="gap:20px;align-items:start">
+  return `<div class="pad" style="max-width:980px">${S.draft && S.draftBack ? `<div class="callout" style="position:static;width:auto;max-width:none;margin:0 0 16px"><i class="ti ti-arrow-back-up"></i><span class="tx"><b>You are adding a client for a new project.</b> Add it here and you will go straight back to the new project with the client filled in.</span><button class="btn btn-plain btn-sm" data-act="draftreturn">Back to new project</button></div>` : ''}<div class="grid2" style="gap:20px;align-items:start">
     <div class="panel pad" style="display:flex;flex-direction:column;gap:14px">
       <div class="seg" style="align-self:flex-start"><button data-act="cgmode" data-m="existing" class="${mode === 'existing' ? 'on' : ''}">Existing client</button><button data-act="cgmode" data-m="new" class="${mode === 'new' ? 'on' : ''}">New client</button></div>
       ${!S.clients ? `<div class="muted">Loading clients</div>` : mode === 'existing' ? `
@@ -2240,6 +2325,7 @@ ACT.cgadd = async el => {
     const d = await write('client_add', { name: c.newName, code: c.newCode });
     S.clients = d.clients; c.mode = 'existing'; c.client = d.client.name; c.codeEdited = false; c.newName = ''; c.newCode = '';
     toast(`Added ${d.client.name} (${d.client.code})`); renderView(); updateCodeOut();
+    if (S.draft && S.draftBack) { S.draft.client = d.client.name; S.draft.client_code = d.client.code; S.draftBack = false; ACT.draftreturn(); }
   } catch (e) { el.disabled = false; }
 };
 ACT.cgcopy = async () => {
@@ -2251,13 +2337,14 @@ ACT.cgcopy = async () => {
    Panels: saving, project drawer, modals, feedback
    ================================================================ */
 const pendingSave = {}, flushers = {}, saveTimers = {};
-function recordFor(id, from) { return from === 'archive' ? S.ar.rows.find(x => x.id === id) : projectById(id); }
+function recordFor(id, from) { if (id === DRAFT) return S.draft; return from === 'archive' ? S.ar.rows.find(x => x.id === id) : projectById(id); }
 function setDrawerSync(t) { const e = $('#dsync'); if (e) e.textContent = t; }
 const bgRefresh = debounce(() => { if (['pipeline', 'timeline', 'closeout', 'mine', 'archive', 'finance', 'pods'].includes(S.view) && !typing()) { rerenderBody(); } }, 250);
 
 function saveFields(id, fields, from, immediate) {
   if (TMP[id]) id = TMP[id];
   const p = recordFor(id, from); if (!p || !canEdit()) return;
+  if (p === S.draft) { Object.assign(p, fields); draftUpdate(); return; }
   Object.assign(p, fields);
   const key = (from === 'archive' ? 'a:' : 'p:') + id;
   pendingSave[key] = Object.assign(pendingSave[key] || {}, fields);
@@ -2292,13 +2379,13 @@ function roleBlock(role, label, ids, ro) {
 function acctBlock(p, ro, arch) {
   const ids = roleIds(p, 'lead'), cover = arch ? '' : acctCover(p), free = activePeople().filter(x => !ids.includes(x.id));
   const chip = (i, n) => { const pp = personById(i); return `<span class="pickchip${n === 0 ? ' is-lead' : ''}">${av(i, 'av-sm')}${esc(pp ? pp.name : i)}${n === 0 ? '<span class="lead-tag">&nbsp;Lead</span>' : (ro ? '' : `<button data-act="pf-lead" data-role="lead" data-pid="${esc(i)}" title="Make first"><i class="ti ti-star"></i></button>`)}${ro ? '' : `<button data-act="pf-rm" data-role="lead" data-pid="${esc(i)}" title="Remove">&times;</button>`}</span>`; };
-  return `<div class="field"><span class="lbl">Account lead</span><div class="picks">${ids.map(chip).join('')}
+  return `<div class="field"><span class="lbl">Account lead${p === S.draft ? ' <span class="req">*</span>' : ''}</span><div class="picks">${ids.map(chip).join('')}
     ${ro || !free.length ? (ids.length ? '' : '<span class="muted">Nobody yet</span>') : `<select class="sel sel-sm" data-chg="pf-add" data-role="lead" style="width:auto"><option value="">+ Add${ids.length ? '' : ' lead'}</option>${free.map(x => `<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select>`}</div></div>
   ${arch ? '' : `<div class="field"><span class="lbl">${'\u{1F334}'} AL cover (while the lead is on holiday)</span><select class="sel" data-chg="pf-cover" ${ro ? 'disabled' : ''}>${personOpts(cover, 'No cover')}</select>
     ${cover ? `<div class="muted" style="font-size:11px">${esc((personById(cover) || {}).name || '')} shows in front on the board. ${ids.map(i => esc((personById(i) || {}).name || '')).join(', ')} shows greyed out with a palm tree.</div>` : ''}</div>`}`;
 }
 function drawerHTML(p, arch) {
-  const locked = !arch && !!S.drawerLocked, li = lockInfo(), sl = !arch && !!li && !isLockHolder(li);
+  const isDraft = p === S.draft, locked = !arch && !!S.drawerLocked, li = lockInfo(), sl = !arch && !!li && !isLockHolder(li);
   const ro = !canEdit() || locked, pub = S.readonly, basic = pub || !seesMoney();
   const dis = ro ? 'disabled' : '';
   const inp = (f, label, val, extra = '') => `<div class="field"><span class="lbl">${label}</span><input class="inp" data-inp="pf" data-f="${f}" value="${esc(val)}" ${dis} ${extra}></div>`;
@@ -2309,15 +2396,15 @@ function drawerHTML(p, arch) {
   const m = marginOf(p), invV = invOf(p);
   return `
   ${locked ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>View only here. Edit it on the Project board.</span><span class="sp"></span>${canEditBase() ? `<button class="btn btn-ghost btn-sm" data-act="editonboard" data-id="${p.id}">Edit on Project board</button>` : ''}</div>` : (sl ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>Stand-up lock is on. Only ${esc(li.by || 'the person running stand-up')} can make changes right now.</span></div>` : '')}
-  <div class="drawer-head"><div><div class="lbl">${arch ? 'Archived project' : (S.drawerNew === p.id ? 'New project' : 'Project')}</div></div><span class="sp"></span><span class="muted" style="font-size:11px;font-weight:600" id="dsync"></span>
+  <div class="drawer-head"><div><div class="lbl">${arch ? 'Archived project' : (isDraft ? 'New project' : 'Project')}</div></div><span class="sp"></span><span class="muted" style="font-size:11px;font-weight:600" id="dsync"></span>
     <button class="icon-btn" data-act="closedrawer" title="Close"><i class="ti ti-x"></i></button></div>
   <div class="drawer-body" id="drawerBody">
     <input class="inp name-inp" data-inp="pf" data-f="name" value="${esc(p.name)}" ${dis} placeholder="Project name">
     <div class="grid2">
-      <div class="field"><span class="lbl">Client</span><input class="inp" data-inp="pf" data-f="client" list="dlClients2" value="${esc(p.client)}" ${dis}><datalist id="dlClients2">${clientNames().map(n => `<option value="${esc(n)}">`).join('')}</datalist></div>
-      ${inp('client_code', 'Client code', p.client_code, 'style="text-transform:uppercase"')}
+      <div class="field"><span class="lbl">Client${isDraft ? ' <span class="req">*</span>' : ''}</span>${clientSelect(p, dis)}</div>
+      <div class="field"><span class="lbl">Client code</span><input class="inp" value="${esc(p.client_code)}" disabled placeholder="Fills in from the client"></div>
     </div>
-    ${basic ? '' : `<div class="field"><span class="lbl">Project code</span><div class="row"><input class="inp" data-inp="pf" data-f="project_code" value="${esc(p.project_code)}" ${dis} placeholder="CLIENT_ProjectTitle">${ro ? '' : `<button class="btn btn-ghost btn-sm" data-act="genpc" title="Build from client code and name">Generate</button>`}</div></div>`}
+    ${basic ? '' : `<div class="field"><span class="lbl">Project code${isDraft ? ' <span class="req">*</span>' : ''}</span><div class="row"><input class="inp" data-inp="pf" data-f="project_code" value="${esc(p.project_code)}" ${dis} placeholder="CLIENT_ProjectTitle">${ro ? '' : `<button class="btn btn-ghost btn-sm" data-act="genpc" title="Build from client code and name">Generate</button>`}</div></div>`}
     <div class="grid2">
       ${arch ? `<div class="field"><span class="lbl">Year</span><input class="inp" value="${esc(p.fy)}" disabled></div>` : `<div class="field"><span class="lbl">Stage</span><select class="sel" data-chg="pf-stage" ${dis}>${optList(S.cfg.stages, p.stage)}</select></div>`}
       <div class="field"><span class="lbl">Status</span><select class="sel" data-chg="pf" data-f="status" ${dis}>${optList(stList, p.status, '-')}</select></div>
@@ -2334,22 +2421,22 @@ function drawerHTML(p, arch) {
     ${basic ? '' : `<div class="sec-title"><span class="lbl">Finance</span></div>
     <div class="grid2"><div class="field"><span class="lbl">Budget (£)</span><input type="text" inputmode="decimal" class="inp gbp-inp" data-inp="pf" data-f="budget" value="${esc(fmoney(numOf(p.budget)))}" placeholder="£0" ${dis}></div>
       ${arch ? '' : `<div class="field"><span class="lbl">Target PM (%)</span><input type="number" step="0.1" class="inp" data-chg="pf-fin" data-k="profit_margin" value="${m == null ? '' : esc(m)}" ${dis}></div>`}</div>
-    ${arch ? '' : `<div class="field"><span class="lbl">Invoicing</span><select class="sel" data-chg="pf-fin" data-k="invoicing" ${dis}>${optList(INV_LABELS, invV, '-')}</select></div>`}
+    <div class="field"><span class="lbl">Invoicing</span><select class="sel" data-chg="pf-fin" data-k="invoicing" ${dis}>${optList(INV_LABELS, invV, '-')}</select></div>
     <div class="field"><span class="lbl">Notes</span><textarea class="txt" data-inp="pf" data-f="notes" maxlength="5000" ${dis}>${esc(p.notes)}</textarea></div>
-    <div class="sec-title"><span class="lbl">Out processing</span></div>
-    <div class="grid2">${F.map(([k, l]) => { const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]); return `<div class="field"><span class="lbl">${esc(l)}</span><select class="sel ${coClass(p[k])}" data-chg="pf" data-f="${esc(k)}" ${dis}>${optList(list, p[k], '-')}</select></div>`; }).join('')}</div>
-    ${inp('size_location', 'Size + Location', p.size_location)}`}
+    ${isDraft ? '' : `<div class="sec-title"><span class="lbl">Out processing</span></div>
+    <div class="grid2">${F.map(([k, l]) => { const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]); return `<div class="field"><span class="lbl">${esc(l)}</span><select class="sel ${coClass(p[k])}" data-chg="pf" data-f="${esc(k)}" ${dis}>${coOptions(list, p[k], !arch && !invOk(p))}</select></div>`; }).join('')}</div>
+    ${inp('size_location', 'Size + Location', p.size_location)}`}`}
     ${pub ? '' : `<div class="muted" style="font-size:11px">${p.created_at ? 'Created ' + esc(p.created_at) + '. ' : ''}${p.updated_at ? 'Last edit ' + esc(p.updated_at) + (updBy ? ' by ' + esc(updBy.name) : '') + '.' : ''}</div>`}
   </div>
-  ${ro ? '' : `<div class="drawer-foot">
+  ${isDraft ? draftFoot() : ro ? '' : `<div class="drawer-foot">
     ${arch ? `<button class="btn btn-secondary" data-act="restore" data-id="${p.id}"><i class="ti ti-arrow-back-up"></i>Restore to board</button>` : `<button class="btn btn-secondary${archBtn}" data-act="archive" data-id="${p.id}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Send to Archive</button>`}
     <span class="sp"></span>${isAdmin() ? `<button class="btn btn-danger" data-act="delproject" data-id="${p.id}"><i class="ti ti-trash"></i>Delete</button>` : ''}</div>`}`;
 }
 function openDrawer(id, from) {
   const arch = from === 'archive', p = recordFor(id, arch ? 'archive' : null); if (!p) return;
-  closeDrawer(true);
+  S.draftHold = id === DRAFT; closeDrawer(true); S.draftHold = false;
   S.drawer = id; S.drawerFrom = arch ? 'archive' : null; S.drawerLocked = from === 'mine';
-  const sc = document.createElement('div'); sc.className = 'scrim'; sc.id = 'drawerScrim'; sc.addEventListener('click', () => closeDrawer());
+  const sc = document.createElement('div'); sc.className = 'scrim'; sc.id = 'drawerScrim'; sc.addEventListener('click', () => requestCloseDrawer());
   const d = document.createElement('aside'); d.className = 'drawer'; d.id = 'drawer'; d.innerHTML = drawerHTML(p, arch);
   document.body.appendChild(sc); document.body.appendChild(d);
   if (seesMoney() && !S.clients) loadClients().then(() => { if (S.drawer === id && !focusInDrawer()) refreshDrawer(); });
@@ -2366,9 +2453,9 @@ function refreshDrawer(force) {
 }
 function closeDrawer(silent) {
   flushAll(); $('#drawer') && $('#drawer').remove(); $('#drawerScrim') && $('#drawerScrim').remove();
-  S.drawer = null; S.drawerFrom = null; S.drawerLocked = false; S.drawerNew = null; if (!silent) bgRefresh();
+  S.drawer = null; S.drawerFrom = null; S.drawerLocked = false; if (!S.draftHold) S.draft = null; if (!silent) bgRefresh();
 }
-ACT.closedrawer = () => closeDrawer();
+ACT.closedrawer = () => requestCloseDrawer();
 ACT.editonboard = el => { const id = el.dataset.id; closeDrawer(true); go('pipeline'); setTimeout(() => openDrawer(id), 60); };
 
 INP.pf = async el => {
@@ -2376,26 +2463,28 @@ INP.pf = async el => {
   let v = el.value;
   if (f === 'budget') { const n = numOf(String(v).replace(/[^0-9.\-]/g, '')); v = n == null ? '' : n; }
   const p = recordFor(id, from);
+  if (f === 'status' && p && p === S.draft) { p.status = v; draftUpdate(); return; }
   if (f === 'status' && p) {
     const prev = p.status || ''; el.value = prev;
     if (!await setStatus(p, v, from)) return; refreshDrawer(true); if (S.view === 'closeout') coAfterChange(id); return;
   }
+  if (p && p !== S.draft && coBlocked(p, f, v)) { el.value = p[f] || ''; toast(coLockMsg, 'err'); return; }
   const fields = { [f]: v };
-  if (f === 'client_code') { v = v.toUpperCase(); fields[f] = v; }
-  if (f === 'client') { const c = findClient(v); if (c && c.name.toLowerCase() === v.trim().toLowerCase()) { fields.client_code = c.code; const i = $('[data-f="client_code"]', $('#drawer')); if (i) i.value = c.code; } }
   const textual = (el.tagName === 'INPUT' && el.type !== 'date') || el.tagName === 'TEXTAREA';
   saveFields(id, fields, from, !textual);
   if (el.tagName === 'SELECT' && /^(budget_recon|social|vimeo|website|deck|wash_up|referral|on_client_board|music_licensing|archive)$/.test(f)) el.className = 'sel ' + coClass(el.value);
   if (el.tagName === 'SELECT' && !textual) { const b = $('[data-act="archive"]', $('#drawer')); if (b && p) { b.classList.toggle('is-locked', !canArchive(p)); const ic = $('i', b); if (ic) ic.className = 'ti ' + (canArchive(p) ? 'ti-archive' : 'ti-lock'); } }
   if (S.view === 'closeout') coAfterChange(id);
 };
-INP['pf-stage'] = el => { if (S.drawerFrom === 'archive') return; moveProject(S.drawer, el.value); };
+INP['pf-stage'] = el => { if (S.drawerFrom === 'archive') return; if (S.draft && S.drawer === DRAFT) { S.draft.stage = el.value; return; } moveProject(S.drawer, el.value); };
 INP['pf-ep'] = el => {
   const d = $('#drawer'), s = $('[data-w="s"]', d).value, e = $('[data-w="e"]', d).value; if (!S.drawer) return;
   epSet(S.drawer, s || e, e || s); refreshDrawer(true); bgRefresh();
 };
-INP['pf-fin'] = el => {
-  if (!S.drawer || S.drawerFrom === 'archive') return;
+INP['pf-fin'] = async el => {
+  if (!S.drawer) return;
+  if (el.dataset.k === 'invoicing') { await setInvoicing(S.drawer, el.value, S.drawerFrom); refreshDrawer(true); if (S.view === 'finance' || S.view === 'closeout') rerenderBody(); return; }
+  if (S.drawerFrom === 'archive') return;
   let v = el.value; if (el.dataset.k === 'profit_margin') v = v === '' ? '' : Number(v);
   fset(S.drawer, el.dataset.k, v);
 };
@@ -2426,7 +2515,7 @@ ACT.archive = async el => {
   const id = el.dataset.id, p = projectById(id); if (!p || !canEdit()) return;
   const out = coOutstanding(p);
   if (out.length) {
-    openModal(`<h3>Not ready to archive</h3><div><b>${esc(p.name)}</b> still has ${out.length} out processing item${out.length === 1 ? '' : 's'} without a final response. Each needs to be complete or marked N/A first:</div>
+    openModal(`<h3>Not ready to archive</h3><div><b>${esc(p.name)}</b> still has ${out.length} thing${out.length === 1 ? '' : 's'} to finish before it can go to the Archive. Invoicing must be Invoiced, Paid or N/A, and every other item needs a final response:</div>
       <ul>${out.map(l => `<li>${esc(l)}</li>`).join('')}</ul>
       <div class="actions"><button class="btn btn-plain" data-act="closemodal">Close</button>${S.view !== 'closeout' ? `<button class="btn btn-primary" data-act="gocloseout">Open out processing</button>` : ''}</div>`);
     return;
@@ -2468,39 +2557,72 @@ ACT.delproject = async el => {
   } catch (e) {}
 };
 
-/* ---------------- new project ---------------- */
-/* New project: the pane opens straight away on a temporary record while the sheet makes the real one.
-   Anything typed in the meantime is held, then saved against the real id the moment it arrives.
-   0.7.0: invoicing starts blank, as before. */
-ACT.newproject = async el => {
-  if (!canEdit() || S._creating) return; S._creating = true;
-  let stage = el && el.dataset && el.dataset.stage ? el.dataset.stage : S.cfg.stages[0];
-  if (isPreStage(stage)) { stage = S.cfg.stages.find(x => !isPreStage(x)) || S.cfg.stages[0]; toast('Add a project code to move it into Pre-production'); }
-  const tid = 'tmp_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  const ph = { id: tid, name: 'New project', stage, client: '', client_code: '', project_code: '', status: '', lead: '', creative: [], production: [], edit: [], budget: '', notes: '', size_location: '', sort: '', invoicing: '' };
-  S.projects.push(ph); renderView(); closePop();
-  openDrawer(tid); S.drawerNew = tid; refreshDrawer(true); setDrawerSync('Creating');
-  if (seesMoney() && !S.clients) loadClients().then(() => { if (S.drawer === tid && !focusInDrawer()) refreshDrawer(); });
-  const n = $('#drawer .name-inp'); if (n) { n.focus(); n.select(); }
-  try {
-    const d = await write('project_save', { fields: { name: 'New project', stage }, _tmp: tid });
-    const mine = S.projects.find(x => x.id === tid), real = d.project;
-    if (!mine) { /* the list was refreshed from the sheet before we got here, so the real record is already in it */ return; }
-    const tk = 'p:' + tid, held = pendingSave[tk] || {};
-    delete pendingSave[tk]; clearTimeout(saveTimers[tk]); delete flushers[tk];
-    Object.assign(mine, real, held);
-    if (S.drawer === tid) S.drawer = real.id; if (S.drawerNew === tid) S.drawerNew = real.id;
-    if (Object.keys(held).length) saveFields(real.id, held, null, true); else setDrawerSync('Saved');
-    if (!typing()) { renderView(); } else S.stale = true;
-    if (S.drawer === real.id && !focusInDrawer()) refreshDrawer(true);
-  } catch (e) {
-    /* creation failed (write() has already shown why): take the temporary record back out */
-    S.projects = S.projects.filter(x => x.id !== tid);
-    delete pendingSave['p:' + tid]; clearTimeout(saveTimers['p:' + tid]); delete flushers['p:' + tid];
-    if (S.drawer === tid) closeDrawer(true);
-    renderView();
-  } finally { S._creating = false; }
+/* ---------------- new project (0.8.0) ----------------
+   New project opens an empty form. Nothing is added to the board until you press Add to board.
+   A client, a project code and an account lead are required (and a name, because a project has to be called something). The rest can stay blank. */
+const DRAFT = 'draft';
+const DRAFT_KEYS = ['name', 'stage', 'client', 'client_code', 'project_code', 'status', 'lead', 'lead_more', 'lead_cover', 'creative', 'production', 'edit', 'budget', 'notes', 'profit_margin', 'invoicing', 'edit_start', 'edit_end'];
+const draftMissing = d => [!String(d.name || '').trim() && 'a project name', !d.client && 'a client', !String(d.project_code || '').trim() && 'a project code', !d.lead && 'an account lead'].filter(Boolean);
+const draftHasContent = () => !!S.draft && (draftMissing(S.draft).length < 4 || ['notes', 'budget', 'status', 'edit_start', 'edit_end'].some(k => S.draft[k]) || ['creative', 'production', 'edit'].some(k => (S.draft[k] || []).length));
+const joinList = a => (a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : a[0] || '');
+function draftUpdate() {
+  const d = S.draft; if (!d) return;
+  const miss = draftMissing(d), b = $('#draftAdd'), h = $('#draftHelp');
+  if (b) b.disabled = miss.length > 0;
+  if (h) { h.classList.toggle('ok', !miss.length); h.textContent = miss.length ? 'Still needed: ' + joinList(miss) + '.' : 'Ready to add to the board.'; }
+}
+function draftFoot() {
+  const miss = draftMissing(S.draft);
+  return `<div class="drawer-foot"><span class="draft-help${miss.length ? '' : ' ok'}" id="draftHelp">${miss.length ? 'Still needed: ' + esc(joinList(miss)) + '.' : 'Ready to add to the board.'}</span>
+    <button class="btn btn-plain" data-act="closedrawer">Cancel</button><button class="btn btn-primary" id="draftAdd" data-act="draftadd" ${miss.length ? 'disabled' : ''}><i class="ti ti-plus"></i>Add to board</button></div>`;
+}
+ACT.newproject = () => {
+  if (!canEdit()) return;
+  closePop();
+  S.draft = { id: DRAFT, name: '', stage: S.cfg.stages[0], client: '', client_code: '', project_code: '', status: '', lead: '', creative: [], production: [], edit: [], budget: '', notes: '', size_location: '', sort: '', invoicing: '' };
+  S.draftBack = false;
+  openDrawer(DRAFT);
+  const n = $('#drawer .name-inp'); if (n && !matchMedia('(max-width:860px)').matches) n.focus();
 };
+ACT.draftadd = async () => {
+  const d = S.draft; if (!d || !canEdit() || S._adding) return;
+  const miss = draftMissing(d); if (miss.length) { toast('Still needed: ' + joinList(miss), 'err'); return; }
+  S._adding = true; const btn = $('#draftAdd'); if (btn) btn.disabled = true; setDrawerSync('Adding');
+  const fields = {};
+  DRAFT_KEYS.forEach(k => { const v = d[k]; if (v !== undefined && v !== '' && !(Array.isArray(v) && !v.length)) fields[k] = v; });
+  fields.name = String(d.name).trim(); fields.project_code = String(d.project_code).trim();
+  const t = stageForStatus(d, d.status); if (t) fields.stage = t;
+  try {
+    const r = await write('project_save', { fields });
+    if (!S.projects.some(x => x.id === r.project.id)) S.projects.push(cleanProject(r.project));
+    closeDrawer(true); renderView(); toast(`${r.project.name} added to the board`);
+  } catch (e) { draftUpdate(); setDrawerSync('Not added'); } finally { S._adding = false; }
+};
+/* + ADD NEW in the client list: go to the Code generator's New client section. A new project in progress is kept and comes back with the client filled in. */
+ACT.clientnew = () => {
+  const draft = !!S.draft && S.drawer === DRAFT;
+  if (draft) S.draftHold = true;
+  closeDrawer(true); S.draftHold = false; S.draftBack = draft;
+  S.codes.mode = 'new'; S.codes.codeEdited = false; go('codes');
+};
+ACT.draftreturn = () => { if (!S.draft) return; go('pipeline'); setTimeout(() => openDrawer(DRAFT), 60); };
+INP['pf-client'] = el => {
+  const id = S.drawer; if (!id) return;
+  const p = recordFor(id, S.drawerFrom); if (!p) return;
+  if (el.value === '__new') { el.value = p.client || ''; ACT.clientnew(); return; }
+  const c = findClient(el.value);
+  saveFields(id, { client: c ? c.name : el.value, client_code: c ? c.code : '' }, S.drawerFrom, true);
+  refreshDrawer(true);
+};
+function clientSelect(p, dis) {
+  const list = (S.clients || []).map(c => c.name), cur = p.client || '';
+  const extra = cur && !list.some(n => norm(n) === norm(cur)) ? [cur] : [];
+  return `<select class="sel" data-chg="pf-client" ${dis}><option value=""${cur ? '' : ' selected'} hidden>${S.clients ? 'Choose a client' : 'Loading clients'}</option>${dis ? '' : '<option value="__new">+ ADD NEW</option>'}${extra.map(n => `<option value="${esc(n)}" selected>${esc(n)} (not in the code sheet)</option>`).join('')}${list.map(n => `<option value="${esc(n)}"${norm(n) === norm(cur) ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select>`;
+}
+async function requestCloseDrawer() {
+  if (S.draft && S.drawer === DRAFT && draftHasContent() && !await confirmBox('Throw away this new project? Nothing has been added to the board yet.', 'Discard it', true, 'Discard new project')) return;
+  closeDrawer();
+}
 
 /* ---------------- feedback ---------------- */
 ACT.feedback = () => {
@@ -2664,7 +2786,7 @@ INP['wf-fy'] = el => saveCfg('fy_start_month', Number(el.value)).catch(() => {})
 /* ---- out processing options ---- */
 function setCloseout() {
   const opts = S.cfg.closeout_options || {};
-  return `<div class="muted" style="margin-bottom:12px">One option per line. A project can still hold an old value that is not in the list. A project can only be archived once every item here has a response other than blank, In progress, Awaiting or Stuck. These options are also the big buttons in the Out processing walkthrough.</div>
+  return `<div class="muted" style="margin-bottom:12px">One option per line. A project can still hold an old value that is not in the list. A project can only be archived once every item here has a response other than blank, In progress, Awaiting or Stuck. These options are also the buttons in Meeting mode. Invoicing is always its own item, and the others unlock once a project is invoiced.</div>
   <div class="grid2" style="max-width:820px">${coFields().map(([k, l]) => `<div class="field"><span class="lbl">${esc(l)}</span><textarea class="txt" style="min-height:110px" data-chg="co-opt" data-k="${esc(k)}">${esc((opts[k] || []).join('\n'))}</textarea></div>`).join('')}</div>`;
 }
 INP['co-opt'] = el => { const next = Object.assign({}, S.cfg.closeout_options); next[el.dataset.k] = el.value.split('\n').map(s => s.trim()).filter(Boolean); S.cfg.closeout_options = next; saveCfg('closeout_options', next).then(() => toast('Options saved')).catch(() => {}); };
@@ -2695,8 +2817,8 @@ ACT.rcadd = async el => {
 function setSystem() {
   const h = S.health, link = S.adminKey ? `${location.origin}${location.pathname}?view=live&k=${S.adminKey}` : '';
   const tabs = h && h.tabs ? Object.keys(h.tabs).map(k => `${k}: ${h.tabs[k]}`).join('  |  ') : '';
-  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo070() once') : '';
-  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo070() once';
+  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo080() once') : '';
+  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo080() once';
   return `<div style="max-width:720px;display:flex;flex-direction:column;gap:16px">
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Build</div><div class="kv">
       <span class="muted">Front end</span><span>BOARD alpha ${APP_VERSION}</span>
@@ -2705,7 +2827,7 @@ function setSystem() {
       <span class="muted">Data version</span><span>${S.version}</span>
       <span class="muted">Tabs (rows)</span><span>${esc(tabs)}</span>
       <span class="muted">Code sheet clients</span><span>${h ? esc(h.clients) : ''}</span>
-      <span class="muted">Feedback goes to</span><span>${h ? esc(h.feedback_to) : ''} (emailed when someone presses Send, up to 5 an hour each)</span>
+      <span class="muted">Feedback goes to</span><span>${h ? esc(h.feedback_to) : ''} (emailed when someone presses Send, up to ${h ? esc(h.feedback_per_hour || 30) : 30} an hour each)</span>
       <span class="muted">Who sees Settings</span><span>Admin and super admin accounts. Everyone else does not see this page.</span>
       <span class="muted">Sheet check</span><span>${sch ? (sch.ok ? '<b class="pct-good">All columns present</b>' : `<b class="pct-low">${sch.problems.map(esc).join('<br>')}</b>`) : 'Checking'}</span>
       <span class="muted">Daily check</span><span>${esc(chk)}</span>
@@ -2714,6 +2836,8 @@ function setSystem() {
       <span class="muted">Project data</span><span>Saved in the sheet only. Nothing about projects is kept in a browser.</span>
       <span class="muted">Statuses</span><span>Fixed in BOARD's code (${STATUSES.length} of them), the same for everyone</span>
       <span class="muted">Saved pods</span><span>Shared with the whole team, saved in the sheet</span>
+      <span class="muted">Bank holidays</span><span>England and Wales, worked out from the standing rules and checked against gov.uk every April and October (you get a short email). Last check: ${h ? esc(h.bank_holiday_checked || 'not yet') : ''}</span>
+      <span class="muted">Oldest page allowed</span><span>${h ? esc(h.min_client_version || '') : ''}. Older copies of BOARD are asked to reload.</span>
       <span class="muted">Column sizes and sorting</span><span>Your own layout, remembered by each browser. Changing them never affects anyone else.</span>
       <span class="muted">Shortcuts</span><span>Number keys 1 to 9 open the pages in sidebar order, when you are not typing in a box.</span></div></div>
     <div class="panel pad"><div class="lbl" style="margin-bottom:6px">Read-only live link</div>
