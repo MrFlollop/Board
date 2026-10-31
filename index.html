@@ -20,7 +20,7 @@
 <link rel="preload" as="image" href="logo-dark.png">
 <link rel="preload" as="image" href="logo-light.png">
 <style>
-/* BOARD alpha 0.8.0. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
+/* BOARD alpha 0.9.1. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
 :root {
   color-scheme: light;
   --stp: #FF50BD; --stp-hover: #D93EA6; --stp-light: #FFE8F7; --stp-alpha: rgba(255,80,189,0.12);
@@ -535,6 +535,13 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .draft-help { font-size: 12px; color: var(--color-text-secondary); flex: 1; min-width: 160px; }
 .draft-help.ok { color: var(--color-text-success); font-weight: 600; }
 
+/* ---------- release notes (0.9.1) ---------- */
+.rn-list { display: flex; flex-direction: column; gap: 10px; }
+.rn-ver { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.rn-ver::after { content: ''; flex: 1; height: 0.5px; background: var(--color-border-tertiary); }
+.rn-ver:first-child { margin-top: 0; }
+.rn-now { background: var(--stp-alpha); color: var(--stp); border-radius: var(--r-pill); padding: 1px 8px; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
 /* ---------- mobile ---------- */
 @media (max-width: 860px) {
   .sync-long { display: none; } .sync-short { display: inline; }
@@ -619,14 +626,14 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 (function () {
 'use strict';
 /* ================================================================
-   BOARD alpha 0.8.0. Core: config, state, colours, API, queue, shell, login, routing
+   BOARD alpha 0.9.1. Core: config, state, colours, API, queue, shell, login, routing
    ================================================================ */
 
 /* ---- CONFIG: your Apps Script web app URL ---- */
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '0.9.0-alpha';
+const APP_VERSION = '0.9.1-alpha';
 const NEED_VER = '0.9.0';   /* the backend must be at least this version */
 const MIN_SCHEMA = 10;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
@@ -1116,6 +1123,7 @@ function renderShell() {
       <div class="brand">${logoHTML()}${brandName()}</div>
       ${nav}
       <div class="side-foot">
+        <button class="nav-item" data-act="releasenotes"><i class="ti ti-notes"></i>Release notes</button>
         <button class="nav-item" data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button>
         <div class="userchip">${av(S.me.id, 'av-lg')}<div><div class="nm">${esc(S.me.name)}</div><div class="rl">${esc(S.me.access)}</div></div>
           <button class="icon-btn" style="margin-left:auto" data-act="mypass" title="Change my passcode"><i class="ti ti-key"></i></button>
@@ -1265,7 +1273,7 @@ ACT.reload = () => location.reload();
 ACT.more = el => {
   const items = NAV.filter(n => (seesMoney() ? ['timeline', 'pods', 'budgets', 'archive', 'codes', 'settings'] : []).includes(n.id) && navOk(n));
   openPop(el, items.map(n => `<button data-act="go" data-v="${n.id}"><i class="ti ${n.icon}"></i>${n.label}${n.beta ? ' (beta)' : ''}</button>`).join('') +
-    `<div class="sep"></div><button data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button><button data-act="mypass"><i class="ti ti-key"></i>Change my passcode</button><button data-act="signout"><i class="ti ti-logout"></i>Sign out</button><div class="sep"></div><div class="tagline tagline-i" style="padding:6px 10px">${LOVE}</div>`);
+    `<div class="sep"></div><button data-act="releasenotes"><i class="ti ti-notes"></i>Release notes</button><button data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button><button data-act="mypass"><i class="ti ti-key"></i>Change my passcode</button><button data-act="signout"><i class="ti ti-logout"></i>Sign out</button><div class="sep"></div><div class="tagline tagline-i" style="padding:6px 10px">${LOVE}</div>`);
 };
 
 /* ---------------- auth ---------------- */
@@ -1322,14 +1330,18 @@ async function loadApp() {
   whatsNew();
 }
 
-/* ---------------- update gate and "what is new" (0.8.0) ----------------
+/* ---------------- update gate, "what is new" and release notes (0.8.0, 0.9.1) ----------------
    The backend refuses pages older than its minimum version with a "BOARD has been updated" message. A page that gets that shows this screen instead of half working.
-   After an update, each browser shows the list below once, the next time BOARD opens, so people see what changed. Nobody is signed out. */
+   After an update, each browser shows the list below once, the next time BOARD opens, so people see what changed. Nobody is signed out.
+   0.9.1: the same list now sits behind the Release notes button above Feedback, which shows the last three builds. Newest build first. */
 function showUpdateScreen() {
   S.updating = true;
   $('#app').innerHTML = `<div class="skeleton" style="padding:24px">${brandRow()}<div style="max-width:380px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.6;color:var(--color-text-primary)"><b style="font-size:18px">BOARD has been updated</b><br>This page is an older copy. Reload it to carry on. You will not lose anything.</div><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD</button></div>`;
 }
 const WHATS_NEW = [
+  ['0.9.1', [
+    ['ti-notes', 'Release notes button', 'It sits above Feedback and shows what changed in the last three builds, any time you want to look.']
+  ]],
   ['0.9.0', [
     ['ti-report-money', 'Budgets (beta)', 'A read-only look at the 2025 and 2026 budget sheets, under Tools. Nothing there can be changed. Freelancers cannot see it.'],
     ['ti-user', 'Sign in with your full name', 'Initials no longer work. Use your full name and your own passcode.'],
@@ -1349,6 +1361,9 @@ const WHATS_NEW = [
     ['ti-circle-check', 'Paid asks first', 'Marking an invoice as Paid now asks you to confirm.']
   ]]
 ];
+/* one group of notes: a version label, then a row per change */
+const notesRows = g => `<div class="rn-ver lbl">${esc(g[0])}${g[0] === APP_VERSION.replace('-alpha', '') ? '<span class="rn-now">Current</span>' : ''}</div>` +
+  g[1].map(w => `<div class="row" style="align-items:flex-start;gap:10px"><i class="ti ${w[0]}" style="color:var(--stp);margin-top:1px"></i><div><b>${esc(w[1])}</b><div class="muted">${esc(w[2])}</div></div></div>`).join('');
 /* shows everything added since the version this browser last saw (or just the latest, for a new browser) */
 function whatsNew() {
   if (!S.me || S.readonly) return;
@@ -1359,9 +1374,17 @@ function whatsNew() {
   if (!groups.length) return;
   const many = groups.length > 1;
   openModal(`<h3>What is new in ${esc(many ? groups[groups.length - 1][0] + ' to ' + groups[0][0] : groups[0][0])}</h3><div class="muted">Here is what changed since you last looked.</div>
-    <div style="display:flex;flex-direction:column;gap:10px">${groups.map(g => (many ? `<div class="lbl" style="margin-top:4px">${esc(g[0])}</div>` : '') + g[1].map(w => `<div class="row" style="align-items:flex-start;gap:10px"><i class="ti ${w[0]}" style="color:var(--stp);margin-top:1px"></i><div><b>${esc(w[1])}</b><div class="muted">${esc(w[2])}</div></div></div>`).join('')).join('')}</div>
+    <div class="rn-list">${groups.map(g => (many ? `<div class="lbl" style="margin-top:4px">${esc(g[0])}</div>` : '') + g[1].map(w => `<div class="row" style="align-items:flex-start;gap:10px"><i class="ti ${w[0]}" style="color:var(--stp);margin-top:1px"></i><div><b>${esc(w[1])}</b><div class="muted">${esc(w[2])}</div></div></div>`).join('')).join('')}</div>
     <div class="actions"><button class="btn btn-primary" data-act="closemodal">Got it</button></div>`, 'wide');
 }
+/* 0.9.1: the Release notes button. Always the last three builds in the list, newest first. */
+ACT.releasenotes = () => {
+  closePop();
+  const last3 = WHATS_NEW.slice().sort((a, b) => vcmp(b[0], a[0])).slice(0, 3);
+  openModal(`<h3>Release notes</h3><div class="muted">What changed in the last ${last3.length === 1 ? 'build' : last3.length + ' builds'}, newest first. You are on ${esc(APP_VERSION)}.</div>
+    <div class="rn-list">${last3.map(notesRows).join('')}</div>
+    <div class="actions"><button class="btn btn-plain" data-act="feedback"><i class="ti ti-message-circle"></i>Send feedback</button><button class="btn btn-primary" data-act="closemodal">Close</button></div>`, 'wide');
+};
 
 /* ---------------- boot ---------------- */
 async function boot() {
