@@ -158,7 +158,7 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .topbar .brand-logo { display: none; }
 .sync { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .sync .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-text-success); flex: none; transition: background .2s; }
-.sync.saving .dot { background: var(--color-text-warning); } .sync.error .dot, .sync.offline .dot { background: var(--color-text-danger); }
+.sync.saving .dot, .sync.slow .dot { background: var(--color-text-warning); } .sync.error .dot, .sync.offline .dot { background: var(--color-text-danger); }
 .sync.error, .sync.offline { color: var(--color-text-danger); }
 .sync-short { display: none; }
 .content-wrap { position: relative; flex: 1; min-height: 0; }
@@ -203,6 +203,13 @@ table.tv { border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .tv tr.prow:hover td { background: var(--color-background-secondary); }
 .tv td.hd { padding: 0; text-align: center; }
 .tv td.cc { text-align: center; }
+.tv th .th-in.tc { justify-content: center; }
+.tv td.cc .cell-inp, .tv td.cc .cell-inp.num, .tv td.cc .gbp-inp, .tv td.cc .num { text-align: center; }
+.tv td.cc .pct-wrap { justify-content: center; }
+.tv td.cc .pct-wrap .cell-inp { text-align: center; }
+.tv td.cc .pct-wrap span { padding-right: 0; }
+.tv td.cc .co-sel { text-align: center; text-align-last: center; padding-left: 24px; }
+.tv td.cc .row { justify-content: center; }
 .tv td.zp { padding: 0; }
 .tv td.act { text-align: right; padding-right: 4px; }
 .cell-inp { width: 100%; border: 0; background: transparent; padding: 6px 7px; border-radius: 6px; min-height: 30px; font-size: 13px; text-overflow: ellipsis; }
@@ -379,6 +386,16 @@ button.lab-cell:hover { filter: brightness(.94); }
 .lead-tag { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--stp); padding: 0 6px 0 0; }
 .modal { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(480px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-lg); z-index: 61; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
 .modal.wide { width: min(640px, calc(100vw - 24px)); }
+.modal.xl { width: min(1100px, calc(100vw - 24px)); }
+.modal a.btn { text-decoration: none; }
+.bud-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--color-text-secondary); }
+.bud-wrap { overflow: auto; max-height: 44vh; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); }
+.bud-t { width: 100%; border-collapse: collapse; font-size: 12px; }
+.bud-t th { position: sticky; top: 0; background: var(--color-background-secondary); text-align: center; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-secondary); padding: 7px 8px; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; }
+.bud-t td { padding: 6px 8px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: top; text-align: center; font-variant-numeric: tabular-nums; }
+.bud-t th.l, .bud-t td.l { text-align: left; }
+.bud-t td.fees { white-space: pre-line; color: var(--color-text-secondary); min-width: 200px; max-width: 360px; }
+.bud-t tr:last-child td { border-bottom: 0; }
 .modal h3 { margin: 0; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; }
 .modal .actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
 .modal ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
@@ -567,6 +584,12 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
   .tv tr.prow td.act { order: 1; flex: 0 0 auto; min-width: 0; margin-left: auto; }
   .tv tr.prow td.act::before { display: none; }
   .tv tr.prow td.cc .av, .tv tr.prow td.cc .cell-btn { margin: 0; }
+  .tv tr.prow td.cc { text-align: left; }
+  .tv tr.prow td.cc .cell-inp, .tv tr.prow td.cc .cell-inp.num, .tv tr.prow td.cc .gbp-inp, .tv tr.prow td.cc .num { text-align: left; }
+  .tv tr.prow td.cc .pct-wrap { justify-content: flex-start; }
+  .tv tr.prow td.cc .pct-wrap .cell-inp { text-align: left; }
+  .tv tr.prow td.cc .co-sel { text-align: left; text-align-last: left; padding-left: 9px; }
+  .tv tr.prow td.cc .row { justify-content: flex-start; }
   .tv tr.prow .cell-inp { background: var(--color-background-secondary); min-height: 36px; }
   .tv tr.prow .nm-inp { font-size: 15px; }
   .tv tr.prow .nm-mv { opacity: 1; width: 30px; }
@@ -603,14 +626,15 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '0.8.0-alpha';
-const MIN_SCHEMA = 9;   /* the backend must report at least this, or BOARD warns that changes may not save */
+const APP_VERSION = '0.9.0-alpha';
+const NEED_VER = '0.9.0';   /* the backend must be at least this version */
+const MIN_SCHEMA = 10;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
 const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
 /* Sunday Treat logo files, kept in the repo next to index.html. If a file will not load, BOARD tries once more, then shows a text wordmark. */
 const LOGO_DARK = 'logo-dark.png';
 const LOGO_LIGHT = 'logo-light.png';
-const POLL_MS = 20000;
+const POLL_MS = 20000;   /* 0.9.0: each browser checks for changes about this often, with a little random spread so ten people never all ask in the same second */
 const LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
 const API = (LOCAL && new URLSearchParams(location.search).get('api')) || API_URL;
 
@@ -631,7 +655,7 @@ const tokenSet = (t, remember) => { tokenDel(); (remember ? store : sstore).set(
 const jparse = (s, d) => { try { const v = JSON.parse(s); return v && typeof v === 'object' ? v : d; } catch (e) { return d; } };
 
 const S = {
-  token: null, me: null, people: [], depts: [], cfg: { stages: [], statuses: [], closeout_fields: [], closeout_options: {}, public_stages: [], fy_start_month: 4, pods: [], bank_holiday_extra: [] },
+  token: null, me: null, people: [], depts: [], cfg: { stages: [], closeout_fields: [], closeout_options: {}, public_stages: [], fy_start_month: 4, pods: [], bank_holiday_extra: [] },
   projects: [], version: 0, readonly: false, readonlyKey: '', adminKey: '', health0: null,
   view: 'pipeline',
   f: { q: '', person: '', status: '' },
@@ -640,8 +664,10 @@ const S = {
   wt: { on: false, ids: [], i: 0 },
   fin: { q: '', inv: '' },
   pod: { solo: false, sel: [], name: '' },
-  ar: { q: '', fy: '', client: '', rows: [], total: 0, fys: [], clients: [], loaded: false, loading: false, offset: 0 },
+  ar: { q: '', fy: '', client: '', rows: [], total: 0, fys: [], clients: [], loaded: false, loading: false },
   mine: { q: '' },
+  bud: { year: '', q: '', rows: [], years: [], loaded: false, loading: false, refreshing: false, updated: '', err: '' },
+  clockOff: 0,
   clients: null, codes: { mode: 'existing', client: '', title: '', newName: '', newCode: '' },
   settingsTab: 'people', health: null,
   drawer: null, draft: null, dragging: false, stale: false, syncState: 'saved', lastSync: null,
@@ -649,6 +675,9 @@ const S = {
 };
 ['board_fx', 'board_ep', 'board_lock'].forEach(k => store.del(k));
 function saveUI() { store.set('board_ui', JSON.stringify(S.ui)); }
+/* 0.9.0: the server's clock, so the stand-up timer is right even if this computer's clock is out */
+const nowMs = () => Date.now() + (S.clockOff || 0);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------------- tiny utils ---------------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -830,8 +859,7 @@ const isCoreStage = s => /out[\s-]?proc/i.test(s || '') || isPreStage(s);
 const closeoutStages = () => { const o = S.cfg.stages.filter(isOutStage); return o.length ? o : S.cfg.stages.slice(-1); };
 const boardStages = () => { const c = closeoutStages(); return S.cfg.stages.filter(s => !c.includes(s)); };
 const liveStages = () => (S.cfg.public_stages && S.cfg.public_stages.length ? S.cfg.public_stages : boardStages());
-const TMP = {}, isTmp = id => typeof id === 'string' && id.indexOf('tmp_') === 0;
-const projectById = id => S.projects.find(p => p.id === id) || (TMP[id] ? S.projects.find(p => p.id === TMP[id]) : null) || null;
+const projectById = id => S.projects.find(p => p.id === id) || null;
 const bySort = (a, b) => (a.sort === '' || a.sort == null ? 1e9 : a.sort) - (b.sort === '' || b.sort == null ? 1e9 : b.sort);
 const sortedStage = stage => S.projects.filter(p => p.stage === stage).sort(bySort);
 /* 0.8.0: the logo tries a second time before it gives up, so one slow load no longer leaves the text wordmark behind */
@@ -914,15 +942,18 @@ function celebrate(set = PARTY) {
 }
 
 /* ---------------- API ---------------- */
-async function api(action, params = {}) {
+async function api(action, params = {}, timeoutMs = 40000) {
   if (!API) throw new Error('No backend connected yet');
-  const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 40000);
-  let res;
+  const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), timeoutMs);
+  let res, slow = false; const t0 = Date.now();
+  const slowT = setTimeout(() => { slow = true; if (S.syncState === 'saved' || S.syncState === 'saving') setSync('slow'); }, 6000);
   try {
     res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action, token: S.token, cv: APP_VERSION }, params)), signal: ctl.signal });
   } catch (e) { throw new Error(e.name === 'AbortError' ? 'The server took too long to answer' : 'Cannot reach the server'); }
-  finally { clearTimeout(to); }
+  finally { clearTimeout(to); clearTimeout(slowT); if (slow && S.syncState === 'slow') setSync(inflight ? 'saving' : 'saved'); }
   let data; try { data = await res.json(); } catch (e) { throw new Error('The server sent something unexpected'); }
+  const t1 = Date.now();
+  if (data && data.server_ms && t1 - t0 < 4000) S.clockOff = data.server_ms - (t0 + t1) / 2;   /* only trust the reading when the request was quick */
   if (!data.ok) {
     if (data.error === 'AUTH') { onAuthLost(); throw new Error('Session expired. Please sign in again.'); }
     if (/has been updated/i.test(data.error || '')) { showUpdateScreen(); throw new Error('BOARD has been updated. Please reload.'); }
@@ -930,45 +961,54 @@ async function api(action, params = {}) {
   }
   return data;
 }
+/* a save that finds the sheet busy is tried again (up to twice). A busy answer means nothing was saved, so trying again is safe. Timeouts are never retried. */
+async function apiRetry(action, params) {
+  for (let i = 0; ; i++) {
+    try { return await api(action, params); }
+    catch (e) { if (i < 2 && /busy/i.test(e.message)) { await sleep(1500 + Math.random() * 1000); continue; } throw e; }
+  }
+}
 async function apiPublic(key) {
   const res = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=public_live&key=' + encodeURIComponent(key));
   const data = await res.json(); if (!data.ok) throw new Error(data.error || 'Link not valid'); return data;
 }
 
 /* ---------------- connection status ---------------- */
-const SYNC_TXT = { saved: ['Connected to sheet', 'Connected'], saving: ['Saving', 'Saving'], error: ['Not saved', 'Not saved'], offline: ['Cannot reach sheet', 'Offline'], none: ['Not connected to a sheet', 'Offline'] };
+const SYNC_TXT = { saved: ['Connected to sheet', 'Connected'], saving: ['Saving', 'Saving'], error: ['Not saved', 'Not saved'], offline: ['Cannot reach sheet', 'Offline'], slow: ['Slow connection, still working', 'Slow'], none: ['Not connected to a sheet', 'Offline'] };
 function setSync(state) {
-  S.syncState = state; if (state === 'saved') S.lastSync = new Date();
+  const was = S.syncState; S.syncState = state; if (state === 'saved') S.lastSync = new Date();
   const el = $('#sync'); if (!el) return;
   const t = SYNC_TXT[state] || SYNC_TXT.saved;
   el.className = 'sync ' + state;
   const hh = S.lastSync ? String(S.lastSync.getHours()).padStart(2, '0') + ':' + String(S.lastSync.getMinutes()).padStart(2, '0') : '';
   el.title = state === 'saved' && hh ? `Connected to the BOARD. Database sheet. Last synced ${hh}` : t[0];
   el.innerHTML = `<span class="dot"></span><span class="sync-long">${t[0]}</span><span class="sync-short">${t[1]}</span>`;
+  if ((state === 'offline') !== (was === 'offline')) renderHealthBar();
 }
 
 let chain = Promise.resolve(), inflight = 0;
 function write(action, params) {
   inflight++; setSync('saving');
-  const tmpOf = params && params._tmp;
-  const p = chain.then(() => {
-    if (params) {
-      params = Object.assign({}, params); delete params._tmp;
-      if (TMP[params.id]) params.id = TMP[params.id];
-      if (Array.isArray(params.ids)) params.ids = params.ids.map(i => TMP[i] || i);
-    }
-    return api(action, params);
-  }).then(res => {
-    if (tmpOf && res.project) TMP[tmpOf] = res.project.id;
+  const p = chain.then(() => apiRetry(action, params)).then(res => {
     if (res.not_saved && res.not_saved.length) { notSaved = notSaved.concat(res.not_saved); toast('The sheet could not save: ' + res.not_saved.join(', '), 'err'); renderHealthBar(); }
-    if (res.version != null) { if (res.version !== S.version + 1) schedule(refresh); S.version = Math.max(S.version, res.version); }
+    if (res.version != null) { if (res.version !== S.version + 1) refreshSoon(300 + Math.random() * 700); S.version = Math.max(S.version, res.version); }
     return res;
   });
   chain = p.catch(() => {});
-  p.then(() => { if (--inflight === 0) setSync('saved'); }, err => { inflight--; setSync(/reach|too long/i.test(err.message) ? 'offline' : 'error'); toast(err.message || 'Save failed', 'err'); schedule(refresh); });
+  p.then(() => { if (--inflight === 0) setSync('saved'); }, err => { inflight--; setSync(/reach|too long/i.test(err.message) ? 'offline' : 'error'); toast(err.message || 'Save failed', 'err'); refreshSoon(300 + Math.random() * 700); });
   return p;
 }
-const schedule = fn => setTimeout(fn, 0);
+/* one refresh at a time, a moment after it is asked for, so ten people reacting to one change do not all hit the server in the same second */
+let rsT = null;
+function refreshSoon(ms) { if (rsT) return; rsT = setTimeout(() => { rsT = null; refresh(); }, ms == null ? Math.random() * 1500 : ms); }
+let blockedAt = 0;
+function blockedEditToast() {
+  if (Date.now() - blockedAt < 4000) return; blockedAt = Date.now();
+  const li = lockInfo();
+  if (li && !isLockHolder(li)) toast(`${li.by || 'Someone'} has the board until ${hhmm(li.until)}, so that change was not saved.`, 'err');
+  else if (isViewer()) toast('You have view-only access, so that change was not saved.', 'err');
+  else toast('That change was not saved.', 'err');
+}
 
 /* ---------------- bootstrap + live refresh ---------------- */
 function applyBootstrap(d) {
@@ -982,18 +1022,19 @@ function applyBootstrap(d) {
 let notSaved = [];
 function renderHealthBar() {
   const bar = $('#healthbar'); if (!bar) return;
-  const h = S.health0, bad = h && !h.ok, lost = notSaved.length, odd = isAdmin() && badRows.length;
+  const h = S.health0, bad = h && !h.ok, lost = notSaved.length, odd = isAdmin() && badRows.length, off = S.syncState === 'offline';
   const stale = !!h && h.server !== 'unknown' && vcmp(h.server, APP_VERSION) > 0;
-  bar.hidden = !bad && !lost && !odd && !stale; if (bar.hidden) return;
-  bar.classList.toggle('stale', stale && !bad && !lost && !odd);
+  bar.hidden = !bad && !lost && !odd && !stale && !off; if (bar.hidden) return;
+  bar.classList.toggle('stale', stale && !bad && !lost && !odd && !off);
   const staleTxt = stale ? `This is an old copy of BOARD (${esc(APP_VERSION)}). Version ${esc(h.server)} is out. Reload the page to update.` : '';
   const old = h && h.schema < MIN_SCHEMA;
-  const why = old ? `The backend is version ${esc(h.server)}, but this BOARD needs 0.8.0 or newer.` : (h && !h.ok ? 'The BOARD. Database sheet is missing something BOARD needs.' : '');
+  const why = old ? `The backend is version ${esc(h.server)}, but this BOARD needs ${NEED_VER} or newer.` : (h && !h.ok ? 'The BOARD. Database sheet is missing something BOARD needs.' : '');
+  const offTxt = off ? 'BOARD cannot reach the sheet right now. Check your connection. Changes you make now may not be saved.' : '';
   const lostTxt = lost ? `Not saved: ${esc(uniq(notSaved).join(', '))}.` : '';
   const oddTxt = odd ? `${badRows.length} row${badRows.length === 1 ? '' : 's'} in the sheet ${badRows.length === 1 ? 'has' : 'have'} an id BOARD does not accept (${esc(uniq(badRows).join(', '))}), so ${badRows.length === 1 ? 'it is' : 'they are'} hidden. Ids can only use letters, numbers, - and _.` : '';
   const list = isAdmin() && h && h.problems.length ? `<ul>${h.problems.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
-  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo080().' : 'Oli has been emailed. Run upgradeTo080() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
-  bar.innerHTML = `<i class="ti ${stale && !bad ? 'ti-refresh' : 'ti-alert-triangle'}"></i><div><div>${staleTxt} ${why} ${lostTxt} ${oddTxt} ${fix}</div>${list}</div><span class="sp"></span>${stale ? '<button class="btn btn-sm" data-act="reload">Reload</button>' : ''}${lost ? '<button class="btn btn-sm" data-act="healthok">Dismiss</button>' : ''}`;
+  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo090().' : 'Oli has been emailed. Run upgradeTo090() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
+  bar.innerHTML = `<i class="ti ${off && !bad && !lost && !odd && !stale ? 'ti-wifi-off' : stale && !bad ? 'ti-refresh' : 'ti-alert-triangle'}"></i><div><div>${offTxt} ${staleTxt} ${why} ${lostTxt} ${oddTxt} ${fix}</div>${list}</div><span class="sp"></span>${stale ? '<button class="btn btn-sm" data-act="reload">Reload</button>' : ''}${lost ? '<button class="btn btn-sm" data-act="healthok">Dismiss</button>' : ''}`;
 }
 let refreshing = false;
 async function refresh() {
@@ -1006,15 +1047,21 @@ function softRender() {
   S.stale = false; renderLockUI(); renderView(); if (S.drawer && !S.draft) refreshDrawer();
 }
 document.addEventListener('focusout', () => setTimeout(() => { if (S.stale && !typing() && !S.dragging) softRender(); }, 60));
+let lastPoll = 0, lastActive = Date.now(), pollT = null;
+['pointerdown', 'keydown', 'scroll'].forEach(ev => addEventListener(ev, () => { lastActive = Date.now(); }, { passive: true, capture: true }));
 async function poll() {
   if (document.hidden || inflight || S.dragging) return;
+  const t = Date.now(); if (t - lastPoll < 5000) return; lastPoll = t;   /* never more often than every 5 seconds, whatever fires it */
   if (S.readonly) { try { const d = await apiPublic(S.readonlyKey); if (d.version !== S.version) { S.version = d.version; loadPublic(d); renderView(); } } catch (e) {} return; }
   if (!S.token) return;
-  try { const d = await api('version'); if (S.syncState === 'offline' || S.syncState === 'error') setSync('saved'); else S.lastSync = new Date(); if (d.version !== S.version) await refresh(); }
+  try { const d = await api('version'); if (S.syncState === 'offline' || S.syncState === 'error' || S.syncState === 'slow') setSync('saved'); else S.lastSync = new Date(); if (d.version !== S.version) refreshSoon(Math.random() * 2500); }
   catch (e) { if (S.token && /reach|too long/i.test(e.message)) setSync('offline'); }
 }
-setInterval(poll, POLL_MS);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
+/* each browser asks on its own random schedule (20s, give or take 20%). Someone who has not touched BOARD for 5 minutes asks once a minute instead. */
+function pollGap() { const idle = Date.now() - lastActive > 5 * 60 * 1000; return Math.max(5000, (idle ? 60000 : POLL_MS) * (0.8 + Math.random() * 0.4)); }
+function schedulePoll() { clearTimeout(pollT); pollT = setTimeout(async () => { try { await poll(); } finally { schedulePoll(); } }, pollGap()); }
+schedulePoll();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { lastActive = Date.now(); poll(); } });
 addEventListener('focus', poll);
 addEventListener('online', poll);
 addEventListener('offline', () => { if (S.token) setSync('offline'); });
@@ -1048,10 +1095,11 @@ const NAV = [
   { id: 'archive', label: 'Archive', icon: 'ti-archive', team: 1 },
   { id: 'timeline', label: 'Edit capacity', icon: 'ti-calendar-stats', group: 'Tools' },
   { id: 'pods', label: 'Pod capacity', icon: 'ti-users-group', group: 'Tools', team: 1, beta: 1 },
+  { id: 'budgets', label: 'Budgets', icon: 'ti-report-money', group: 'Tools', team: 1, beta: 1 },   /* team:1 = editors and above. Freelancers (viewers) never see it, and the backend refuses them too. */
   { id: 'codes', label: 'Code generator', icon: 'ti-barcode', group: 'Tools', team: 1 },
   { id: 'settings', label: 'Settings', icon: 'ti-settings', admin: true, group: 'Admin' }
 ];
-const TITLES = { mine: 'My projects', pipeline: 'Project board', closeout: 'Out processing', finance: 'Finance', archive: 'Archive', timeline: 'Edit capacity', pods: 'Pod capacity (beta)', codes: 'Code generator', settings: 'Settings', board: 'Live projects' };
+const TITLES = { mine: 'My projects', pipeline: 'Project board', closeout: 'Out processing', finance: 'Finance', archive: 'Archive', timeline: 'Edit capacity', pods: 'Pod capacity (beta)', budgets: 'Budgets (beta)', codes: 'Code generator', settings: 'Settings', board: 'Live projects' };
 const brandName = () => `<span class="brand-name"><span class="brand-dot"></span>BOARD</span>`;
 const brandRow = light => `<span class="brand-row">${logoHTML(light)}${brandName()}</span>`;
 const navOk = n => (!n.admin || isAdmin()) && (!n.team || seesMoney());
@@ -1096,7 +1144,7 @@ const LOCK_MIN = 15;
 let lockWas = null;
 function lockInfo() {
   const parts = String((S.cfg || {}).standup_lock_until || '').split('|'), t = Date.parse(String(parts[0] || '').trim());
-  return !isNaN(t) && t > Date.now() ? { until: t, by: String(parts[1] || '').trim(), id: String(parts[2] || '').trim() } : null;
+  return !isNaN(t) && t > nowMs() ? { until: t, by: String(parts[1] || '').trim(), id: String(parts[2] || '').trim() } : null;
 }
 const sameId = (a, b) => !!a && !!b && norm(a) === norm(b);
 const isLockHolder = li => !!li && !!S.me && (li.id ? sameId(li.id, S.me.id) : !!li.by && norm(li.by) === norm(S.me.name));
@@ -1110,13 +1158,13 @@ function renderLockUI() {
   if (b) {
     b.classList.toggle('on', !!li); b.classList.toggle('mine', mine);
     b.title = li ? (mine ? 'You have the board. Click to unlock' : (canUnlock(li) ? `${li.by || 'Someone'} has the board. Click to unlock` : `${li.by || 'Someone'} has the board`)) : 'Take the board for 15 minutes: only you can edit';
-    b.innerHTML = li ? `<i class="ti ti-lock"></i><span class="t" id="lockT1">${mmss(li.until - Date.now())}</span>` : `<i class="ti ti-lock-open"></i><span class="t0">Stand-up lock</span>`;
+    b.innerHTML = li ? `<i class="ti ti-lock"></i><span class="t" id="lockT1">${mmss(li.until - nowMs())}</span>` : `<i class="ti ti-lock-open"></i><span class="t0">Stand-up lock</span>`;
   }
   if (bar) {
     bar.hidden = !li; bar.classList.toggle('mine', mine);
     if (li) bar.innerHTML = mine
-      ? `<i class="ti ti-lock"></i><span>You have the board. Only you can make changes until ${hhmm(li.until)} (<span id="lockT2">${mmss(li.until - Date.now())}</span> left). Everyone else can still look.</span><span class="sp"></span><button class="btn btn-sm" data-act="standup">Unlock now</button>`
-      : `<i class="ti ti-lock"></i><span>Stand-up lock is on. Only ${esc(li.by || 'the person running stand-up')} can make changes until ${hhmm(li.until)} (<span id="lockT2">${mmss(li.until - Date.now())}</span> left).</span><span class="sp"></span>${canUnlock(li) ? '<button class="btn btn-sm" data-act="standup">Unlock now</button>' : ''}`;
+      ? `<i class="ti ti-lock"></i><span>You have the board. Only you can make changes until ${hhmm(li.until)} (<span id="lockT2">${mmss(li.until - nowMs())}</span> left). Everyone else can still look.</span><span class="sp"></span><button class="btn btn-sm" data-act="standup">Unlock now</button>`
+      : `<i class="ti ti-lock"></i><span>Stand-up lock is on. Only ${esc(li.by || 'the person running stand-up')} can make changes until ${hhmm(li.until)} (<span id="lockT2">${mmss(li.until - nowMs())}</span> left).</span><span class="sp"></span>${canUnlock(li) ? '<button class="btn btn-sm" data-act="standup">Unlock now</button>' : ''}`;
   }
 }
 function lockChanged() {
@@ -1128,14 +1176,13 @@ setInterval(() => {
   const now = lockKey();
   if (lockWas !== null && now !== lockWas) { lockChanged(); return; }
   const li = lockInfo(); if (!li) return;
-  const t = mmss(li.until - Date.now()); ['#lockT1', '#lockT2'].forEach(q => { const e = $(q); if (e) e.textContent = t; });
+  const t = mmss(li.until - nowMs()); ['#lockT1', '#lockT2'].forEach(q => { const e = $(q); if (e) e.textContent = t; });
 }, 1000);
 async function setLock(minutes) {
   try {
     flushAll();
     const r = await write('standup_lock', { minutes });
     S.cfg = Object.assign(S.cfg, r.config);
-    if (minutes > 0 && r.holder && S.me && r.holder !== S.me.id && sameId(r.holder, S.me.id)) S.me.id = r.holder;
   } catch (e) { /* write() shows why */ }
   lockChanged();
 }
@@ -1159,11 +1206,11 @@ function route() {
 }
 addEventListener('hashchange', route);
 
-const FIXED = { pipeline: 1, mine: 1, timeline: 1, closeout: 1, archive: 1, settings: 1, board: 1, finance: 1, pods: 1 };
+const FIXED = { pipeline: 1, mine: 1, timeline: 1, closeout: 1, archive: 1, settings: 1, board: 1, finance: 1, pods: 1, budgets: 1 };
 function renderView() {
   const c = $('#content'); if (!c) return;
   const old = $('#vb'), sx = old ? old.scrollLeft : c.scrollLeft, sy = old ? old.scrollTop : c.scrollTop, same = S._lastView === S.view; S._lastView = S.view;
-  const fn = { mine: viewMine, pipeline: viewPipeline, closeout: viewCloseout, finance: viewFinance, archive: viewArchive, timeline: viewEditCapacity, pods: viewPods, codes: viewCodes, settings: viewSettings, board: viewPipeline }[S.view];
+  const fn = { mine: viewMine, pipeline: viewPipeline, closeout: viewCloseout, finance: viewFinance, archive: viewArchive, timeline: viewEditCapacity, pods: viewPods, budgets: viewBudgets, codes: viewCodes, settings: viewSettings, board: viewPipeline }[S.view];
   c.className = 'content' + (FIXED[S.view] ? ' fixed' : '');
   c.innerHTML = fn ? fn() : '';
   const nv = $('#vb') || c;
@@ -1176,6 +1223,7 @@ function setVW() { const vb = $('#vb'); if (vb) vb.style.setProperty('--vw', vb.
 function afterRender() {
   setVW();
   if (S.view === 'archive' && !S.ar.loaded && !S.ar.loading) loadArchive(true);
+  if (S.view === 'budgets') budLoad();
   if (S.view === 'codes') { if (!S.clients) loadClients(); updateCodeOut(); }
   if (S.view === 'settings') settingsAfter();
   if ((S.view === 'pipeline' || S.view === 'mine') && seesMoney() && !S.clients && !S._clientsTried) { S._clientsTried = true; loadClients(); }
@@ -1215,7 +1263,7 @@ ACT.go = el => { closePop(); go(el.dataset.v); };
 ACT.signout = () => signOut();
 ACT.reload = () => location.reload();
 ACT.more = el => {
-  const items = NAV.filter(n => (seesMoney() ? ['timeline', 'pods', 'archive', 'codes', 'settings'] : []).includes(n.id) && navOk(n));
+  const items = NAV.filter(n => (seesMoney() ? ['timeline', 'pods', 'budgets', 'archive', 'codes', 'settings'] : []).includes(n.id) && navOk(n));
   openPop(el, items.map(n => `<button data-act="go" data-v="${n.id}"><i class="ti ${n.icon}"></i>${n.label}${n.beta ? ' (beta)' : ''}</button>`).join('') +
     `<div class="sep"></div><button data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button><button data-act="mypass"><i class="ti ti-key"></i>Change my passcode</button><button data-act="signout"><i class="ti ti-logout"></i>Sign out</button><div class="sep"></div><div class="tagline tagline-i" style="padding:6px 10px">${LOVE}</div>`);
 };
@@ -1232,11 +1280,11 @@ async function showLogin(msg, kind) {
         <div class="lg-hero">If it’s not on the board,<em>it doesn’t exist.</em></div>
         <div class="lg-foot">Project board · v${APP_VERSION.replace('-alpha', '')} alpha</div>
       </div>
-      <div class="lg-right"><form class="lg-form" id="loginForm" autocomplete="off">
+      <div class="lg-right"><form class="lg-form" id="loginForm" autocomplete="on">
         <h2>Sign in</h2>
-        <p id="alphaNote">Sign in with your name or initials and your own passcode. This is alpha build ${APP_VERSION}, so expect changes, and the data is a test copy.</p>
-        <div class="field"><span class="lbl">Name</span><input class="inp" id="lgUser" name="user" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
-        <div class="field"><span class="lbl">Passcode</span><input class="inp" id="lgPass" name="pass" type="password" autocomplete="new-password"></div>
+        <p id="alphaNote">Sign in with your full name and your own passcode. This is alpha build ${APP_VERSION}, so expect changes, and the data is a test copy.</p>
+        <div class="field"><span class="lbl">Full name</span><input class="inp" id="lgUser" name="username" autocomplete="username" autocapitalize="words" spellcheck="false"></div>
+        <div class="field"><span class="lbl">Passcode</span><input class="inp" id="lgPass" name="password" type="password" autocomplete="current-password"></div>
         <label class="lg-check"><input type="checkbox" id="lgRem">Remember me on this device (not on shared computers)</label>
         <div class="lg-msg${kind === 'info' ? '' : ' err'}" id="lgErr">${esc(msg || '')}</div>
         <button class="btn btn-primary btn-lg" type="submit" id="lgBtn">Sign in</button>
@@ -1245,7 +1293,7 @@ async function showLogin(msg, kind) {
     </div>`;
   document.title = '\u{1F7E2} BOARD (alpha)';
   $('#loginForm').addEventListener('submit', async e => {
-    e.preventDefault(); if (!$('#lgUser').value.trim() || !$('#lgPass').value) { const m0 = $('#lgErr'); m0.className = 'lg-msg err'; m0.textContent = 'Enter your name and passcode'; return; }
+    e.preventDefault(); if (!$('#lgUser').value.trim() || !$('#lgPass').value) { const m0 = $('#lgErr'); m0.className = 'lg-msg err'; m0.textContent = 'Enter your full name and passcode'; return; }
     const b = $('#lgBtn'); b.disabled = true; const m = $('#lgErr'); m.className = 'lg-msg'; m.textContent = '';
     try {
       const d = await fetchLogin($('#lgUser').value, $('#lgPass').value);
@@ -1255,7 +1303,7 @@ async function showLogin(msg, kind) {
   if (!API) { $('#alphaNote').innerHTML = '<b>No backend connected.</b> Paste your Apps Script web app URL into <code>API_URL</code> at the top of index.html.'; return; }
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=ping').then(x => x.json());
-    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#alphaNote')) $('#alphaNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs 0.8.0. Oli: update Code.gs and run upgradeTo080().`;
+    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#alphaNote')) $('#alphaNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo090().`;
     else if (r && vcmp(r.server_version, APP_VERSION) > 0 && $('#alphaNote')) $('#alphaNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
   } catch (e) {}
 }
@@ -1282,22 +1330,36 @@ function showUpdateScreen() {
   $('#app').innerHTML = `<div class="skeleton" style="padding:24px">${brandRow()}<div style="max-width:380px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.6;color:var(--color-text-primary)"><b style="font-size:18px">BOARD has been updated</b><br>This page is an older copy. Reload it to carry on. You will not lose anything.</div><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD</button></div>`;
 }
 const WHATS_NEW = [
-  ['ti-calendar-stats', 'Edit capacity in working days', 'No weekends and no week numbers. UK bank holidays are shaded (England and Wales).'],
-  ['ti-calendar-event', 'Calendar picker stays open', 'It now stays on screen after you pick the last day. Click anywhere else to close it.'],
-  ['ti-coin-pound', 'Finance shows everything at once', 'Every invoicing section is on the page, Paid included. Only Live projects and Out processing appear here, so check the Archive for the rest.'],
-  ['ti-checklist', 'Invoicing is part of Out processing', 'Items unlock once a project is invoiced, and nothing goes to the Archive until everything, invoicing included, is done.'],
-  ['ti-presentation', 'Meeting mode', 'The walkthrough is now Meeting mode: smaller controls, with Back and Next at the top so they stay put.'],
-  ['ti-plus', 'New projects are confirmed', 'The New project form only adds to the board when you press Add to board. It needs a client, project code and account lead.'],
-  ['ti-users-group', 'Pod capacity is in beta', 'We are not sure of the best way to use it yet, so please tell us what you think.'],
-  ['ti-circle-check', 'Paid asks first', 'Marking an invoice as Paid now asks you to confirm.']
+  ['0.9.0', [
+    ['ti-report-money', 'Budgets (beta)', 'A read-only look at the 2025 and 2026 budget sheets, under Tools. Nothing there can be changed. Freelancers cannot see it.'],
+    ['ti-user', 'Sign in with your full name', 'Initials no longer work. Use your full name and your own passcode.'],
+    ['ti-layout-columns', 'Columns are centred', 'Everything except Project, Client and Project code now lines up in the middle.'],
+    ['ti-bolt', 'Calmer when everyone is in at once', 'BOARD copes better when the whole team opens it together, and now tells you when the connection is slow or lost.'],
+    ['ti-clock', 'Stand-up timer matches the server', 'The countdown uses the server clock, so it is right even if your computer clock is out.'],
+    ['ti-key', 'Longer passcodes', 'New passcodes need 12 or more characters. Existing ones keep working until they are changed.']
+  ]],
+  ['0.8.0', [
+    ['ti-calendar-stats', 'Edit capacity in working days', 'No weekends and no week numbers. UK bank holidays are shaded (England and Wales).'],
+    ['ti-calendar-event', 'Calendar picker stays open', 'It now stays on screen after you pick the last day. Click anywhere else to close it.'],
+    ['ti-coin-pound', 'Finance shows everything at once', 'Every invoicing section is on the page, Paid included. Only Live projects and Out processing appear here, so check the Archive for the rest.'],
+    ['ti-checklist', 'Invoicing is part of Out processing', 'Items unlock once a project is invoiced, and nothing goes to the Archive until everything, invoicing included, is done.'],
+    ['ti-presentation', 'Meeting mode', 'The walkthrough is now Meeting mode: smaller controls, with Back and Next at the top so they stay put.'],
+    ['ti-plus', 'New projects are confirmed', 'The New project form only adds to the board when you press Add to board. It needs a client, project code and account lead.'],
+    ['ti-users-group', 'Pod capacity is in beta', 'We are not sure of the best way to use it yet, so please tell us what you think.'],
+    ['ti-circle-check', 'Paid asks first', 'Marking an invoice as Paid now asks you to confirm.']
+  ]]
 ];
+/* shows everything added since the version this browser last saw (or just the latest, for a new browser) */
 function whatsNew() {
   if (!S.me || S.readonly) return;
   const seen = store.get('board_seen') || sstore.get('board_seen');
-  if (seen === APP_VERSION) return;
+  if (seen && vcmp(seen, APP_VERSION) >= 0) return;
   store.set('board_seen', APP_VERSION); sstore.set('board_seen', APP_VERSION);
-  openModal(`<h3>What is new in ${esc(APP_VERSION.replace('-alpha', ''))}</h3><div class="muted">Here is what changed since you last looked.</div>
-    <div style="display:flex;flex-direction:column;gap:10px">${WHATS_NEW.map(w => `<div class="row" style="align-items:flex-start;gap:10px"><i class="ti ${w[0]}" style="color:var(--stp);margin-top:1px"></i><div><b>${esc(w[1])}</b><div class="muted">${esc(w[2])}</div></div></div>`).join('')}</div>
+  const groups = seen ? WHATS_NEW.filter(g => vcmp(g[0], seen) > 0) : WHATS_NEW.slice(0, 1);
+  if (!groups.length) return;
+  const many = groups.length > 1;
+  openModal(`<h3>What is new in ${esc(many ? groups[groups.length - 1][0] + ' to ' + groups[0][0] : groups[0][0])}</h3><div class="muted">Here is what changed since you last looked.</div>
+    <div style="display:flex;flex-direction:column;gap:10px">${groups.map(g => (many ? `<div class="lbl" style="margin-top:4px">${esc(g[0])}</div>` : '') + g[1].map(w => `<div class="row" style="align-items:flex-start;gap:10px"><i class="ti ${w[0]}" style="color:var(--stp);margin-top:1px"></i><div><b>${esc(w[1])}</b><div class="muted">${esc(w[2])}</div></div></div>`).join('')).join('')}</div>
     <div class="actions"><button class="btn btn-primary" data-act="closemodal">Got it</button></div>`, 'wide');
 }
 
@@ -1333,6 +1395,9 @@ const hasCode = p => !!String(p.project_code || '').trim();
    ================================================================ */
 const COLS = {};
 S._groups = {};
+/* 0.9.0: every column is centred except these three (and the control column) */
+const LEFT_COLS = { name: 1, client: 1, project_code: 1 };
+const isCentred = c => !LEFT_COLS[c.k] && c.k !== 'act';
 const colW = (tid, c) => Math.max(c.min || 60, (S.ui.widths[tid] || {})[c.k] || c.w);
 const curSort = tid => S.ui.sort[tid] || null;
 const cmpVals = (x, y) => (typeof x === 'number' && typeof y === 'number' ? x - y : String(x).localeCompare(String(y), 'en-GB', { numeric: true, sensitivity: 'base' }));
@@ -1352,7 +1417,8 @@ function tableHTML(tid, colsIn, groups, rowFn, opt = {}) {
   S._groups[tid] = groups.map(g => g.key);
   const head = cols.map(c => {
     const on = st && st.k === c.k, arrow = on ? `<i class="ti ${st.dir === 1 ? 'ti-arrow-up' : 'ti-arrow-down'}" style="color:var(--stp)"></i>` : '';
-    const inner = c.nosort ? `<div class="th-in" style="cursor:default"><span class="th-l">${esc(c.l)}</span></div>` : `<div class="th-in" data-act="colsort" data-t="${tid}" data-k="${c.k}" title="${esc(c.tip || c.l)}"><span class="th-l">${esc(c.l)}</span>${arrow}</div>`;
+    const tc = isCentred(c) ? ' tc' : '';
+    const inner = c.nosort ? `<div class="th-in${tc}" style="cursor:default"><span class="th-l">${esc(c.l)}</span></div>` : `<div class="th-in${tc}" data-act="colsort" data-t="${tid}" data-k="${c.k}" title="${esc(c.tip || c.l)}"><span class="th-l">${esc(c.l)}</span>${arrow}</div>`;
     return `<th class="${c.sticky ? 'sticky' : ''}" style="${c.sticky ? `left:${c.left}px;` : ''}">${inner}${c.noresize ? '' : `<span class="rs" data-t="${tid}" data-k="${c.k}"></span>`}</th>`;
   }).join('');
   let body = '';
@@ -1373,7 +1439,8 @@ function tableHTML(tid, colsIn, groups, rowFn, opt = {}) {
 function td(c, g, inner, cls = '') {
   const strip = c.first && g ? `box-shadow:inset 5px 0 0 ${g.colour};` : '';
   const stick = c.sticky ? `left:${c.left}px;` : '';
-  return `<td class="${c.sticky ? 'sticky ' : ''}${cls}"${c.l ? ` data-l="${esc(c.l)}"` : ''}${strip || stick ? ` style="${stick}${strip}"` : ''}>${inner}</td>`;
+  const centre = isCentred(c) && !/\bcc\b/.test(cls) ? ' cc' : '';
+  return `<td class="${c.sticky ? 'sticky ' : ''}${cls}${centre}"${c.l ? ` data-l="${esc(c.l)}"` : ''}${strip || stick ? ` style="${stick}${strip}"` : ''}>${inner}</td>`;
 }
 const withFirst = cols => cols.map((c, i) => Object.assign({}, c, { first: i === 0 }));
 
@@ -1492,7 +1559,7 @@ function timelineCell(p, ed) {
 function marginCell(p, ed) {
   const m = marginOf(p);
   return ed ? `<div class="pct-wrap"><input type="number" step="0.1" class="cell-inp num ${marginCls(m)}" data-chg="fin" data-id="${p.id}" data-k="profit_margin" value="${m == null ? '' : esc(m)}" placeholder="0"><span>%</span></div>`
-    : `<span class="cell-txt num ${marginCls(m)}" style="text-align:right">${m == null ? '' : esc(m) + '%'}</span>`;
+    : `<span class="cell-txt num ${marginCls(m)}">${m == null ? '' : esc(m) + '%'}</span>`;
 }
 function pipeRow(p, g, cols) {
   const ed = canEdit();
@@ -1504,7 +1571,7 @@ function pipeRow(p, g, cols) {
       case 'status': return td(c, g, labCell(p.status, statusColour(p.status), `data-act="labpick" data-kind="status" data-id="${p.id}"`, ed), 'zp');
       case 'lead': case 'creative': case 'production': case 'edit': return td(c, g, leadCell(p, c.k, ed), 'cc');
       case 'timeline': return td(c, g, timelineCell(p, ed), 'cc');
-      case 'budget': return td(c, g, ed ? `<input type="text" inputmode="decimal" class="cell-inp num gbp-inp" data-chg="cell" data-id="${p.id}" data-f="budget" value="${esc(fmoney(numOf(p.budget)))}" placeholder="£0">` : `<span class="cell-txt num" style="text-align:right">${esc(fmoney(p.budget))}</span>`);
+      case 'budget': return td(c, g, ed ? `<input type="text" inputmode="decimal" class="cell-inp num gbp-inp" data-chg="cell" data-id="${p.id}" data-f="budget" value="${esc(fmoney(numOf(p.budget)))}" placeholder="£0">` : `<span class="cell-txt num">${esc(fmoney(p.budget))}</span>`);
       case 'margin': return td(c, g, marginCell(p, ed));
       case 'invoicing': { const v = invOf(p); return td(c, g, labCell(v, invColour(v), `data-act="labpick" data-kind="invoicing" data-id="${p.id}"`, ed), 'zp'); }
       case 'act': return td(c, g, `<button class="icon-btn" data-act="open" data-id="${p.id}" title="Open details"><i class="ti ti-layout-sidebar-right"></i></button>`, 'act');
@@ -2122,6 +2189,115 @@ ACT.fintile = el => { const g = el.dataset.g; S.fin.inv = S.fin.inv === g ? '' :
 INP['fin-q'] = el => { S.fin.q = el.value; rerenderBody(); };
 INP['fin-inv'] = el => { S.fin.inv = el.value; rerenderBody(); };
 
+
+/* ================================================================
+   Budgets (beta, 0.9.0). Read only. The figures come from the 2025 and 2026 budget Google Sheets through the backend,
+   which keeps a summary and refreshes it every 4 hours. Nothing here can change a budget.
+   Editors and above only: freelancers never see it, and the backend refuses them as well.
+   ================================================================ */
+const gbp2 = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
+const fm2 = n => (n == null || n === '' || isNaN(n) ? '' : gbp2.format(n));
+const fpct = n => (n == null || n === '' || isNaN(n) ? '' : Number(n).toFixed(1) + '%');
+const BUD_COLS = [
+  { k: 'name', l: 'Project', w: 300, min: 140, sticky: 1 },
+  { k: 'client', l: 'Client', w: 170 },
+  { k: 'project_code', l: 'Project code', w: 200 },
+  { k: 'quoted', l: 'Quoted', w: 120, num: 1 },
+  { k: 'spend_est', l: 'Est. spend', tip: 'Estimated total spend (net)', w: 120, num: 1 },
+  { k: 'spend_final', l: 'Final spend', tip: 'Final total spend (net)', w: 120, num: 1 },
+  { k: 'pm_est', l: 'Est. margin', tip: 'Estimated profit margin', w: 115, num: 1 },
+  { k: 'pm_final', l: 'Final margin', tip: 'Final profit margin', w: 115, num: 1 },
+  { k: 'target_pm', l: 'Target PM', tip: 'Target profit margin', w: 105, num: 1 },
+  { k: 'marked', l: 'Marked', tip: 'Tab marked with a tick or an exclamation mark in the budget sheet', w: 95 }
+];
+const budgetsBetaNote = () => `<div class="callout beta"><i class="ti ti-flask"></i><span class="tx"><b>Budgets is very much a beta feature, and it is read only.</b> The plan is to let you edit budgets right here, which will be so much easier, and in time to add a budget builder. For now it shows what is in the budget sheets. Please use the Feedback button to tell us what you think.</span><button class="btn btn-secondary btn-sm" data-act="feedback"><i class="ti ti-message-circle"></i>Give feedback</button></div>`;
+function budUpdated() {
+  const m = /^(\d{4})-(\d\d)-(\d\d) (\d\d:\d\d)/.exec(S.bud.updated || ''); return m ? fdate(m[1] + '-' + m[2] + '-' + m[3]) + ', ' + m[4] : '';
+}
+function budMeta() {
+  const e = $('#budMeta'), r = $('#budRef'), b = S.bud;
+  if (e) e.textContent = b.refreshing ? 'Reading the budget sheets' : (budUpdated() ? 'Updated ' + budUpdated() : '');
+  if (r) { r.disabled = b.refreshing; r.innerHTML = `<i class="ti ti-refresh"></i>${b.refreshing ? 'Refreshing' : 'Refresh now'}`; }
+}
+function budApply(d) {
+  const b = S.bud; b.rows = Array.isArray(d.rows) ? d.rows : []; b.years = Array.isArray(d.years) ? d.years : [];
+  if (!b.year || !b.years.includes(b.year)) b.year = b.years[0] || '';
+  b.updated = d.updated || ''; b.srvErr = d.error || '';
+}
+async function budLoad() {
+  const b = S.bud; if (b.loading || b.loaded) return;
+  b.loading = true; b.err = '';
+  try { budApply(await api('budgets_list')); b.loaded = true; } catch (e) { b.err = e.message; }
+  finally { b.loading = false; if (S.view === 'budgets') { const y = $('#budYear'); if (y) y.innerHTML = optList(b.years, b.year); rerenderBody(); budMeta(); } }
+}
+function viewBudgets() {
+  const b = S.bud;
+  return `<div class="toolbar"><select class="sel" id="budYear" style="width:auto;min-height:32px" data-chg="bud-year" title="Budget year">${optList(b.years.length ? b.years : [b.year || '2026'], b.year)}</select>
+    <div class="search"><i class="ti ti-search"></i><input class="inp" placeholder="Search budgets" value="${esc(b.q)}" data-inp="bud-q"></div>
+    <span id="sortChip">${sortChip('budgets')}</span><span class="spacer"></span><span class="muted" id="budMeta" style="font-size:12px">${b.refreshing ? 'Reading the budget sheets' : (budUpdated() ? 'Updated ' + esc(budUpdated()) : '')}</span>
+    <button class="btn btn-ghost btn-sm" id="budRef" data-act="budrefresh" ${b.refreshing ? 'disabled' : ''}><i class="ti ti-refresh"></i>${b.refreshing ? 'Refreshing' : 'Refresh now'}</button></div>
+    <div id="vb">${budBody()}</div>`;
+}
+BODY.budgets = budBody;
+function budBody() {
+  const b = S.bud, note = budgetsBetaNote();
+  if (b.loading && !b.rows.length) return note + `<div class="skeleton" style="height:240px">Loading budgets</div>`;
+  if (b.err && !b.rows.length) return note + `<div class="empty"><i class="ti ti-alert-triangle"></i>${esc(b.err)}</div>`;
+  const q = norm(b.q), inYear = b.rows.filter(r => r.year === b.year);
+  const val = (r, k) => k === 'name' ? norm(r.title) : k === 'project_code' ? norm(r.code) : k === 'client' ? norm(r.client) : k === 'marked' ? (r.marked || '') : r[k];
+  const items = sortRows(inYear.filter(r => !q || norm([r.title, r.tab, r.client, r.code].join(' ')).includes(q)), 'budgets', val);
+  const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('budgets');
+  if (!items.length) return note + `<div class="empty"><i class="ti ti-report-money"></i>${inYear.length ? 'No budgets match your search.' : 'No budgets have been read for this year yet. Press Refresh now.'}</div>`;
+  const warn = b.srvErr ? `<div class="callout"><i class="ti ti-alert-triangle"></i><span class="tx"><b>The last refresh had a problem.</b> You are seeing the last good copy. Oli has been emailed.</span></div>` : '';
+  const groups = [{ key: b.year, title: b.year + ' budgets', colour: '#5F6672', items, total: inYear.length }];
+  return note + warn + tableHTML('budgets', withFirst(BUD_COLS), groups, (r, g, cols) => `<tr class="prow rowlink" data-act="budopen" data-y="${esc(r.year)}" data-g="${esc(r.gid)}" title="Open this budget">${cols.map(c => {
+    switch (c.k) {
+      case 'name': return td(c, g, `<span class="cell-txt nm-txt"${r.note ? ` title="${esc(r.note)}"` : ''}>${esc(r.title)}</span>`);
+      case 'client': return td(c, g, `<span class="cell-txt">${esc(r.client)}</span>`);
+      case 'project_code': return td(c, g, `<span class="cell-txt">${esc(r.code)}</span>`);
+      case 'quoted': case 'spend_est': case 'spend_final': return td(c, g, `<span class="cell-txt num">${esc(fmoney(r[c.k]))}</span>`);
+      case 'pm_est': case 'pm_final': case 'target_pm': return td(c, g, `<span class="cell-txt num ${c.k === 'target_pm' ? '' : marginCls(r[c.k])}">${esc(fpct(r[c.k]))}</span>`);
+      case 'marked': return td(c, g, `<span class="cell-txt" title="${r.marked === 'done' ? 'Marked as done in the sheet' : r.marked === 'flag' ? 'Flagged in the sheet' : ''}">${r.marked === 'done' ? '\u2705' : r.marked === 'flag' ? '\u2757' : ''}</span>`);
+      default: return td(c, g, '');
+    }
+  }).join('')}</tr>`) + `<div class="page-end"></div>`;
+}
+INP['bud-q'] = el => { S.bud.q = el.value; rerenderBody(); };
+INP['bud-year'] = el => { S.bud.year = el.value; rerenderBody(); };
+ACT.budrefresh = async () => {
+  const b = S.bud; if (b.refreshing) return;
+  b.refreshing = true; budMeta();
+  try {
+    const d = await api('budgets_refresh', {}, 150000); budApply(d); b.loaded = true; b.err = '';
+    toast(d.busy ? 'A refresh is already running. Check back in a minute.' : d.skipped ? 'Already up to date.' : d.partial ? 'Part of it was refreshed. Press the button again to carry on.' : 'Budgets refreshed');
+  } catch (e) { toast(/too long/i.test(e.message) ? 'That is taking a while. It carries on in the background, so check back in a minute.' : e.message, 'err'); b.loaded = false; }
+  finally { b.refreshing = false; if (S.view === 'budgets') { const y = $('#budYear'); if (y) y.innerHTML = optList(b.years, b.year); budMeta(); rerenderBody(); } }
+};
+ACT.budopen = async el => {
+  const year = el.dataset.y, gid = Number(el.dataset.g);
+  const m = openModal(`<h3>Opening budget</h3><div class="skeleton" style="height:160px">Reading the budget sheet</div>`, 'xl');
+  try {
+    const d = await api('budget_detail', { year, gid }, 90000);
+    if ($('#modal') !== m) return;
+    m.innerHTML = budDetailHTML(d);
+  } catch (e) { if ($('#modal') === m) closeModal(); toast(e.message, 'err'); }
+};
+const SUM_ROWS = [['quoted', 'Quoted', 0], ['ext', 'External spend (net)', 0], ['total', 'Total spend (net)', 0], ['profit', 'Profit', 0], ['pm_ext', 'Profit margin, external spend', 1], ['pm_total', 'Profit margin, total spend', 1], ['target', 'Target PM, external', 1]];
+function budDetailHTML(d) {
+  const sheetUrl = /^https:\/\/docs\.google\.com\/spreadsheets\/d\/[A-Za-z0-9_-]+\/edit#gid=\d+$/.test(d.url || '') ? d.url : '';
+  const sum = d.sum || {}, rows = SUM_ROWS.filter(r => sum[r[0]]);
+  const summary = rows.length ? `<div class="bud-wrap"><table class="bud-t"><thead><tr><th class="l"></th><th>Estimated</th><th>Final</th></tr></thead><tbody>${rows.map(([k, l, pct]) => `<tr><td class="l"><b>${esc(l)}</b></td><td>${esc(pct ? fpct(sum[k].est) : fm2(sum[k].est))}</td><td>${esc(pct ? fpct(sum[k].fin) : fm2(sum[k].fin))}</td></tr>`).join('')}</tbody></table></div>` : '';
+  const items = d.items || [];
+  const lines = items.length ? `<div class="bud-wrap"><table class="bud-t"><thead><tr><th class="l">Item</th><th class="l">Category</th><th class="l">Name</th><th class="l">Breakdown of fees</th><th>Estimated</th><th>Final</th><th>Travel</th><th>Status</th></tr></thead><tbody>${items.map(i => `<tr><td class="l">${esc(i.item)}</td><td class="l">${esc(i.cat)}</td><td class="l">${esc(i.name)}</td><td class="l fees">${esc(i.fees)}</td><td>${esc(fm2(i.est))}</td><td>${esc(fm2(i.fin))}</td><td>${esc(fm2(i.trav))}</td><td>${esc(i.status)}</td></tr>`).join('')}</tbody></table></div>${d.truncated ? '<div class="muted">Only the first lines are shown. Open the sheet to see the rest.</div>' : ''}` : '';
+  const odd = d.note || (!items.length ? 'No line items were found on this tab.' : '');
+  const at = /^(\d{4})-(\d\d)-(\d\d) (\d\d:\d\d)/.exec(d.read_at || '');
+  return `<h3>${esc(d.title)}${d.marked === 'done' ? ' \u2705' : d.marked === 'flag' ? ' \u2757' : ''}</h3>
+    <div class="bud-meta">${d.client ? `<span><b>Client</b> ${esc(d.client)}</span>` : ''}${d.code ? `<span><b>Code</b> ${esc(d.code)}</span>` : ''}<span><b>Year</b> ${esc(d.year)}</span><span>Read only copy${at ? ', read at ' + esc(at[4]) : ''}</span></div>
+    ${odd ? `<div class="callout beta" style="margin:0;position:static;width:auto"><i class="ti ti-info-circle"></i><span class="tx">${esc(odd)}</span></div>` : ''}
+    ${summary}${lines}
+    <div class="actions">${sheetUrl ? `<a class="btn btn-ghost" href="${esc(sheetUrl)}" target="_blank" rel="noopener noreferrer"><i class="ti ti-external-link"></i>Open in Google Sheets</a>` : ''}<button class="btn btn-primary" data-act="closemodal">Close</button></div>`;
+}
+
 /* Pod capacity is in beta: say so, and ask for feedback */
 const podsBetaNote = () => `<div class="callout beta"><i class="ti ti-flask"></i><span class="tx"><b>Pod capacity is in beta.</b> We are not clear on the best way to use this, and we are very open to hearing feedback from people.</span><button class="btn btn-secondary btn-sm" data-act="feedback"><i class="ti ti-message-circle"></i>Give feedback</button></div>`;
 
@@ -2242,7 +2418,6 @@ function arBody() {
 }
 async function loadArchive(reset) {
   const a = S.ar; if (a.loading) return; a.loading = true;
-  if (reset) { a.offset = 0; }
   try {
     const d = await api('archive_list', { q: a.q, fy: a.fy, client: a.client, offset: reset ? 0 : a.rows.length, limit: 100 });
     const first = !a.fys.length, rows = cleanList(d.rows, 'archive record').map(cleanProject);
@@ -2342,15 +2517,14 @@ function setDrawerSync(t) { const e = $('#dsync'); if (e) e.textContent = t; }
 const bgRefresh = debounce(() => { if (['pipeline', 'timeline', 'closeout', 'mine', 'archive', 'finance', 'pods'].includes(S.view) && !typing()) { rerenderBody(); } }, 250);
 
 function saveFields(id, fields, from, immediate) {
-  if (TMP[id]) id = TMP[id];
-  const p = recordFor(id, from); if (!p || !canEdit()) return;
+  const p = recordFor(id, from); if (!p) return;
+  if (!canEdit()) { blockedEditToast(); return; }
   if (p === S.draft) { Object.assign(p, fields); draftUpdate(); return; }
   Object.assign(p, fields);
   const key = (from === 'archive' ? 'a:' : 'p:') + id;
   pendingSave[key] = Object.assign(pendingSave[key] || {}, fields);
   clearTimeout(saveTimers[key]);
   const run = () => {
-    if (isTmp(id) && !TMP[id]) return; /* still being created: the edits wait here and go once it has a real id */
     const f = pendingSave[key]; delete pendingSave[key]; delete flushers[key]; if (!f) return;
     write('project_save', { id, fields: f, from: from === 'archive' ? 'archive' : undefined }).then(res => {
       const r = recordFor(id, from); if (r && res.project) ['fy', 'updated_at', 'updated_by', 'created_at'].forEach(k => { r[k] = res.project[k]; });
@@ -2688,26 +2862,26 @@ INP.pp = el => {
 };
 ACT.ppass = el => {
   const id = el.dataset.id, p = personById(id);
-  const m = openModal(`<h3>Passcode for ${esc(p.name)}</h3><div class="muted">At least 8 characters. Passcodes are stored scrambled (hashed) in the backend, never in the sheet, so nobody can read them back. Send it to ${esc(p.name)} separately from the BOARD link, and ask them to change it from the key icon next to their name. Leave blank and save to remove it.</div>
+  const m = openModal(`<h3>Passcode for ${esc(p.name)}</h3><div class="muted">At least 12 characters. Passcodes are stored scrambled (hashed) in the backend, never in the sheet, so nobody can read them back. Send it to ${esc(p.name)} separately from the BOARD link, and ask them to change it from the key icon next to their name. Leave blank and save to remove it.</div>
     <div class="field"><span class="lbl">New passcode</span><div class="row"><input class="inp" id="ppVal" type="text" autocomplete="off"><button class="btn btn-ghost btn-sm" id="ppGen">Generate</button></div></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="ppGo">Save</button></div>`);
   $('#ppGen', m).onclick = () => { $('#ppVal', m).value = makePass(); };
-  $('#ppGo', m).onclick = async () => { const v = $('#ppVal', m).value; if (v && v.length < 8) { toast('Passcodes need at least 8 characters', 'err'); return; } try { const r = await write('person_save', { person: { id, passcode: v } }); S.people = cleanList(r.people, 'person'); closeModal(); rerenderBody(); toast('Passcode updated'); } catch (e) {} };
+  $('#ppGo', m).onclick = async () => { const v = $('#ppVal', m).value; if (v && v.length < 12) { toast('Passcodes need at least 12 characters', 'err'); return; } try { const r = await write('person_save', { person: { id, passcode: v } }); S.people = cleanList(r.people, 'person'); closeModal(); rerenderBody(); toast('Passcode updated'); } catch (e) {} };
 };
 ACT.ppadd = () => {
   const superMe = S.me.rank >= 3, fl = S.depts.find(d => /freelanc/i.test(d.name));
   const m = openModal(`<h3>Add person</h3>
-    <div class="field"><span class="lbl">Name</span><input class="inp" id="paName" maxlength="80"></div>
+    <div class="field"><span class="lbl">Full name (this is what they sign in with)</span><input class="inp" id="paName" maxlength="80"></div>
     <div class="grid2"><div class="field"><span class="lbl">Initials</span><input class="inp" id="paIni" maxlength="3" style="text-transform:uppercase"></div>
     <div class="field"><span class="lbl">Department</span><select class="sel" id="paDept">${S.depts.map(d => `<option value="${d.id}">${esc(d.name)}</option>`).join('')}</select></div></div>
     ${fl ? `<div class="muted" style="font-size:12px">Choose <b>${esc(fl.name)}</b> for freelancers, with Viewer access. They show up in Edit capacity alongside Post.</div>` : ''}
     <div class="grid2"><div class="field"><span class="lbl">Access</span><select class="sel" id="paAcc">${ACCESS.filter(a => a !== 'superadmin' || superMe).map(a => `<option${a === 'editor' ? ' selected' : ''}>${a}</option>`).join('')}</select></div>
-    <div class="field"><span class="lbl">Passcode (8+ characters, optional)</span><input class="inp" id="paPass" autocomplete="off"></div></div>
+    <div class="field"><span class="lbl">Passcode (12+ characters, optional)</span><input class="inp" id="paPass" autocomplete="off"></div></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="paGo">Add</button></div>`);
   $('#paGo', m).onclick = async () => {
     const name = $('#paName', m).value.trim(); if (!name) { $('#paName', m).focus(); return; }
     const person = { name, initials: $('#paIni', m).value, department: $('#paDept', m).value, access: $('#paAcc', m).value };
-    if ($('#paPass', m).value) { if ($('#paPass', m).value.length < 8) { toast('Passcodes need at least 8 characters', 'err'); return; } person.passcode = $('#paPass', m).value; }
+    if ($('#paPass', m).value) { if ($('#paPass', m).value.length < 12) { toast('Passcodes need at least 12 characters', 'err'); return; } person.passcode = $('#paPass', m).value; }
     try { const r = await write('person_save', { person }); S.people = cleanList(r.people, 'person'); closeModal(); rerenderBody(); toast(name + ' added'); } catch (e) {}
   };
 };
@@ -2817,8 +2991,8 @@ ACT.rcadd = async el => {
 function setSystem() {
   const h = S.health, link = S.adminKey ? `${location.origin}${location.pathname}?view=live&k=${S.adminKey}` : '';
   const tabs = h && h.tabs ? Object.keys(h.tabs).map(k => `${k}: ${h.tabs[k]}`).join('  |  ') : '';
-  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo080() once') : '';
-  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo080() once';
+  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo090() once') : '';
+  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo090() once';
   return `<div style="max-width:720px;display:flex;flex-direction:column;gap:16px">
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Build</div><div class="kv">
       <span class="muted">Front end</span><span>BOARD alpha ${APP_VERSION}</span>
@@ -2858,7 +3032,7 @@ function makePass() {
 }
 ACT.mypass = () => {
   closePop();
-  const m = openModal(`<h3>Change my passcode</h3><div class="muted">At least 8 characters. Pick something only you know.</div>
+  const m = openModal(`<h3>Change my passcode</h3><div class="muted">At least 12 characters. A few words strung together works well, and is easy to remember. Pick something only you know.</div>
     <div class="field"><span class="lbl">Current passcode</span><input class="inp" id="mpCur" type="password" autocomplete="current-password"></div>
     <div class="field"><span class="lbl">New passcode</span><input class="inp" id="mpNew" type="password" autocomplete="new-password"></div>
     <div class="field"><span class="lbl">New passcode again</span><input class="inp" id="mpNew2" type="password" autocomplete="new-password"></div>
@@ -2866,7 +3040,7 @@ ACT.mypass = () => {
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="mpGo">Change passcode</button></div>`);
   $('#mpGo', m).onclick = async () => {
     const cur = $('#mpCur', m).value, nx = $('#mpNew', m).value, e = $('#mpErr', m);
-    if (nx.length < 8) { e.textContent = 'The new passcode needs at least 8 characters.'; return; }
+    if (nx.length < 12) { e.textContent = 'The new passcode needs at least 12 characters.'; return; }
     if (nx !== $('#mpNew2', m).value) { e.textContent = 'The two new passcodes do not match.'; return; }
     $('#mpGo', m).disabled = true;
     try { await api('passcode_change', { current: cur, next: nx }); closeModal(); toast('Passcode changed'); }
@@ -2880,7 +3054,7 @@ ACT.healthok = () => { notSaved = []; renderHealthBar(); };
    ================================================================ */
 function loadPublic(d) {
   badRows = [];
-  S.people = cleanList(d.people, 'person'); S.depts = cleanList(d.departments, 'department'); S.cfg.stages = d.stages; S.cfg.public_stages = d.stages; S.cfg.statuses = d.statuses;
+  S.people = cleanList(d.people, 'person'); S.depts = cleanList(d.departments, 'department'); S.cfg.stages = d.stages; S.cfg.public_stages = d.stages;
   S.projects = cleanList(d.projects, 'project').map(cleanProject); S.me = { id: '', rank: -1, name: '' };
 }
 ACT.rochange = el => { location.hash = '#/' + el.dataset.v; };
