@@ -2,7 +2,7 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<title>🟢 BOARD (alpha)</title>
+<title>🟢 BOARD</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com https://cdn.jsdelivr.net data:; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; manifest-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
@@ -22,7 +22,7 @@
 <link rel="preload" as="image" href="logo-dark.png">
 <link rel="preload" as="image" href="logo-light.png">
 <style>
-/* BOARD alpha 0.9.1. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
+/* BOARD 1.0.0. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
 :root {
   color-scheme: light;
   --stp: #FF50BD; --stp-hover: #D93EA6; --stp-light: #FFE8F7; --stp-alpha: rgba(255,80,189,0.12);
@@ -113,7 +113,6 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .chip { display: inline-flex; align-items: center; gap: 5px; border-radius: var(--r-sm); padding: 2px 8px; font-size: 11px; font-weight: 600; background: var(--color-background-tertiary); white-space: nowrap; max-width: 100%; }
 .lchip { display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r-sm); padding: 3px 10px; font-size: 11px; font-weight: 700; color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.14); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .pill { display: inline-flex; align-items: center; border-radius: var(--r-pill); padding: 2px 9px; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
-.pill-alpha { background: var(--stp-alpha); color: var(--stp); }
 .pill-ro { background: var(--color-background-tertiary); color: var(--color-text-secondary); }
 .pill-beta { background: var(--black); color: #fff; padding: 1px 7px; font-size: 9px; letter-spacing: 1px; margin-left: auto; }
 .count { font-size: 11px; font-weight: 600; color: var(--color-text-secondary); background: var(--color-background-tertiary); border-radius: var(--r-pill); padding: 1px 8px; }
@@ -130,11 +129,14 @@ h1.page-title { margin: 0; font-size: 16px; font-weight: 800; text-transform: up
 .brand-logo img { height: 46px; width: auto; display: block; }
 .brand-logo .wordmark { display: none; font-weight: 800; letter-spacing: 1.2px; font-size: 12px; text-transform: uppercase; line-height: 1.05; }
 .brand-logo.no-logo img { display: none !important; } .brand-logo.no-logo .wordmark { display: block; }
-.brand-name { display: flex; align-items: center; gap: 8px; height: 40px; padding-left: 12px; border-left: 1px solid var(--color-border-tertiary); font-weight: 900; font-size: 21px; letter-spacing: 1.6px; line-height: 1; white-space: nowrap; color: var(--color-text-primary); }
+.brand-name { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; height: 40px; padding-left: 12px; border-left: 1px solid var(--color-border-tertiary); font-weight: 900; font-size: 21px; letter-spacing: 1.6px; line-height: 1; white-space: nowrap; color: var(--color-text-primary); }
 .brand-dot { width: 11px; height: 11px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 0 3px rgba(34,197,94,.2); flex: none; }
+.brand-main { display: flex; align-items: center; gap: 8px; }
+.brand-beta { font-size: 9px; font-weight: 800; letter-spacing: 2.4px; line-height: 1; color: var(--stp); padding-left: 19px; }
 .lg-left .brand-row { display: flex; align-items: center; gap: 18px; }
 .lg-left .brand-name { height: 70px; padding-left: 18px; font-size: 34px; border-left-color: rgba(255,255,255,.25); color: #fff; }
 .lg-left .brand-dot { width: 16px; height: 16px; }
+.lg-left .brand-name { gap: 6px; } .lg-left .brand-main { gap: 12px; } .lg-left .brand-beta { font-size: 13px; letter-spacing: 3.2px; padding-left: 28px; }
 .skeleton .brand-row { display: flex; align-items: center; gap: 14px; }
 .skeleton .brand-name { height: 50px; font-size: 26px; }
 .topbar .brand-name { display: none; }
@@ -458,8 +460,6 @@ button.lab-cell:hover { filter: brightness(.94); }
 .lg-msg { font-size: 12.5px; min-height: 18px; color: var(--color-text-secondary); } .lg-msg.err { color: var(--color-text-danger); font-weight: 600; }
 .lg-form .btn-primary { height: 48px; font-size: 14px; border-radius: 10px; }
 .lg-right .love { margin-top: 6px; }
-.alpha-note { background: var(--stp-alpha); border-radius: var(--r-md); padding: 10px 12px; font-size: 12px; line-height: 1.5; }
-.alpha-note b { color: var(--stp); }
 @media (max-width: 860px) {
   .login { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
   .lg-left { padding: 26px 24px 22px; min-height: 0; } .lg-left .brand-logo, .lg-left .brand-logo img { height: 60px; }
@@ -537,6 +537,30 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .draft-help { font-size: 12px; color: var(--color-text-secondary); flex: 1; min-width: 160px; }
 .draft-help.ok { color: var(--color-text-success); font-weight: 600; }
 
+/* ---------- launch welcome (1.0.0) ---------- */
+.modal.welcome { width: min(560px, calc(100vw - 24px)); padding: 0; gap: 0; overflow-x: hidden; animation: wl-pop .45s cubic-bezier(.2,.9,.3,1.15) both; }
+.wl-hero { position: relative; overflow: hidden; background: #1A1A1E; color: #fff; padding: 28px 30px 26px; display: flex; flex-direction: column; gap: 10px; }
+.wl-hero > * { position: relative; }
+.wl-hero .brand-row { display: flex; align-items: center; gap: 14px; }
+.wl-hero .brand-name { color: #fff; border-left-color: rgba(255,255,255,.25); }
+.wl-hero .wl-glow { position: absolute; top: -40%; right: -20%; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,80,189,.55), rgba(255,80,189,0)); animation: wl-glow 6s ease-in-out infinite alternate; pointer-events: none; }
+.wl-ver { margin-top: 14px; font-size: 11px; font-weight: 700; letter-spacing: 2.2px; text-transform: uppercase; color: rgba(255,255,255,.55); }
+.wl-hi { font-size: clamp(30px, 6vw, 44px); font-weight: 900; line-height: 1.05; letter-spacing: -.5px; }
+.wl-hi em { font-style: italic; font-weight: 800; color: var(--stp); }
+.wl-slogan { font-size: 13px; font-style: italic; color: rgba(255,255,255,.7); }
+.wl-body { padding: 22px 30px 24px; display: flex; flex-direction: column; gap: 14px; font-size: 13.5px; line-height: 1.6; }
+.wl-body p { margin: 0; }
+.wl-fb { display: flex; gap: 12px; align-items: flex-start; background: var(--stp-alpha); border-radius: var(--r-md); padding: 14px 16px; }
+.wl-fb > i { font-size: 24px; color: var(--stp); flex: none; margin-top: 1px; }
+.wl-fb b { display: block; font-size: 14px; margin-bottom: 3px; }
+.wl-sign { font-weight: 800; }
+.wl-in { animation: wl-rise .5s ease both; animation-delay: var(--d, 0s); }
+@keyframes wl-pop { from { opacity: 0; transform: translate(-50%, -46%) scale(.94); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@keyframes wl-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes wl-glow { from { transform: translate(0, 0) scale(1); } to { transform: translate(-30px, 24px) scale(1.15); } }
+@media (prefers-reduced-motion: reduce) { .modal.welcome, .wl-in, .wl-hero .wl-glow { animation: none; } }
+@media (max-width: 860px) { .wl-hero { padding: 22px 20px 20px; } .wl-body { padding: 18px 20px 22px; } }
+
 /* ---------- release notes (0.9.1) ---------- */
 .rn-list { display: flex; flex-direction: column; gap: 10px; }
 .rn-ver { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
@@ -552,7 +576,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
   .side { display: none; }
   .topbar { height: calc(52px + var(--safe-t)); padding: calc(var(--safe-t)) 14px 0; gap: 8px; }
   .topbar .brand-logo { display: inline-flex; height: 34px; } .topbar .brand-logo img { height: 34px; }
-  .topbar .brand-name { display: flex; height: 26px; font-size: 14px; padding-left: 8px; gap: 5px; letter-spacing: 1.2px; } .topbar .brand-dot { width: 8px; height: 8px; }
+  .topbar .brand-name { display: flex; height: 26px; font-size: 14px; padding-left: 8px; gap: 3px; letter-spacing: 1.2px; } .topbar .brand-main { gap: 5px; } .topbar .brand-dot { width: 8px; height: 8px; } .topbar .brand-beta { font-size: 7px; letter-spacing: 1.8px; padding-left: 13px; }
   .topbar .page-title { display: none; }
   .lockbar { padding: 8px 14px; } .lock-note { padding: 9px 14px; } .lock-btn .t0 { display: none; }
   h1.page-title { font-size: 13px; }
@@ -615,7 +639,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
   .sort-chip { max-width: 100%; }
   .fin-tiles { grid-template-columns: 1fr 1fr; gap: 8px; }
   .fin-tile .t2 { font-size: 24px; }
-  .pill-alpha, .pill-lock { display: none; }
+  .pill-lock { display: none; }
 }
 @media (min-width: 861px) { .only-m { display: none !important; } }
 @media print { .side, .tabbar, .toolbar { display: none; } }
@@ -628,14 +652,17 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 (function () {
 'use strict';
 /* ================================================================
-   BOARD alpha 0.9.1. Core: config, state, colours, API, queue, shell, login, routing
+   BOARD 1.0.0. Core: config, state, colours, API, queue, shell, login, routing
    ================================================================ */
 
 /* ---- CONFIG: your Apps Script web app URL ---- */
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '0.9.1-alpha';
+const APP_VERSION = '1.0.0';
+/* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
+   Change this number when you want a big welcome like this again. */
+const WELCOME_VER = '1.0.0';
 const NEED_VER = '0.9.0';   /* the backend must be at least this version */
 const MIN_SCHEMA = 10;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
@@ -1109,7 +1136,7 @@ const NAV = [
   { id: 'settings', label: 'Settings', icon: 'ti-settings', admin: true, group: 'Admin' }
 ];
 const TITLES = { mine: 'My projects', pipeline: 'Project board', closeout: 'Out processing', finance: 'Finance', archive: 'Archive', timeline: 'Edit capacity', pods: 'Pod capacity (beta)', budgets: 'Budgets (beta)', codes: 'Code generator', settings: 'Settings', board: 'Live projects' };
-const brandName = () => `<span class="brand-name"><span class="brand-dot"></span>BOARD</span>`;
+const brandName = () => `<span class="brand-name"><span class="brand-main"><span class="brand-dot"></span>BOARD</span><span class="brand-beta">BETA</span></span>`;
 const brandRow = light => `<span class="brand-row">${logoHTML(light)}${brandName()}</span>`;
 const navOk = n => (!n.admin || isAdmin()) && (!n.team || seesMoney());
 const navItems = () => NAV.filter(navOk);
@@ -1130,12 +1157,12 @@ function renderShell() {
         <div class="userchip">${av(S.me.id, 'av-lg')}<div><div class="nm">${esc(S.me.name)}</div><div class="rl">${esc(S.me.access)}</div></div>
           <button class="icon-btn" style="margin-left:auto" data-act="mypass" title="Change my passcode"><i class="ti ti-key"></i></button>
           <button class="icon-btn" data-act="signout" title="Sign out"><i class="ti ti-logout"></i></button></div>
-        <div class="ver">ALPHA ${APP_VERSION}</div>
+        <div class="ver">v${APP_VERSION}</div>
         <div class="tagline tagline-i">${LOVE}</div>
       </div>
     </nav>
     <div class="main">
-      <div class="topbar">${logoHTML()}${brandName()}<h1 class="page-title" id="pageTitle"></h1><span class="pill pill-alpha">Alpha</span>${isViewer() ? '<span class="pill pill-ro">View only</span>' : ''}<span class="spacer"></span>${canEditBase() ? '<button class="btn btn-plain btn-sm lock-btn" id="lockBtn" data-act="standup"></button>' : ''}<span class="sync" id="sync"></span></div>
+      <div class="topbar">${logoHTML()}${brandName()}<h1 class="page-title" id="pageTitle"></h1>${isViewer() ? '<span class="pill pill-ro">View only</span>' : ''}<span class="spacer"></span>${canEditBase() ? '<button class="btn btn-plain btn-sm lock-btn" id="lockBtn" data-act="standup"></button>' : ''}<span class="sync" id="sync"></span></div>
       <div class="healthbar" id="healthbar" hidden></div>
       <div class="lockbar" id="lockbar" hidden></div>
       <div class="content-wrap"><div class="content" id="content"></div></div>
@@ -1144,7 +1171,7 @@ function renderShell() {
       ${(seesMoney() ? [['mine', 'Mine'], ['pipeline', 'Board'], ['closeout', 'Out'], ['finance', 'Finance']] : [['mine', 'Mine'], ['pipeline', 'Board'], ['timeline', 'Capacity']]).map(([id, l]) => { const n = NAV.find(x => x.id === id); return `<button data-act="go" data-v="${id}" data-nav="${id}"><i class="ti ${n.icon}"></i>${l}</button>`; }).join('')}
       <button data-act="more" data-nav="more"><i class="ti ti-menu-2"></i>More</button>
     </div>`;
-  document.title = '\u{1F7E2} BOARD (alpha)';
+  document.title = '\u{1F7E2} BOARD';
   setSync(S.syncState === 'saving' ? 'saving' : 'saved');
   lockWas = null; renderLockUI(); lockWas = lockKey(); renderHealthBar();
 }
@@ -1288,11 +1315,11 @@ async function showLogin(msg, kind) {
     <div class="login">
       <div class="lg-left">${brandRow(true)}
         <div class="lg-hero">If it’s not on the board,<em>it doesn’t exist.</em></div>
-        <div class="lg-foot">Project board · v${APP_VERSION.replace('-alpha', '')} alpha</div>
+        <div class="lg-foot">Project board · v${APP_VERSION}</div>
       </div>
       <div class="lg-right"><form class="lg-form" id="loginForm" autocomplete="on">
         <h2>Sign in</h2>
-        <p id="alphaNote">Sign in with your full name and your own passcode. This is alpha build ${APP_VERSION}, so expect changes, and the data is a test copy.</p>
+        <p id="lgNote">Sign in with your full name and your own passcode.</p>
         <div class="field"><span class="lbl">Full name</span><input class="inp" id="lgUser" name="username" autocomplete="username" autocapitalize="words" spellcheck="false"></div>
         <div class="field"><span class="lbl">Passcode</span><input class="inp" id="lgPass" name="password" type="password" autocomplete="current-password"></div>
         <label class="lg-check"><input type="checkbox" id="lgRem">Remember me on this device (not on shared computers)</label>
@@ -1301,7 +1328,7 @@ async function showLogin(msg, kind) {
         <div class="tagline tagline-i love">${LOVE}</div>
       </form></div>
     </div>`;
-  document.title = '\u{1F7E2} BOARD (alpha)';
+  document.title = '\u{1F7E2} BOARD';
   $('#loginForm').addEventListener('submit', async e => {
     e.preventDefault(); if (!$('#lgUser').value.trim() || !$('#lgPass').value) { const m0 = $('#lgErr'); m0.className = 'lg-msg err'; m0.textContent = 'Enter your full name and passcode'; return; }
     const b = $('#lgBtn'); b.disabled = true; const m = $('#lgErr'); m.className = 'lg-msg'; m.textContent = '';
@@ -1310,11 +1337,11 @@ async function showLogin(msg, kind) {
       S.token = d.token; tokenSet(d.token, $('#lgRem').checked); await loadApp();
     } catch (err) { m.className = 'lg-msg err'; m.textContent = err.message; b.disabled = false; }
   });
-  if (!API) { $('#alphaNote').innerHTML = '<b>No backend connected.</b> Paste your Apps Script web app URL into <code>API_URL</code> at the top of index.html.'; return; }
+  if (!API) { $('#lgNote').innerHTML = '<b>No backend connected.</b> Paste your Apps Script web app URL into <code>API_URL</code> at the top of index.html.'; return; }
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=ping').then(x => x.json());
-    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#alphaNote')) $('#alphaNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo090().`;
-    else if (r && vcmp(r.server_version, APP_VERSION) > 0 && $('#alphaNote')) $('#alphaNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
+    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo090().`;
+    else if (r && vcmp(r.server_version, APP_VERSION) > 0 && $('#lgNote')) $('#lgNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
   } catch (e) {}
 }
 async function fetchLogin(user, pass) {
@@ -1329,7 +1356,7 @@ async function loadApp() {
   if (!location.hash || location.hash === '#') location.hash = '#/pipeline';
   route();
   seedDefaults();
-  whatsNew();
+  if (!welcome()) whatsNew();
 }
 
 /* ---------------- update gate, "what is new" and release notes (0.8.0, 0.9.1) ----------------
@@ -1341,6 +1368,11 @@ function showUpdateScreen() {
   $('#app').innerHTML = `<div class="skeleton" style="padding:24px">${brandRow()}<div style="max-width:380px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.6;color:var(--color-text-primary)"><b style="font-size:18px">BOARD has been updated</b><br>This page is an older copy. Reload it to carry on. You will not lose anything.</div><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD</button></div>`;
 }
 const WHATS_NEW = [
+  ['1.0.0', [
+    ['ti-rocket', 'BOARD 1.0.0', 'The alpha is over. This is the first proper version for the whole team.'],
+    ['ti-flask', 'Beta labels', 'BOARD now carries a Beta label under its name. Pod capacity and Budgets keep their own beta tags.'],
+    ['ti-message-circle', 'Feedback shapes what comes next', 'If you spot a bug, or something annoys you, press Feedback. It emails Oli directly, and there will be plenty of updates over the next few weeks.']
+  ]],
   ['0.9.1', [
     ['ti-notes', 'Release notes button', 'It sits above Feedback and shows what changed in the last three builds, any time you want to look.']
   ]],
@@ -1364,7 +1396,7 @@ const WHATS_NEW = [
   ]]
 ];
 /* one group of notes: a version label, then a row per change */
-const notesRows = g => `<div class="rn-ver lbl">${esc(g[0])}${g[0] === APP_VERSION.replace('-alpha', '') ? '<span class="rn-now">Current</span>' : ''}</div>` +
+const notesRows = g => `<div class="rn-ver lbl">${esc(g[0])}${g[0] === APP_VERSION ? '<span class="rn-now">Current</span>' : ''}</div>` +
   g[1].map(w => `<div class="row" style="align-items:flex-start;gap:10px"><i class="ti ${w[0]}" style="color:var(--stp);margin-top:1px"></i><div><b>${esc(w[1])}</b><div class="muted">${esc(w[2])}</div></div></div>`).join('');
 /* shows everything added since the version this browser last saw (or just the latest, for a new browser) */
 function whatsNew() {
@@ -1378,6 +1410,32 @@ function whatsNew() {
   openModal(`<h3>What is new in ${esc(many ? groups[groups.length - 1][0] + ' to ' + groups[0][0] : groups[0][0])}</h3><div class="muted">Here is what changed since you last looked.</div>
     <div class="rn-list">${groups.map(g => (many ? `<div class="lbl" style="margin-top:4px">${esc(g[0])}</div>` : '') + g[1].map(w => `<div class="row" style="align-items:flex-start;gap:10px"><i class="ti ${w[0]}" style="color:var(--stp);margin-top:1px"></i><div><b>${esc(w[1])}</b><div class="muted">${esc(w[2])}</div></div></div>`).join('')).join('')}</div>
     <div class="actions"><button class="btn btn-primary" data-act="closemodal">Got it</button></div>`, 'wide');
+}
+/* 1.0.0: the launch welcome. Shown once to each person the first time they sign in on WELCOME_VER (once per browser they use).
+   It stands in for "What is new" that time, so nobody gets two pop-ups. */
+const welcomeKey = () => 'board_welcome_' + WELCOME_VER + '_' + (S.me ? S.me.id : '');
+function welcome() {
+  if (!S.me || S.readonly || !S.me.id) return false;
+  const k = welcomeKey();
+  if (store.get(k) || sstore.get(k)) return false;
+  store.set(k, '1'); sstore.set(k, '1');
+  store.set('board_seen', APP_VERSION); sstore.set('board_seen', APP_VERSION);
+  const first = String(S.me.name || '').trim().split(/\s+/)[0] || 'there';
+  openModal(`<div class="wl-hero"><div class="wl-glow"></div>${brandRow(true)}
+      <div class="wl-ver wl-in" style="--d:.15s">Version ${esc(APP_VERSION)}</div>
+      <div class="wl-hi wl-in" style="--d:.25s">Welcome, <em>${esc(first)}.</em></div>
+      <div class="wl-slogan wl-in" style="--d:.35s">${esc(SLOGAN)}</div></div>
+    <div class="wl-body">
+      <p class="wl-in" style="--d:.45s">This is BOARD ${esc(APP_VERSION)}. It has been through more than ten versions in the last couple of weeks, and it’s finally ready for all of us to use.</p>
+      <p class="wl-in" style="--d:.55s">Right now it’s a project board with a couple of extra tools. But I reckon, in time, it could be something really impressive. This is a tool for everyone, so we all get the chance to shape it and make it perfect for what we actually need.</p>
+      <div class="wl-fb wl-in" style="--d:.65s"><i class="ti ti-message-circle"></i><div><b>Your feedback is incredibly important.</b>If you spot a bug, hit a feature that’s annoying, or just wish it did something it doesn’t, press the Feedback button (bottom left, or under More on your phone). It sends an automated email straight to my inbox, and I’ll pull everyone’s feedback together. I’m so, so keen to hear it, even the grumpy stuff.</div></div>
+      <p class="wl-in" style="--d:.75s">Expect a lot of updates over the next few weeks whilst we get this going. The Release notes button will always tell you what’s changed. Thanks for helping me make it good \u{1F64C}\u{1F3FD}</p>
+      <div class="wl-sign wl-in" style="--d:.8s">Oli</div>
+      <div class="actions wl-in" style="--d:.85s"><button class="btn btn-plain" data-act="feedback"><i class="ti ti-message-circle"></i>Send feedback</button><button class="btn btn-primary btn-lg" data-act="closemodal">Let’s go</button></div>
+      <div class="tagline tagline-i">${LOVE}</div>
+    </div>`, 'welcome');
+  celebrate(PARTY);
+  return true;
 }
 /* 0.9.1: the Release notes button. Always the last three builds in the list, newest first. */
 ACT.releasenotes = () => {
@@ -2827,7 +2885,7 @@ async function requestCloseDrawer() {
 ACT.feedback = () => {
   closePop();
   const m = openModal(`<h3>Send feedback</h3>
-    <div class="muted">This is an alpha build. Tell Oli what is confusing, broken or missing. It is emailed to Oli straight away, along with which page you were on and the build number.</div>
+    <div class="muted">BOARD is new, so your feedback shapes what it becomes. Tell Oli what is confusing, broken, annoying or missing. It is emailed to Oli straight away, along with which page you were on and the build number.</div>
     <div class="field"><span class="lbl">Type</span><select class="sel" id="fbKind"><option>Feedback</option><option>Bug</option><option>Idea</option></select></div>
     <div class="field"><span class="lbl">Message</span><textarea class="txt" id="fbMsg" maxlength="5000" placeholder="What happened, or what would help?"></textarea></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="fbGo">Send</button></div>`);
@@ -3020,7 +3078,7 @@ function setSystem() {
   const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo090() once';
   return `<div style="max-width:720px;display:flex;flex-direction:column;gap:16px">
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Build</div><div class="kv">
-      <span class="muted">Front end</span><span>BOARD alpha ${APP_VERSION}</span>
+      <span class="muted">Front end</span><span>BOARD ${APP_VERSION}</span>
       <span class="muted">Backend</span><span>${h ? esc(h.server_version || h.error || '') : 'Checking'}</span>
       <span class="muted">Connection</span><span>${S.syncState === 'offline' ? 'Cannot reach the sheet' : 'Connected to the BOARD. Database sheet'}</span>
       <span class="muted">Data version</span><span>${S.version}</span>
@@ -3086,9 +3144,9 @@ ACT.rochange = el => { location.hash = '#/' + el.dataset.v; };
 async function startReadonly(key) {
   S.readonly = true; S.readonlyKey = key; S.view = 'board';
   $('#app').innerHTML = `<div class="main">
-    <div class="topbar">${logoHTML()}${brandName()}<h1 class="page-title" style="margin-left:6px">Live projects</h1><span class="pill pill-ro">Read only</span><span class="pill pill-alpha">Alpha</span><span class="spacer"></span></div>
+    <div class="topbar">${logoHTML()}${brandName()}<h1 class="page-title" style="margin-left:6px">Live projects</h1><span class="pill pill-ro">Read only</span><span class="spacer"></span></div>
     <div class="content-wrap"><div class="content" id="content"><div class="skeleton">Loading live projects</div></div></div></div>`;
-  document.title = '\u{1F7E2} BOARD live (alpha)';
+  document.title = '\u{1F7E2} BOARD live';
   try {
     const d = await apiPublic(key); S.version = d.version; loadPublic(d);
     if (!location.hash || location.hash === '#') location.hash = '#/board'; else route();
