@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>🟢 BOARD</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com https://cdn.jsdelivr.net data:; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com https://cdn.jsdelivr.net data:; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; manifest-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="color-scheme" content="light dark">
@@ -472,6 +472,11 @@ button.lab-cell:hover { filter: brightness(.94); }
 .lg-form .lbl { font-size: 10px; }
 .lg-check { display: flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 500; cursor: pointer; }
 .lg-check input { accent-color: var(--stp); width: 16px; height: 16px; }
+#updGate { position: fixed; inset: 0; z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 16px; background: color-mix(in srgb, var(--black, #151518) 82%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+#updGate .upd-card { width: 100%; max-width: 440px; background: var(--color-background-primary, #fff); color: var(--color-text-primary); border-radius: 16px; padding: 28px 26px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+#updGate .brand-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 18px; }
+#updGate .upd-dot { width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #FF50BD; color: #fff; font-size: 26px; }
+#updGate h2 { margin: 0 0 8px; font-size: 22px; } #updGate p { margin: 0 0 18px; font-size: 14px; line-height: 1.55; color: var(--color-text-secondary); } #updGate .btn { width: 100%; justify-content: center; }
 .lg-notice { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; margin: 0 0 14px; border-radius: 10px; border: 1px solid var(--color-text-danger); background: color-mix(in srgb, var(--color-text-danger) 9%, transparent); color: var(--color-text-primary); font-size: 13.5px; line-height: 1.5; } .lg-notice .ti { font-size: 20px; color: var(--color-text-danger); flex: 0 0 auto; margin-top: 1px; }
 .lg-msg { font-size: 12.5px; min-height: 18px; color: var(--color-text-secondary); } .lg-msg.err { color: var(--color-text-danger); font-weight: 600; }
 .lg-form .btn-primary { height: 48px; font-size: 14px; border-radius: 10px; }
@@ -708,7 +713,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.1.1';
+const APP_VERSION = '1.1.2';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
@@ -1125,6 +1130,7 @@ function renderHealthBar() {
   const bar = $('#healthbar'); if (!bar) return;
   const h = S.health0, bad = h && !h.ok, lost = notSaved.length, odd = isAdmin() && badRows.length, off = S.syncState === 'offline';
   const stale = !!h && h.server !== 'unknown' && vcmp(h.server, APP_VERSION) > 0;
+  if (stale) { forceUpdate(h.server); return; }   /* 1.1.2: no more banner, the update cover takes over */
   bar.hidden = !bad && !lost && !odd && !stale && !off; if (bar.hidden) return;
   bar.classList.toggle('stale', stale && !bad && !lost && !odd && !off);
   const staleTxt = stale ? `This is an old copy of BOARD (${esc(APP_VERSION)}). Version ${esc(h.server)} is out. Reload the page to update.` : '';
@@ -1151,9 +1157,11 @@ document.addEventListener('focusout', () => setTimeout(() => { if (S.stale && !t
 let lastPoll = 0, lastActive = Date.now(), pollT = null;
 ['pointerdown', 'keydown', 'scroll'].forEach(ev => addEventListener(ev, () => { lastActive = Date.now(); }, { passive: true, capture: true }));
 async function poll() {
+  if (S.updating) return;
   if (document.hidden || inflight || S.dragging) return;
   const t = Date.now(); if (t - lastPoll < 5000) return; lastPoll = t;   /* never more often than every 5 seconds, whatever fires it */
   if (S.readonly) { try { const d = await apiPublic(S.readonlyKey); if (d.version !== S.version) { S.version = d.version; loadPublic(d); renderView(); } } catch (e) {} return; }
+  checkForNewPage();
   if (!S.token) return;
   try { const d = await api('version'); if (S.syncState === 'offline' || S.syncState === 'error' || S.syncState === 'slow') setSync('saved'); else S.lastSync = new Date(); if (d.version !== S.version) refreshSoon(Math.random() * 2500); }
   catch (e) { if (S.token && /reach|too long/i.test(e.message)) setSync('offline'); }
@@ -1162,7 +1170,7 @@ async function poll() {
 function pollGap() { const idle = Date.now() - lastActive > 5 * 60 * 1000; return Math.max(5000, (idle ? 60000 : POLL_MS) * (0.8 + Math.random() * 0.4)); }
 function schedulePoll() { clearTimeout(pollT); pollT = setTimeout(async () => { try { await poll(); } finally { schedulePoll(); } }, pollGap()); }
 schedulePoll();
-document.addEventListener('visibilitychange', () => { if (!document.hidden) { lastActive = Date.now(); poll(); } });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { lastActive = Date.now(); checkForNewPage(true); poll(); } });
 addEventListener('focus', poll);
 addEventListener('online', poll);
 addEventListener('offline', () => { if (S.token) setSync('offline'); });
@@ -1365,7 +1373,7 @@ ACT.standup = async () => {
 
 ACT.go = el => { closePop(); go(el.dataset.v); };
 ACT.signout = () => signOut();
-ACT.reload = () => location.reload();
+ACT.reload = () => hardReload();
 ACT.theme = () => { closePop(); applyTheme(!isDark()); };
 ACT.more = el => {
   const items = NAV.filter(n => (seesMoney() ? ['timeline', 'pods', 'budgets', 'archive', 'codes', 'settings'] : []).includes(n.id) && navOk(n));
@@ -1410,7 +1418,7 @@ async function showLogin(msg, kind) {
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=ping').then(x => x.json());
     if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo110().`;
-    else if (r && vcmp(r.server_version, APP_VERSION) > 0 && $('#lgNote')) $('#lgNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
+    else if (r && vcmp(r.server_version, APP_VERSION) > 0 && !forceUpdate(r.server_version) && $('#lgNote')) $('#lgNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
   } catch (e) {}
 }
 async function fetchLogin(user, pass) {
@@ -1432,11 +1440,45 @@ async function loadApp() {
    The backend refuses pages older than its minimum version with a "BOARD has been updated" message. A page that gets that shows this screen instead of half working.
    After an update, each browser shows the list below once, the next time BOARD opens, so people see what changed. Nobody is signed out.
    0.9.1: the same list now sits behind the Release notes button above Feedback, which shows the last three builds. Newest build first. */
-function showUpdateScreen() {
-  S.updating = true;
-  $('#app').innerHTML = `<div class="skeleton" style="padding:24px">${brandRow()}<div style="max-width:380px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.6;color:var(--color-text-primary)"><b style="font-size:18px">BOARD has been updated</b><br>This page is an older copy. Reload it to carry on. You will not lose anything.</div><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD</button></div>`;
+function showUpdateScreen(newV) {
+  /* 1.1.2: a full-screen cover that cannot be dismissed. Nothing on the old copy can be used until it reloads. */
+  if (S.updating) return; S.updating = true;
+  try { closeModal(true); closePop(); } catch (e) {}
+  const v = newV ? ` to version ${esc(newV)}` : '';
+  const el = document.createElement('div'); el.id = 'updGate';
+  el.innerHTML = `<div class="upd-card">${brandRow()}<div class="upd-dot"><i class="ti ti-refresh"></i></div><h2>BOARD has been updated${v}</h2><p>You are on an older copy (${esc(APP_VERSION)}). Reload to carry on. Your saved changes are safe, and you stay signed in.</p><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD now</button><div class="muted" style="font-size:12.5px;margin-top:10px">Reloading by itself in <span id="updCount">30</span> seconds.</div></div>`;
+  document.body.appendChild(el);
+  let n = 30; const tick = () => { const c = $('#updCount'); if (!c) return; if (--n <= 0) return hardReload(); c.textContent = n; setTimeout(tick, 1000); };
+  setTimeout(tick, 1000);
+}
+/* 1.1.2: GitHub Pages lets browsers keep a copy for up to 10 minutes, so a plain reload can bring back the old page. A fresh address forces the new one. */
+function hardReload() {
+  const q = new URLSearchParams(location.search); q.set('v', String(Date.now()));
+  location.replace(location.pathname + '?' + q.toString() + location.hash);
+}
+/* 1.1.2: every minute (and whenever BOARD comes back to the front) it checks the live page for a newer version, even when only the page changed */
+let pageCheckAt = 0;
+const PAGE_VER_RE = new RegExp("const APP_" + "VERSION = '(\\d[^']*)'");
+async function checkForNewPage(force) {
+  if (S.updating || S.readonly || !/^https?:$/.test(location.protocol)) return;
+  if (!force && Date.now() - pageCheckAt < 60000) return; pageCheckAt = Date.now();
+  try {
+    const r = await fetch(location.pathname + '?vc=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    const m = PAGE_VER_RE.exec(await r.text());
+    if (m && vcmp(m[1], APP_VERSION) > 0) forceUpdate(m[1]);
+  } catch (e) {}
+}
+/* waits for any save in progress to finish first, so nothing is lost */
+function forceUpdate(v, tries) {
+  if (S.updating) return;
+  if (inflight && (tries || 0) < 20) return void setTimeout(() => forceUpdate(v, (tries || 0) + 1), 1000);
+  showUpdateScreen(v);
 }
 const WHATS_NEW = [
+  ['1.1.2', [
+    ['ti-refresh', 'Updates you cannot miss', 'When a new version of BOARD is out, a full-screen message now appears within a minute and BOARD reloads itself, so everyone is always on the latest copy.'],
+  ]],
   ['1.1.1', [
     ['ti-plug-connected', 'No more surprise sign-outs', 'If BOARD is slow to load (usually for a minute while it is being updated), it now waits and tries again, and you stay signed in. If you really do need to sign in again, BOARD says so clearly.'],
     ['ti-users', 'Pod, not Team', 'The column in My projects is now called Pod. Thanks, Oli.'],
@@ -1538,6 +1580,8 @@ ACT.releasenotes = () => {
 async function boot() {
   const q = new URLSearchParams(location.search);
   if (q.get('view') === 'live' && q.get('k')) { return startReadonly(q.get('k')); }
+  if (q.get('v')) { q.delete('v'); try { history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); } catch (e) {} }
+  checkForNewPage(true);
   S.token = tokenGet();
   if (S.token && API) {
     try { await loadApp(); return; }
