@@ -7,7 +7,8 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com https://cdn.jsdelivr.net data:; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; manifest-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#FFFFFF">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
+<script>try{if(localStorage.getItem("board_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");document.querySelector('meta[name="theme-color"]').setAttribute("content","#151518");}}catch(e){}</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="BOARD">
@@ -22,7 +23,7 @@
 <link rel="preload" as="image" href="logo-dark.png">
 <link rel="preload" as="image" href="logo-light.png">
 <style>
-/* BOARD 1.0.0. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light mode only. */
+/* BOARD 1.1.0. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light by default, with a dark mode that each person can switch on. */
 :root {
   color-scheme: light;
   --stp: #FF50BD; --stp-hover: #D93EA6; --stp-light: #FFE8F7; --stp-alpha: rgba(255,80,189,0.12);
@@ -37,6 +38,20 @@
   --ok-bg: rgba(22,163,74,0.13); --warn-bg: rgba(217,119,6,0.14); --bad-bg: rgba(220,38,38,0.12);
   --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-pill: 9999px;
   --safe-b: env(safe-area-inset-bottom, 0px); --safe-t: env(safe-area-inset-top, 0px);
+}
+/* 1.1.0: dark mode. Everything reads these variables, so only the few hard-coded colours are overridden further down. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --stp-hover: #FF73CB; --stp-light: rgba(255,80,189,0.16); --stp-alpha: rgba(255,80,189,0.2);
+  --black: #2E2E35;
+  --color-background-primary: #151518;
+  --color-background-secondary: #1D1D21;
+  --color-background-tertiary: #2A2A30;
+  --color-border-tertiary: rgba(255,255,255,0.14);
+  --color-text-primary: #F2F2F4;
+  --color-text-secondary: #A4A4B0;
+  --color-text-success: #34D07A; --color-text-warning: #F0A020; --color-text-danger: #EF5757;
+  --ok-bg: rgba(52,208,122,0.18); --warn-bg: rgba(240,160,32,0.18); --bad-bg: rgba(239,87,87,0.18);
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
@@ -461,10 +476,13 @@ button.lab-cell:hover { filter: brightness(.94); }
 .lg-form .btn-primary { height: 48px; font-size: 14px; border-radius: 10px; }
 .lg-right .love { margin-top: 6px; }
 @media (max-width: 860px) {
-  .login { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-  .lg-left { padding: 26px 24px 22px; min-height: 0; } .lg-left .brand-logo, .lg-left .brand-logo img { height: 60px; }
-  .lg-hero { padding: 22px 0 14px; font-size: 30px; } .lg-foot { display: none; }
-  .lg-right { align-items: flex-start; padding: 26px 22px 40px; }
+  /* 1.1.0: a plain top-to-bottom flow, sized to the visible screen (dvh), so the form is never pushed off by the browser bars */
+  .login { display: flex; flex-direction: column; grid-template-columns: none; height: 100vh; height: 100dvh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .lg-left { flex: none; padding: 20px 22px 14px; min-height: 0; } .lg-left .brand-logo, .lg-left .brand-logo img { height: 52px; }
+  .lg-left .brand-name { height: 44px; font-size: 22px; padding-left: 12px; }
+  .lg-hero { margin: 0; padding: 14px 0 4px; font-size: clamp(24px, 8vw, 30px); } .lg-foot { display: none; }
+  .lg-right { flex: 1 0 auto; align-items: flex-start; padding: 22px 22px calc(32px + var(--safe-b)); }
+  .lg-form .inp { font-size: 16px; }
 }
 
 /* ---------- misc ---------- */
@@ -644,6 +662,36 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 @media (min-width: 861px) { .only-m { display: none !important; } }
 @media print { .side, .tabbar, .toolbar { display: none; } }
 
+
+/* ---------- 1.1.0 ---------- */
+.spin { display: inline-block; width: 13px; height: 13px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: bspin .7s linear infinite; vertical-align: -2px; margin-right: 8px; }
+@keyframes bspin { to { transform: rotate(360deg); } }
+.btn.is-busy { pointer-events: none; opacity: .9; }
+.adding { position: absolute; inset: 0; z-index: 5; background: var(--color-background-primary); border-radius: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 28px; text-align: center; }
+.adding .av { --s: 76px; font-size: 28px; animation: bpulse 1.2s ease-in-out infinite; }
+.adding .av i { font-size: 36px; }
+.adding.done .av { animation: bpop .35s ease-out; }
+.adding .at { font-size: 15px; font-weight: 800; } .adding .as { font-size: 12px; color: var(--color-text-secondary); min-height: 16px; }
+@keyframes bpulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,80,189,.45); } 50% { transform: scale(1.07); box-shadow: 0 0 0 14px rgba(255,80,189,0); } }
+@keyframes bpop { 0% { transform: scale(.8); } 60% { transform: scale(1.14); } 100% { transform: scale(1); } }
+.sub-tbl tr.row-new td { animation: bflash 2.4s ease-out; }
+@keyframes bflash { 0%, 55% { background: var(--stp-alpha); } 100% { background: transparent; } }
+.sub-tbl tr.alumni-div td { padding: 22px 8px 8px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.cell-pick { width: 100%; justify-content: space-between; text-align: left; font-weight: 400; font-size: 13px; }
+.cell-pick .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.cell-pick i { font-size: 13px; color: var(--color-text-secondary); flex: none; }
+.cell-pick.orphan .t { color: var(--color-text-warning); }
+.cell-pick .ph { color: var(--color-text-secondary); }
+/* dark mode: the few colours that were written out by hand */
+[data-theme="dark"] .tl-pill:not(.overdue):not(.none) { background: #3A3A43; color: #F2F2F4; }
+[data-theme="dark"] .tl-pill:not(.overdue):not(.none):hover { background: #4A4A55; }
+[data-theme="dark"] .tl-bh { background: repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 4px, rgba(255,255,255,.02) 4px 8px); }
+[data-theme="dark"] .tl-cell.d.hol { background: rgba(255,255,255,.07); }
+[data-theme="dark"] .legend i.hol { background: repeating-linear-gradient(135deg, rgba(255,255,255,.35) 0 2px, rgba(255,255,255,.1) 2px 4px); }
+[data-theme="dark"] .login, [data-theme="dark"] .lg-right { background: #151518; }
+[data-theme="dark"] .lg-form .inp { background: #1D1D21; }
+[data-theme="dark"] .palm { filter: drop-shadow(0 0 1px #000); }
+[data-theme="dark"] .scrim { background: rgba(0,0,0,.62); }
 </style>
 </head>
 <body>
@@ -659,7 +707,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.1.0';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
@@ -888,6 +936,8 @@ const lchip = (label, col) => (label ? `<span class="lchip" style="background:${
 const canEdit = () => !S.readonly && S.me && S.me.rank >= 1 && lockAllowsMe();
 const canEditBase = () => !S.readonly && S.me && S.me.rank >= 1;
 const isAdmin = () => !S.readonly && S.me && S.me.rank >= 2;
+/* 1.1.0: deleting a whole project is for super admins only */
+const isSuper = () => !S.readonly && !!S.me && S.me.rank >= 3;
 const seesMoney = () => !S.readonly && !!S.me && S.me.rank >= 1;
 const isViewer = () => !S.readonly && !!S.me && S.me.rank < 1;
 const isOutStage = s => /out[\s-]?proc|closeout|handover/i.test(s || '');
@@ -898,8 +948,18 @@ const liveStages = () => (S.cfg.public_stages && S.cfg.public_stages.length ? S.
 const projectById = id => S.projects.find(p => p.id === id) || null;
 const bySort = (a, b) => (a.sort === '' || a.sort == null ? 1e9 : a.sort) - (b.sort === '' || b.sort == null ? 1e9 : b.sort);
 const sortedStage = stage => S.projects.filter(p => p.stage === stage).sort(bySort);
+/* 1.1.0: light by default. Dark mode is chosen per person and remembered in this browser. */
+const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
+const themeBtn = () => (isDark() ? '<i class="ti ti-sun"></i>Light mode' : '<i class="ti ti-moon"></i>Dark mode');
+function applyTheme(dark) {
+  if (dark) document.documentElement.setAttribute('data-theme', 'dark'); else document.documentElement.removeAttribute('data-theme');
+  store.set('board_theme', dark ? 'dark' : 'light');
+  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', dark ? '#151518' : '#FFFFFF');
+  $$('.brand-logo img[data-auto]').forEach(i => { const f = dark ? LOGO_LIGHT : LOGO_DARK; i.dataset.f = f; i.dataset.r = ''; i.src = f + '?v=' + APP_VERSION; });
+  $$('[data-act="theme"]').forEach(b => { b.innerHTML = themeBtn(); });
+}
 /* 0.8.0: the logo tries a second time before it gives up, so one slow load no longer leaves the text wordmark behind */
-const logoHTML = light => { const f = light ? LOGO_LIGHT : LOGO_DARK; return `<span class="brand-logo"><img src="${f}?v=${APP_VERSION}" alt="Sunday Treat" data-f="${f}" onload="this.parentNode.classList.remove('no-logo')" onerror="stLogoFail(this)"><span class="wordmark">Sunday<br>Treat</span></span>`; };
+const logoHTML = light => { const f = light || isDark() ? LOGO_LIGHT : LOGO_DARK; return `<span class="brand-logo"><img src="${f}?v=${APP_VERSION}" alt="Sunday Treat" data-f="${f}"${light ? '' : ' data-auto="1"'} onload="this.parentNode.classList.remove('no-logo')" onerror="stLogoFail(this)"><span class="wordmark">Sunday<br>Treat</span></span>`; };
 window.stLogoFail = img => {
   if (!img.dataset.r) { img.dataset.r = '1'; setTimeout(() => { img.src = img.dataset.f + '?r=' + Date.now(); }, 1500); }
   else img.parentNode.classList.add('no-logo');
@@ -921,6 +981,8 @@ function epSet(id, s, e) {
   fsetMany(id, f);
 }
 const marginOf = p => numOf(fget(p, 'profit_margin'));
+/* 1.1.0: Target PM is shown as a whole number. The sheet keeps the exact figure, this is display only. */
+const pm0 = m => (m == null || m === '' || isNaN(m) ? '' : String(Math.round(Number(m))));
 const marginCls = m => (m == null ? '' : m >= 30 ? 'pct-good' : m >= 15 ? 'pct-mid' : 'pct-low');
 
 /* ---------------- toasts, modals, popovers ---------------- */
@@ -929,8 +991,9 @@ function toast(msg, kind = '') {
   const t = document.createElement('div'); t.className = 'toast ' + kind; t.textContent = msg; box.appendChild(t);
   setTimeout(() => t.remove(), kind === 'err' ? 5000 : 2600);
 }
+let modalLock = false;
 function openModal(html, cls = '') {
-  closeModal();
+  closeModal(true);
   const s = document.createElement('div'); s.className = 'scrim m'; s.id = 'modalScrim';
   const m = document.createElement('div'); m.className = 'modal ' + cls; m.id = 'modal'; m.setAttribute('role', 'dialog'); m.innerHTML = html;
   document.body.appendChild(s); document.body.appendChild(m);
@@ -938,7 +1001,8 @@ function openModal(html, cls = '') {
   const f = $('input:not([type=checkbox]),select,textarea', m); if (f && !matchMedia('(max-width:860px)').matches) f.focus();
   return m;
 }
-function closeModal() { $('#modal') && $('#modal').remove(); $('#modalScrim') && $('#modalScrim').remove(); }
+/* 1.1.0: while a save is in flight the box stays open. Only a call with true can close it. */
+function closeModal(force) { if (modalLock && force !== true) return; $('#modal') && $('#modal').remove(); $('#modalScrim') && $('#modalScrim').remove(); }
 function confirmBox(msg, ok = 'Confirm', danger = false, title = 'Are you sure?') {
   return new Promise(res => {
     const m = openModal(`<h3>${esc(title)}</h3><div>${esc(msg)}</div><div class="actions"><button class="btn btn-plain" data-r="0">Cancel</button><button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" data-r="1">${esc(ok)}</button></div>`);
@@ -1069,7 +1133,7 @@ function renderHealthBar() {
   const lostTxt = lost ? `Not saved: ${esc(uniq(notSaved).join(', '))}.` : '';
   const oddTxt = odd ? `${badRows.length} row${badRows.length === 1 ? '' : 's'} in the sheet ${badRows.length === 1 ? 'has' : 'have'} an id BOARD does not accept (${esc(uniq(badRows).join(', '))}), so ${badRows.length === 1 ? 'it is' : 'they are'} hidden. Ids can only use letters, numbers, - and _.` : '';
   const list = isAdmin() && h && h.problems.length ? `<ul>${h.problems.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
-  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo090().' : 'Oli has been emailed. Run upgradeTo090() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
+  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo110().' : 'Oli has been emailed. Run upgradeTo110() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
   bar.innerHTML = `<i class="ti ${off && !bad && !lost && !odd && !stale ? 'ti-wifi-off' : stale && !bad ? 'ti-refresh' : 'ti-alert-triangle'}"></i><div><div>${offTxt} ${staleTxt} ${why} ${lostTxt} ${oddTxt} ${fix}</div>${list}</div><span class="sp"></span>${stale ? '<button class="btn btn-sm" data-act="reload">Reload</button>' : ''}${lost ? '<button class="btn btn-sm" data-act="healthok">Dismiss</button>' : ''}`;
 }
 let refreshing = false;
@@ -1152,6 +1216,7 @@ function renderShell() {
       <div class="brand">${logoHTML()}${brandName()}</div>
       ${nav}
       <div class="side-foot">
+        <button class="nav-item" data-act="theme">${themeBtn()}</button>
         <button class="nav-item" data-act="releasenotes"><i class="ti ti-notes"></i>Release notes</button>
         <button class="nav-item" data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button>
         <div class="userchip">${av(S.me.id, 'av-lg')}<div><div class="nm">${esc(S.me.name)}</div><div class="rl">${esc(S.me.access)}</div></div>
@@ -1232,6 +1297,7 @@ function markNav() {
 function go(v) { if (location.hash !== '#/' + v) location.hash = '#/' + v; else route(); }
 function route() {
   if (!S.me && !S.readonly) return;
+  if (S.codeBack && !/^#\/?codes/.test(location.hash)) S.codeBack = null;
   let v = (location.hash.replace(/^#\/?/, '') || 'pipeline').split('/')[0];
   if (S.readonly) { if (!['board', 'timeline'].includes(v)) v = 'board'; }
   else {
@@ -1299,10 +1365,11 @@ ACT.standup = async () => {
 ACT.go = el => { closePop(); go(el.dataset.v); };
 ACT.signout = () => signOut();
 ACT.reload = () => location.reload();
+ACT.theme = () => { closePop(); applyTheme(!isDark()); };
 ACT.more = el => {
   const items = NAV.filter(n => (seesMoney() ? ['timeline', 'pods', 'budgets', 'archive', 'codes', 'settings'] : []).includes(n.id) && navOk(n));
   openPop(el, items.map(n => `<button data-act="go" data-v="${n.id}"><i class="ti ${n.icon}"></i>${n.label}${n.beta ? ' (beta)' : ''}</button>`).join('') +
-    `<div class="sep"></div><button data-act="releasenotes"><i class="ti ti-notes"></i>Release notes</button><button data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button><button data-act="mypass"><i class="ti ti-key"></i>Change my passcode</button><button data-act="signout"><i class="ti ti-logout"></i>Sign out</button><div class="sep"></div><div class="tagline tagline-i" style="padding:6px 10px">${LOVE}</div>`);
+    `<div class="sep"></div><button data-act="theme">${themeBtn()}</button><button data-act="releasenotes"><i class="ti ti-notes"></i>Release notes</button><button data-act="feedback"><i class="ti ti-message-circle"></i>Feedback</button><button data-act="mypass"><i class="ti ti-key"></i>Change my passcode</button><button data-act="signout"><i class="ti ti-logout"></i>Sign out</button><div class="sep"></div><div class="tagline tagline-i" style="padding:6px 10px">${LOVE}</div>`);
 };
 
 /* ---------------- auth ---------------- */
@@ -1340,7 +1407,7 @@ async function showLogin(msg, kind) {
   if (!API) { $('#lgNote').innerHTML = '<b>No backend connected.</b> Paste your Apps Script web app URL into <code>API_URL</code> at the top of index.html.'; return; }
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=ping').then(x => x.json());
-    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo090().`;
+    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo110().`;
     else if (r && vcmp(r.server_version, APP_VERSION) > 0 && $('#lgNote')) $('#lgNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
   } catch (e) {}
 }
@@ -1368,6 +1435,21 @@ function showUpdateScreen() {
   $('#app').innerHTML = `<div class="skeleton" style="padding:24px">${brandRow()}<div style="max-width:380px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.6;color:var(--color-text-primary)"><b style="font-size:18px">BOARD has been updated</b><br>This page is an older copy. Reload it to carry on. You will not lose anything.</div><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD</button></div>`;
 }
 const WHATS_NEW = [
+  ['1.1.0', [
+    ['ti-moon', 'Dark mode', 'The new button is bottom left, above Release notes (under More on your phone). Light is still the default, and BOARD remembers your choice on each device. Thanks, Jasmin.'],
+    ['ti-trash', 'Only super admins delete projects', 'Deleting a whole project line is now for super admins only. Everything else you can do is unchanged. Thanks, Gully.'],
+    ['ti-edit', 'Edit from My projects', 'My projects is no longer view only. Open a project to change anything, and change the status or timeline right in the list. Thanks, Amy.'],
+    ['ti-percentage', 'Target PM in whole numbers', 'It shows as a whole number on the board, in the project panel and in Budgets. The exact figure is still kept underneath. Thanks, Gully.'],
+    ['ti-columns', 'Narrower Account, Creative, Production and Edit', 'The four people columns now take up much less room, so more of the board fits on screen. Thanks, Gully.'],
+    ['ti-archive', 'Archiving shows it is working', 'The Archive box now says Archiving while it saves, then the floppy disks land.'],
+    ['ti-user-plus', 'Adding a person shows progress', 'A little animation runs while someone is added, and the button cannot be pressed twice.'],
+    ['ti-hash', 'Client codes are 5 characters', 'New client codes must be exactly 5 letters or numbers. Existing codes are left exactly as they are.'],
+    ['ti-building', 'Pick the client on the board', 'The Client column now uses the same list as the project panel, with + ADD NEW at the top.'],
+    ['ti-code', 'Pre Production asks for a code, and helps', 'The pop-up now has an Open code generator button that brings you straight back to the move with the code filled in.'],
+    ['ti-users', 'Alumni', 'People who are no longer active sit under an Alumni heading in Settings, People.'],
+    ['ti-device-mobile', 'Sign in on a phone', 'The sign-in page fits small screens properly.'],
+    ['ti-beach', 'Annual leave cover', 'Thanks to Kurt for the report. We could not make it happen again yet, so cover is unchanged. If it does it again, press Feedback straight away and say what you had just done.']
+  ]],
   ['1.0.0', [
     ['ti-rocket', 'BOARD 1.0.0', 'The alpha is over. This is the first proper version for the whole team.'],
     ['ti-flask', 'Beta labels', 'BOARD now carries a Beta label under its name. Pod capacity and Budgets keep their own beta tags.'],
@@ -1568,10 +1650,10 @@ const PIPE_COLS = [
   { k: 'client', l: 'Client', w: 170 },
   { k: 'project_code', l: 'Project code', w: 190, priv: 1 },
   { k: 'status', l: 'Status', w: 200 },
-  { k: 'lead', l: 'Account', tip: 'Account lead (AL cover shows in front)', w: 116, min: 70, cc: 1 },
-  { k: 'creative', l: 'Creative', tip: 'Creative lead', w: 116, min: 70, cc: 1 },
-  { k: 'production', l: 'Production', tip: 'Production lead', w: 124, min: 80, cc: 1 },
-  { k: 'edit', l: 'Edit', tip: 'Edit lead', w: 116, min: 64, cc: 1 },
+  { k: 'lead', l: 'Account', tip: 'Account lead (AL cover shows in front)', w: 100, min: 64, cc: 1 },
+  { k: 'creative', l: 'Creative', tip: 'Creative lead', w: 100, min: 64, cc: 1 },
+  { k: 'production', l: 'Production', tip: 'Production lead', w: 108, min: 72, cc: 1 },
+  { k: 'edit', l: 'Edit', tip: 'Edit lead', w: 100, min: 60, cc: 1 },
   { k: 'timeline', l: 'Edit timeline', tip: 'Edit timeline', w: 200, date: 1, cc: 1 },
   { k: 'budget', l: 'Budget', w: 120, num: 1, priv: 1 },
   { k: 'margin', l: 'Target PM', tip: 'Target profit margin', w: 120, num: 1, priv: 1 },
@@ -1611,8 +1693,7 @@ function pipeBody() {
     return { key: stage, title: stage, colour: stageColour(stage), items, total: all.length };
   });
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('pipeline');
-  return tableHTML('pipeline', pipeCols(), groups, pipeRow, { add: true }) +
-    `<datalist id="dlClients">${clientNames().map(n => `<option value="${esc(n)}">`).join('')}</datalist><div class="page-end"></div>`;
+  return tableHTML('pipeline', pipeCols(), groups, pipeRow, { add: true }) + `<div class="page-end"></div>`;
 }
 /* lead cell: a stack of circles (first at the front). Account lead: AL cover at the front, the person on leave greyed behind with a palm tree. */
 const palmHTML = '<span class="palm" title="On leave">\u{1F334}</span>';
@@ -1641,15 +1722,20 @@ function timelineCell(p, ed) {
 }
 function marginCell(p, ed) {
   const m = marginOf(p);
-  return ed ? `<div class="pct-wrap"><input type="number" step="0.1" class="cell-inp num ${marginCls(m)}" data-chg="fin" data-id="${p.id}" data-k="profit_margin" value="${m == null ? '' : esc(m)}" placeholder="0"><span>%</span></div>`
-    : `<span class="cell-txt num ${marginCls(m)}">${m == null ? '' : esc(m) + '%'}</span>`;
+  return ed ? `<div class="pct-wrap"><input type="number" step="any" class="cell-inp num ${marginCls(m)}" data-chg="fin" data-id="${p.id}" data-k="profit_margin" value="${esc(pm0(m))}" placeholder="0"><span>%</span></div>`
+    : `<span class="cell-txt num ${marginCls(m)}">${m == null ? '' : esc(pm0(m)) + '%'}</span>`;
+}
+/* 1.1.0: Client on the board is the same list as the project panel, in a search box. A name that is not in the code sheet shows in amber. */
+function clientBtn(p) {
+  const orphan = !!p.client && !!S.clients && !findClient(p.client);
+  return `<button class="cell-btn cell-pick${orphan ? ' orphan' : ''}" data-act="clientpick" data-id="${p.id}" title="${orphan ? 'Not in the code sheet. ' : ''}Choose the client"><span class="t">${p.client ? esc(p.client) : '<span class="ph">Client</span>'}</span><i class="ti ti-chevron-down"></i></button>`;
 }
 function pipeRow(p, g, cols) {
   const ed = canEdit();
   const cell = c => {
     switch (c.k) {
       case 'name': return td(c, g, ed ? `<div class="nm-wrap"><button class="icon-btn nm-mv" data-act="movemenu" data-id="${p.id}" title="Move to a different stage by hand"><i class="ti ti-dots-vertical"></i></button><input class="cell-inp nm-inp" data-chg="cell" data-id="${p.id}" data-f="name" value="${esc(p.name)}" placeholder="Project name"></div>` : `<span class="cell-txt nm-txt" data-act="open" data-id="${p.id}" style="cursor:pointer">${esc(p.name)}</span>`);
-      case 'client': return td(c, g, ed ? `<input class="cell-inp" list="dlClients" data-chg="cell" data-id="${p.id}" data-f="client" value="${esc(p.client)}" placeholder="Client">` : `<span class="cell-txt">${esc(p.client)}</span>`);
+      case 'client': return td(c, g, ed ? clientBtn(p) : `<span class="cell-txt">${esc(p.client)}</span>`);
       case 'project_code': return td(c, g, ed ? `<input class="cell-inp" data-chg="cell" data-id="${p.id}" data-f="project_code" value="${esc(p.project_code)}" placeholder="Add code">` : `<span class="cell-txt">${esc(p.project_code)}</span>`);
       case 'status': return td(c, g, labCell(p.status, statusColour(p.status), `data-act="labpick" data-kind="status" data-id="${p.id}"`, ed), 'zp');
       case 'lead': case 'creative': case 'production': case 'edit': return td(c, g, leadCell(p, c.k, ed), 'cc');
@@ -1707,7 +1793,7 @@ function stageForStatus(p, status) {
 }
 /* 0.6.1: marking a project Complete asks first (it moves to Out Processing), then celebrates */
 async function setStatus(p, v, from) {
-  if (from !== 'archive' && isPreStage(v) && !hasCode(p) && !await requireCode(p)) return false;
+  if (from !== 'archive' && isPreStage(v) && !hasCode(p) && !await requireCode(p, { act: 'status', v })) return false;
   const t = from === 'archive' ? null : stageForStatus(p, v);
   const done = norm(v) === 'complete' && !!t && isOutStage(t);
   if (done && !await confirmBox(`Mark "${p.name}" as complete? It will move off the Project board to Out Processing, where the closeout checklist is worked through before it is archived.`, 'Mark complete', false, 'Project complete')) return false;
@@ -1723,6 +1809,37 @@ ACT.labset = async el => {
   else await setInvoicing(id, v);
   if (S.view === 'finance' || S.view === 'closeout') rerenderBody();
 };
+
+const CP = { id: null, q: '' };
+function cpHTML() {
+  const p = projectById(CP.id); if (!p) return '';
+  const q = norm(CP.q), cur = norm(p.client);
+  const list = (S.clients || []).filter(c => !q || norm(c.name).includes(q) || norm(c.code).includes(q));
+  return `<div class="pop-search"><input class="inp" id="cpQ" data-inp="cp-q" placeholder="Search clients" value="${esc(CP.q)}" autocomplete="off"></div>
+    <button data-act="cpnew"><i class="ti ti-plus"></i>ADD NEW</button><div class="sep"></div>` +
+    (list.length ? list.map(c => `<button data-act="cpset" data-name="${esc(c.name)}" class="${norm(c.name) === cur ? 'cur' : ''}"><span class="tick">${norm(c.name) === cur ? '<i class="ti ti-check"></i>' : ''}</span>${esc(c.name)}<span class="sub">${esc(c.code)}</span></button>`).join('') : '<div class="pop-empty">Nobody matches. Use ADD NEW to add a client.</div>');
+}
+ACT.clientpick = el => {
+  const p = projectById(el.dataset.id); if (!p || !canEdit()) return;
+  if (!S.clients) { toast('Clients are still loading. Try again in a moment.'); loadClients(); return; }
+  CP.id = p.id; CP.q = '';
+  openPop(el, cpHTML()); const pop = $('#pop'); pop.classList.add('pop-lead'); placePop(pop, el);
+  const q = $('#cpQ', pop); if (q && !matchMedia('(max-width:860px)').matches) q.focus();
+};
+INP['cp-q'] = el => {
+  CP.q = el.value; const pop = $('#pop'); if (!pop) return;
+  const st = pop.scrollTop; pop.innerHTML = cpHTML(); pop.scrollTop = st; const q = $('#cpQ', pop); q.focus(); q.setSelectionRange(q.value.length, q.value.length);
+};
+ACT.cpset = el => {
+  const p = projectById(CP.id), c = (S.clients || []).find(x => x.name === el.dataset.name); closePop();
+  if (!p || !c || !canEdit()) return;
+  if (norm(p.client) === norm(c.name) && p.client_code === c.code) return;
+  saveFields(p.id, { client: c.name, client_code: c.code }, null, true);
+};
+ACT.cpnew = () => { closePop(); ACT.clientnew(); };
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target && e.target.id === 'cpQ') { const b = $$('#pop [data-act="cpset"]'); if (b.length === 1) { e.preventDefault(); b[0].click(); } }
+});
 
 /* Lead picker: search box at the top, tick several people. Account lead also has an AL cover tab. */
 const LP = { id: null, role: '', mode: 'lead', q: '' };
@@ -1851,19 +1968,20 @@ INP['rp-in'] = el => {
 };
 
 /* ---------------- pre-production needs a project code ---------------- */
-async function requireCode(p) {
+async function requireCode(p, back) {
   if (!S.clients) { try { await loadClients(); } catch (e) {} }
   const c = findClient(p.client), guess = genCode(p.client_code || (c && c.code) || '', p.name);
   return new Promise(res => {
     const m = openModal(`<h3>Project code needed</h3><div><b>${esc(p.name)}</b> needs a project code before it can be set to Pre Production. Enter it here to carry on.</div>
       <div class="field"><span class="lbl">Project code</span><div class="row"><input class="inp" id="rcCodeIn" value="${esc(p.project_code || guess)}" placeholder="CLIENT_ProjectTitle"><button class="btn btn-ghost btn-sm" id="rcGen">Generate</button></div></div>
       <div class="errline" id="rcErr"></div>
-      <div class="actions"><button class="btn btn-plain" data-r="0">Cancel</button><button class="btn btn-primary" data-r="1">Save code and continue</button></div>`);
+      <div class="actions"><button class="btn btn-plain" data-r="0">Cancel</button>${back ? '<button class="btn btn-ghost" data-r="2">Open code generator</button>' : ''}<button class="btn btn-primary" data-r="1">Save code and continue</button></div>`);
     const input = $('#rcCodeIn', m);
     $('#rcGen', m).onclick = () => { const g = genCode(p.client_code || (findClient(p.client) || {}).code || '', p.name); if (g) input.value = g; else $('#rcErr', m).textContent = 'Needs a known client and a project name to generate a code.'; };
     m.addEventListener('click', e => {
       const b = e.target.closest('[data-r]'); if (!b) return;
       if (b.dataset.r === '0') { closeModal(); res(false); return; }
+      if (b.dataset.r === '2') { closeModal(); res(false); openCodeGen(p, back); return; }
       const v = input.value.trim(); if (!v) { $('#rcErr', m).textContent = 'Please enter a project code first.'; input.focus(); return; }
       closeModal(); saveFields(p.id, { project_code: v }, null, true); res(true);
     });
@@ -1871,6 +1989,31 @@ async function requireCode(p) {
     $('#modalScrim').addEventListener('click', () => res(false));
   });
 }
+
+/* 1.1.0: from the project code pop-up to the Code generator and back. Nothing is saved until you press Use this code. */
+function openCodeGen(p, back) {
+  S.codeBack = Object.assign({ id: p.id, name: p.name }, back);
+  const c = S.codes, known = findClient(p.client);
+  c.title = p.name; c.codeEdited = false;
+  if (known) { c.mode = 'existing'; c.client = known.name; }
+  else { c.mode = 'new'; c.newName = p.client || ''; c.newCode = ''; if (p.client) suggestSoon(); }
+  closeDrawer(true); go('codes');
+}
+ACT.cbreturn = () => {
+  const b = S.codeBack; if (!b) return;
+  const p = projectById(b.id), c = S.codes;
+  if (!p) { S.codeBack = null; go('pipeline'); return; }
+  if (c.mode === 'new') { toast('Add the client to the code sheet first, then press Use this code.', 'err'); return; }
+  const f = findClient(c.client), code = genCode(cgCurrentCode(), c.title), fields = {};
+  if (!code) { toast('Pick a client and give the project a title first.', 'err'); return; }
+  if (f && (norm(p.client) !== norm(f.name) || p.client_code !== f.code)) { fields.client = f.name; fields.client_code = f.code; }
+  if (!hasCode(p)) fields.project_code = code;
+  S.codeBack = null;
+  if (Object.keys(fields).length) saveFields(b.id, fields, null, true);
+  go('pipeline');
+  setTimeout(() => { const q = projectById(b.id); if (q) { if (b.act === 'status') setStatus(q, b.v, null); else moveProject(b.id, b.stage); } }, 150);
+};
+ACT.cbcancel = () => { S.codeBack = null; go('pipeline'); };
 
 /* ---------------- move + drag ---------------- */
 ACT.movemenu = el => {
@@ -1881,7 +2024,7 @@ ACT.moveto = el => { closePop(); moveProject(el.dataset.id, el.dataset.stage); }
 async function moveProject(id, stage, beforeId) {
   const p = projectById(id); if (!p || !canEdit()) return;
   if (isPreStage(stage) && !isPreStage(p.stage) && !hasCode(p)) {
-    const ok = await requireCode(p);
+    const ok = await requireCode(p, { act: 'move', stage });
     if (!ok) { S.stale = false; renderView(); if (S.drawer === id) refreshDrawer(true); return; }
   }
   const ids = sortedStage(stage).map(x => x.id).filter(x => x !== id);
@@ -1910,8 +2053,7 @@ function rolesOf(p, id) {
 function viewMine() {
   return `<div class="toolbar">${av(S.me.id, 'av-lg')}<div><div style="font-size:14px;font-weight:800">${esc(S.me.name)}</div><div class="muted" id="mineCount"></div></div>
     <div class="search" style="margin-left:8px"><i class="ti ti-search"></i><input class="inp" placeholder="Search my projects" value="${esc(S.mine.q)}" data-inp="mine-q"></div>
-    <span id="sortChip">${sortChip('mine')}</span><span class="pill pill-lock" title="My projects is view only"><i class="ti ti-lock" style="font-size:12px;vertical-align:-2px"></i>&nbsp;View only</span><span class="spacer"></span>${collapseBtn('mine')}</div>
-    <div class="lock-note"><i class="ti ti-lock"></i><span><b>My projects is view only.</b> To change anything, edit it on the Project board.</span><span class="sp"></span><button class="btn btn-ghost btn-sm" data-act="go" data-v="pipeline">Go to Project board</button></div>
+    <span id="sortChip">${sortChip('mine')}</span><span class="spacer"></span>${collapseBtn('mine')}</div>
     <div id="vb">${mineBody()}</div>`;
 }
 BODY.mine = mineBody;
@@ -1924,7 +2066,7 @@ function mineBody() {
   if (!groups.length) return `<div class="empty"><i class="ti ti-mood-smile"></i>Nothing assigned to you yet. Open a project and add yourself to the team.</div>`;
   return tableHTML('mine', withFirst(MINE_COLS), groups, (p, g, cols) => `<tr class="prow rowlink" data-act="open" data-from="mine" data-id="${p.id}">${cols.map(c => td(c, g, ({
     name: `<span class="cell-txt nm-txt">${esc(p.name)}</span>`, client: `<span class="cell-txt">${esc(p.client)}</span>`, role: `<span class="cell-txt">${esc(rolesOf(p, S.me.id))}</span>`,
-    status: labCell(p.status, statusColour(p.status), '', false), timeline: timelineCell(p, false), team: avStack(teamOf(p), 'av-sm', 5)
+    status: labCell(p.status, statusColour(p.status), `data-act="labpick" data-kind="status" data-id="${p.id}"`, canEdit()), timeline: timelineCell(p, canEdit()), team: avStack(teamOf(p), 'av-sm', 5)
   })[c.k], c.k === 'status' ? 'zp' : '')).join('')}</tr>`) + `<div class="page-end"></div>`;
 }
 INP['mine-q'] = el => { S.mine.q = el.value; rerenderBody(); };
@@ -2281,6 +2423,7 @@ INP['fin-inv'] = el => { S.fin.inv = el.value; rerenderBody(); };
 const gbp2 = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
 const fm2 = n => (n == null || n === '' || isNaN(n) ? '' : gbp2.format(n));
 const fpct = n => (n == null || n === '' || isNaN(n) ? '' : Number(n).toFixed(1) + '%');
+const fpct0 = n => (n == null || n === '' || isNaN(n) ? '' : Math.round(Number(n)) + '%');
 const BUD_COLS = [
   { k: 'name', l: 'Project', w: 300, min: 140, sticky: 1 },
   { k: 'client', l: 'Client', w: 170 },
@@ -2339,7 +2482,7 @@ function budBody() {
       case 'client': return td(c, g, `<span class="cell-txt">${esc(r.client)}</span>`);
       case 'project_code': return td(c, g, `<span class="cell-txt">${esc(r.code)}</span>`);
       case 'quoted': case 'spend_est': case 'spend_final': return td(c, g, `<span class="cell-txt num">${esc(fmoney(r[c.k]))}</span>`);
-      case 'pm_est': case 'pm_final': case 'target_pm': return td(c, g, `<span class="cell-txt num ${c.k === 'target_pm' ? '' : marginCls(r[c.k])}">${esc(fpct(r[c.k]))}</span>`);
+      case 'pm_est': case 'pm_final': case 'target_pm': return td(c, g, `<span class="cell-txt num ${c.k === 'target_pm' ? '' : marginCls(r[c.k])}">${esc(c.k === 'target_pm' ? fpct0(r[c.k]) : fpct(r[c.k]))}</span>`);
       case 'marked': return td(c, g, `<span class="cell-txt" title="${r.marked === 'done' ? 'Marked as done in the sheet' : r.marked === 'flag' ? 'Flagged in the sheet' : ''}">${r.marked === 'done' ? '\u2705' : r.marked === 'flag' ? '\u2757' : ''}</span>`);
       default: return td(c, g, '');
     }
@@ -2532,19 +2675,20 @@ async function loadClients() {
   if (!seesMoney()) { S.clients = []; return; }
   try { const d = await api('clients'); S.clients = d.clients; } catch (e) { S.clients = []; toast(e.message, 'err'); }
   if (S.view === 'codes') renderView();
-  else if (S.view === 'pipeline') { const dl = $('#dlClients'); if (dl) dl.innerHTML = clientNames().map(n => `<option value="${esc(n)}">`).join(''); }
+  else if (S.view === 'pipeline' && !typing()) rerenderBody();
+  else if (S.view === 'settings' && S.settingsTab === 'clients') rerenderBody();
 }
 function viewCodes() {
   const c = S.codes, mode = c.mode;
   const list = (S.clients || []).map(x => `<option value="${esc(x.name)}">${esc(x.code)}</option>`).join('');
-  return `<div class="pad" style="max-width:980px">${S.draft && S.draftBack ? `<div class="callout" style="position:static;width:auto;max-width:none;margin:0 0 16px"><i class="ti ti-arrow-back-up"></i><span class="tx"><b>You are adding a client for a new project.</b> Add it here and you will go straight back to the new project with the client filled in.</span><button class="btn btn-plain btn-sm" data-act="draftreturn">Back to new project</button></div>` : ''}<div class="grid2" style="gap:20px;align-items:start">
+  return `<div class="pad" style="max-width:980px">${S.codeBack ? `<div class="callout" style="position:static;width:auto;max-width:none;margin:0 0 16px"><i class="ti ti-arrow-back-up"></i><span class="tx"><b>${esc(S.codeBack.name)}</b> is waiting for a project code. Add the client here if it is new, check the code below, then press Use this code and the move carries on.</span><button class="btn btn-primary btn-sm" data-act="cbreturn">Use this code</button><button class="btn btn-plain btn-sm" data-act="cbcancel">Cancel</button></div>` : ''}${S.draft && S.draftBack ? `<div class="callout" style="position:static;width:auto;max-width:none;margin:0 0 16px"><i class="ti ti-arrow-back-up"></i><span class="tx"><b>You are adding a client for a new project.</b> Add it here and you will go straight back to the new project with the client filled in.</span><button class="btn btn-plain btn-sm" data-act="draftreturn">Back to new project</button></div>` : ''}<div class="grid2" style="gap:20px;align-items:start">
     <div class="panel pad" style="display:flex;flex-direction:column;gap:14px">
       <div class="seg" style="align-self:flex-start"><button data-act="cgmode" data-m="existing" class="${mode === 'existing' ? 'on' : ''}">Existing client</button><button data-act="cgmode" data-m="new" class="${mode === 'new' ? 'on' : ''}">New client</button></div>
       ${!S.clients ? `<div class="muted">Loading clients</div>` : mode === 'existing' ? `
         <div class="field"><span class="lbl">Client</span><input class="inp" id="cgClient" list="cgList" placeholder="Start typing a client or code" value="${esc(c.client)}" data-inp="cg-client" autocomplete="off"><datalist id="cgList">${list}</datalist></div>
         <div id="cgHit" class="muted" style="font-size:12px"></div>` : `
         <div class="field"><span class="lbl">Client name</span><input class="inp" id="cgNewName" value="${esc(c.newName)}" data-inp="cg-newname" placeholder="e.g. Acme Studios"></div>
-        <div class="field"><span class="lbl">Client code (3 to 8 characters)</span><input class="inp" id="cgNewCode" value="${esc(c.newCode)}" data-inp="cg-newcode" style="text-transform:uppercase" maxlength="8"></div>
+        <div class="field"><span class="lbl">Client code (exactly 5 letters or numbers)</span><input class="inp" id="cgNewCode" value="${esc(c.newCode)}" data-inp="cg-newcode" style="text-transform:uppercase" maxlength="5" autocapitalize="characters" autocomplete="off"></div>
         <div class="muted" style="font-size:12px">Adds a new row to the Project Code Generator sheet, so the old sheet stays in step.</div>
         <button class="btn btn-primary" style="align-self:flex-start" data-act="cgadd" ${canEdit() ? '' : 'disabled'}><i class="ti ti-plus"></i>Add client to code sheet</button>`}
       <div class="field"><span class="lbl">Project title</span><input class="inp" id="cgTitle" value="${esc(c.title)}" data-inp="cg-title" placeholder="e.g. Tenderness & Rage"></div>
@@ -2573,12 +2717,14 @@ INP['cg-client'] = el => { S.codes.client = el.value; updateCodeOut(); };
 INP['cg-title'] = el => { S.codes.title = el.value; updateCodeOut(); };
 const suggestSoon = debounce(async () => {
   const n = S.codes.newName; if (!n.trim() || S.codes.codeEdited) return;
-  try { const d = await api('client_suggest', { name: n }); if (!S.codes.codeEdited) { S.codes.newCode = d.code; const i = $('#cgNewCode'); if (i) i.value = d.code; updateCodeOut(); } } catch (e) {}
+  try { const d = await api('client_suggest', { name: n }); if (!S.codes.codeEdited) { const cd = String(d.code || '').slice(0, 5); S.codes.newCode = cd; const i = $('#cgNewCode'); if (i) i.value = cd; updateCodeOut(); } } catch (e) {}
 }, 350);
 INP['cg-newname'] = el => { S.codes.newName = el.value; suggestSoon(); };
-INP['cg-newcode'] = el => { S.codes.newCode = el.value.toUpperCase(); S.codes.codeEdited = true; updateCodeOut(); };
+INP['cg-newcode'] = el => { const v = el.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 5); if (el.value !== v) el.value = v; S.codes.newCode = v; S.codes.codeEdited = true; updateCodeOut(); };
 ACT.cgadd = async el => {
-  const c = S.codes; el.disabled = true;
+  const c = S.codes;
+  if (String(c.newCode || '').length !== 5) { toast('A client code must be exactly 5 letters or numbers', 'err'); const i = $('#cgNewCode'); if (i) i.focus(); return; }
+  el.disabled = true;
   try {
     const d = await write('client_add', { name: c.newName, code: c.newCode });
     S.clients = d.clients; c.mode = 'existing'; c.client = d.client.name; c.codeEdited = false; c.newName = ''; c.newCode = '';
@@ -2677,7 +2823,7 @@ function drawerHTML(p, arch) {
       <div class="muted" style="font-size:11px">${ep.custom ? 'This is the edit period shown on Edit capacity.' : (ep.s ? 'Using the old project dates until you set a timeline.' : 'Not set yet.')}</div>`}
     ${basic ? '' : `<div class="sec-title"><span class="lbl">Finance</span></div>
     <div class="grid2"><div class="field"><span class="lbl">Budget (£)</span><input type="text" inputmode="decimal" class="inp gbp-inp" data-inp="pf" data-f="budget" value="${esc(fmoney(numOf(p.budget)))}" placeholder="£0" ${dis}></div>
-      ${arch ? '' : `<div class="field"><span class="lbl">Target PM (%)</span><input type="number" step="0.1" class="inp" data-chg="pf-fin" data-k="profit_margin" value="${m == null ? '' : esc(m)}" ${dis}></div>`}</div>
+      ${arch ? '' : `<div class="field"><span class="lbl">Target PM (%)</span><input type="number" step="any" class="inp" data-chg="pf-fin" data-k="profit_margin" value="${esc(pm0(m))}" ${dis}></div>`}</div>
     <div class="field"><span class="lbl">Invoicing</span><select class="sel" data-chg="pf-fin" data-k="invoicing" ${dis}>${optList(INV_LABELS, invV, '-')}</select></div>
     <div class="field"><span class="lbl">Notes</span><textarea class="txt" data-inp="pf" data-f="notes" maxlength="5000" ${dis}>${esc(p.notes)}</textarea></div>
     ${isDraft ? '' : `<div class="sec-title"><span class="lbl">Out processing</span></div>
@@ -2687,12 +2833,12 @@ function drawerHTML(p, arch) {
   </div>
   ${isDraft ? draftFoot() : ro ? '' : `<div class="drawer-foot">
     ${arch ? `<button class="btn btn-secondary" data-act="restore" data-id="${p.id}"><i class="ti ti-arrow-back-up"></i>Restore to board</button>` : `<button class="btn btn-secondary${archBtn}" data-act="archive" data-id="${p.id}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Send to Archive</button>`}
-    <span class="sp"></span>${isAdmin() ? `<button class="btn btn-danger" data-act="delproject" data-id="${p.id}"><i class="ti ti-trash"></i>Delete</button>` : ''}</div>`}`;
+    <span class="sp"></span>${isSuper() ? `<button class="btn btn-danger" data-act="delproject" data-id="${p.id}"><i class="ti ti-trash"></i>Delete</button>` : ''}</div>`}`;
 }
 function openDrawer(id, from) {
   const arch = from === 'archive', p = recordFor(id, arch ? 'archive' : null); if (!p) return;
   S.draftHold = id === DRAFT; closeDrawer(true); S.draftHold = false;
-  S.drawer = id; S.drawerFrom = arch ? 'archive' : null; S.drawerLocked = from === 'mine';
+  S.drawer = id; S.drawerFrom = arch ? 'archive' : null; S.drawerLocked = false;
   const sc = document.createElement('div'); sc.className = 'scrim'; sc.id = 'drawerScrim'; sc.addEventListener('click', () => requestCloseDrawer());
   const d = document.createElement('aside'); d.className = 'drawer'; d.id = 'drawer'; d.innerHTML = drawerHTML(p, arch);
   document.body.appendChild(sc); document.body.appendChild(d);
@@ -2783,15 +2929,24 @@ ACT.archive = async el => {
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="arGo" disabled>Yes, archive it</button></div>`);
   $('#arSure', m).onchange = e => { $('#arGo', m).disabled = !e.target.checked; };
   $('#arGo', m).onclick = async () => {
-    closeModal(); flushAll();
+    /* 1.1.0: say so while the write is on its way, and keep the box open so nothing looks frozen */
+    const go = $('#arGo', m); if (go.dataset.busy) return; go.dataset.busy = '1';
+    modalLock = true; go.classList.add('is-busy'); go.innerHTML = '<span class="spin"></span>Archiving...';
+    $$('button, input', m).forEach(x => { x.disabled = true; });
+    const hint = document.createElement('div'); hint.className = 'muted'; hint.style.fontSize = '12px'; hint.textContent = 'Saving to the Archive. This can take a few seconds.'; $('.actions', m).before(hint);
+    flushAll();
     try {
       await write('project_archive', { id });
       S.projects = S.projects.filter(x => x.id !== id); S.ar.loaded = false; S.ar.fys = [];
+      modalLock = false; closeModal(true);
       if (S.drawer === id) closeDrawer(true);
       renderView();
       /* 0.7.0: floppy disks once it has safely landed in the Archive */
       celebrate(FLOPPY); toast('\u{1F4BE} ' + p.name + ' is saved to the Archive');
-    } catch (e) {}
+    } catch (e) {
+      modalLock = false; delete go.dataset.busy; go.classList.remove('is-busy'); go.innerHTML = 'Yes, archive it'; hint.remove();
+      $$('button, input', m).forEach(x => { x.disabled = false; });
+    }
   };
 };
 ACT.restore = async el => {
@@ -2805,6 +2960,7 @@ ACT.restore = async el => {
   } catch (e) {}
 };
 ACT.delproject = async el => {
+  if (!isSuper()) { toast('Only super admins can delete a project', 'err'); return; }
   const id = el.dataset.id, from = S.drawerFrom, p = recordFor(id, from); if (!p) return;
   if (!await confirmBox(`Permanently delete "${p.name}"? It disappears for everyone. A copy is kept in the sheet's Log tab and in the nightly backup, so Oli can put it back if needed.`, 'Delete', true, 'Delete project')) return;
   try {
@@ -2919,14 +3075,21 @@ async function loadHealth() { try { S.health = await api('health'); } catch (e) 
 
 /* ---- people ---- */
 const ACCESS = ['viewer', 'editor', 'admin', 'superadmin'];
-const ACCESS_HELP = 'Viewer: sees the board without money, notes or out processing (freelancers). Editor: edits projects. Admin: also Settings, people and departments, and can delete projects. Super admin: everything an admin can do, plus managing other admins and super admins.';
+const ACCESS_HELP = 'Viewer: sees the board without money, notes or out processing (freelancers). Editor: edits projects. Admin: also Settings, people and departments. Super admin: everything an admin can do, plus deleting whole projects and managing other admins and super admins.';
+/* 1.1.0: active people first, then an Alumni heading and anyone who is no longer active. Each group runs highest access first, then by name. */
+const ALUMNI_ROW = '<tr class="alumni-div"><td colspan="8"><span class="lbl">Alumni</span><span class="muted" style="margin-left:10px;font-size:12px">No longer active. Switch Active back on to bring someone back.</span></td></tr>';
+function ppSplit() {
+  const by = (a, b) => (b.rank || 0) - (a.rank || 0) || String(a.name).localeCompare(String(b.name));
+  const live = S.people.filter(p => p.active !== false).sort(by), old = S.people.filter(p => p.active === false).sort(by);
+  return old.length ? live.concat(['alumni'], old) : live;
+}
 function setPeople() {
   const superMe = S.me.rank >= 3;
   return `<div class="row wrap" style="margin-bottom:12px"><div class="muted sp" style="min-width:240px">Add the team and freelancers, set their department (this sets the circle colour and decides who shows in Edit capacity) and what they can do. Deactivate instead of deleting so history keeps their initials.${superMe ? '' : ' Admins and super admins can only be changed by a super admin.'}</div><button class="btn btn-primary" data-act="ppadd"><i class="ti ti-plus"></i>Add person</button></div>
   <div class="muted" style="font-size:12px;margin-bottom:12px;max-width:820px">${ACCESS_HELP}</div>
   <div class="tbl-wrap"><table class="sub-tbl" style="min-width:860px"><thead><tr><th></th><th>Name</th><th>Initials</th><th>Department</th><th>Access</th><th>Passcode</th><th>Active</th><th></th></tr></thead><tbody>
-  ${S.people.map(p => { const locked = p.rank >= 2 && p.id !== S.me.id && !superMe; const self = p.id === S.me.id; const d = locked ? 'disabled' : '';
-    return `<tr><td>${av(p.id, 'av-lg')}</td>
+  ${ppSplit().map(p => { if (p === 'alumni') return ALUMNI_ROW; const locked = p.rank >= 2 && p.id !== S.me.id && !superMe; const self = p.id === S.me.id; const d = locked ? 'disabled' : '';
+    return `<tr data-pid="${esc(p.id)}"><td>${av(p.id, 'av-lg')}</td>
       <td><input class="inp" style="min-width:160px" value="${esc(p.name)}" data-chg="pp" data-id="${p.id}" data-k="name" ${d}></td>
       <td><input class="inp" style="width:64px;text-transform:uppercase" maxlength="3" value="${esc(p.initials)}" data-chg="pp" data-id="${p.id}" data-k="initials" ${d}></td>
       <td><select class="sel" data-chg="pp" data-id="${p.id}" data-k="department" ${d}>${S.depts.map(x => `<option value="${x.id}"${x.id === p.department ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}</select></td>
@@ -2962,10 +3125,27 @@ ACT.ppadd = () => {
     <div class="field"><span class="lbl">Passcode (12+ characters, optional)</span><input class="inp" id="paPass" autocomplete="off"></div></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="paGo">Add</button></div>`);
   $('#paGo', m).onclick = async () => {
+    if (S._addingPerson) return;
     const name = $('#paName', m).value.trim(); if (!name) { $('#paName', m).focus(); return; }
     const person = { name, initials: $('#paIni', m).value, department: $('#paDept', m).value, access: $('#paAcc', m).value };
     if ($('#paPass', m).value) { if ($('#paPass', m).value.length < 12) { toast('Passcodes need at least 12 characters', 'err'); return; } person.passcode = $('#paPass', m).value; }
-    try { const r = await write('person_save', { person }); S.people = cleanList(r.people, 'person'); closeModal(); rerenderBody(); toast(name + ' added'); } catch (e) {}
+    /* 1.1.0: lock the button, show who is being added, then highlight the new row */
+    S._addingPerson = true; modalLock = true;
+    const col = fixDept((deptById(person.department) || {}).colour || '#6F7787');
+    const ini = (person.initials || name.split(/\s+/).map(w => w[0]).join('').slice(0, 2)).toUpperCase();
+    const before = new Set(S.people.map(x => x.id));
+    const ov = document.createElement('div'); ov.className = 'adding';
+    ov.innerHTML = `<span class="av" style="background:${col}">${esc(ini)}</span><div class="at">Adding ${esc(name)} to BOARD...</div><div class="as">Saving to the sheet. This can take a few seconds.</div>`;
+    m.appendChild(ov);
+    try {
+      const r = await write('person_save', { person }); S.people = cleanList(r.people, 'person');
+      ov.classList.add('done'); $('.av', ov).innerHTML = '<i class="ti ti-check"></i>'; $('.at', ov).textContent = name + ' is on BOARD'; $('.as', ov).textContent = '';
+      await new Promise(res => setTimeout(res, 800));
+      modalLock = false; closeModal(true); rerenderBody();
+      const nu = S.people.find(x => !before.has(x.id)), row = nu && $('tr[data-pid="' + nu.id + '"]');
+      if (row) { row.classList.add('row-new'); row.scrollIntoView({ block: 'center', behavior: 'smooth' }); setTimeout(() => row.classList.remove('row-new'), 2600); }
+      toast(name + ' added');
+    } catch (e) { modalLock = false; ov.remove(); } finally { S._addingPerson = false; }
   };
 };
 ACT.ppdel = async el => {
@@ -3055,17 +3235,22 @@ function setClients() {
   S.projects.forEach(p => { if (p.client) counts[p.client] = (counts[p.client] || 0) + 1; });
   (S.ar.clients || []).forEach(n => { if (!(n in counts)) counts[n] = 0; });
   const missing = Object.keys(counts).filter(n => !known.has(norm(n))).sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
-  return `<div class="muted" style="margin-bottom:12px;max-width:640px">${S.clients.length} clients are in the Project Code Generator sheet. These client names appear on projects but are not in it yet${S.ar.loaded ? '' : ' (archive still loading)'}.</div>
+  const odd = S.clients.filter(c => String(c.code || '').length !== 5);
+  return `<div class="muted" style="margin-bottom:12px;max-width:680px">The Project Code Generator sheet holds <b>${S.clients.length} clients</b>, and that is as it should be. Only the names below need a look: they are used on projects but are not in the sheet yet, so they have no code${S.ar.loaded ? '' : ' (archive still loading)'}. Adding one here gives it a code and clears it from this list.</div>
   ${missing.length ? `<div class="tbl-wrap"><table class="sub-tbl" style="min-width:420px;max-width:640px"><thead><tr><th>Client name</th><th>Live projects</th><th></th></tr></thead><tbody>${missing.map(n => `<tr><td class="strong">${esc(n)}</td><td>${counts[n]}</td><td><button class="btn btn-ghost btn-sm" data-act="rcadd" data-n="${esc(n)}">Add to code sheet</button></td></tr>`).join('')}</tbody></table></div>`
-    : `<div class="empty"><i class="ti ti-circle-check"></i>Every client has a code.</div>`}`;
+    : `<div class="empty"><i class="ti ti-circle-check"></i>Every client has a code.</div>`}
+  ${odd.length ? `<div class="lbl" style="margin:26px 0 6px">Codes that are not 5 characters</div><div class="muted" style="margin-bottom:10px;max-width:680px">New client codes have to be exactly 5 letters or numbers. These older ones are left alone on purpose, because project codes built from them are already in QuickBooks.</div>
+  <div class="tbl-wrap"><table class="sub-tbl" style="min-width:320px;max-width:480px"><thead><tr><th>Client</th><th>Code</th></tr></thead><tbody>${odd.map(c => `<tr><td class="strong">${esc(c.name)}</td><td>${esc(c.code)}</td></tr>`).join('')}</tbody></table></div>` : ''}`;
 }
 ACT.rcadd = async el => {
   const name = el.dataset.n; let code = '';
   try { code = (await api('client_suggest', { name })).code; } catch (e) {}
   const m = openModal(`<h3>Add client to code sheet</h3><div class="field"><span class="lbl">Client name</span><input class="inp" id="rcName" maxlength="80" value="${esc(name)}"></div>
-    <div class="field"><span class="lbl">Code (3 to 8 characters)</span><input class="inp" id="rcCode" value="${esc(code)}" maxlength="8" style="text-transform:uppercase"></div>
+    <div class="field"><span class="lbl">Code (exactly 5 letters or numbers)</span><input class="inp" id="rcCode" value="${esc(code)}" maxlength="5" style="text-transform:uppercase" autocomplete="off"></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="rcGo">Add</button></div>`);
   $('#rcGo', m).onclick = async () => {
+    const cv = $('#rcCode', m).value.toUpperCase().replace(/[^A-Z0-9]/g, ''); $('#rcCode', m).value = cv;
+    if (cv.length !== 5) { toast('A client code must be exactly 5 letters or numbers', 'err'); $('#rcCode', m).focus(); return; }
     try { const d = await write('client_add', { name: $('#rcName', m).value, code: $('#rcCode', m).value }); S.clients = d.clients; closeModal(); rerenderBody(); toast(`Added ${d.client.name} (${d.client.code})`); } catch (e) {}
   };
 };
@@ -3074,8 +3259,8 @@ ACT.rcadd = async el => {
 function setSystem() {
   const h = S.health, link = S.adminKey ? `${location.origin}${location.pathname}?view=live&k=${S.adminKey}` : '';
   const tabs = h && h.tabs ? Object.keys(h.tabs).map(k => `${k}: ${h.tabs[k]}`).join('  |  ') : '';
-  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo090() once') : '';
-  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo090() once';
+  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo110() once') : '';
+  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo110() once';
   return `<div style="max-width:720px;display:flex;flex-direction:column;gap:16px">
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Build</div><div class="kv">
       <span class="muted">Front end</span><span>BOARD ${APP_VERSION}</span>
