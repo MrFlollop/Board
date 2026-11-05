@@ -714,7 +714,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.1.3';
+const APP_VERSION = '1.1.4';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
@@ -1429,7 +1429,7 @@ async function fetchLogin(user, pass) {
 
 async function loadApp() {
   $('#app').innerHTML = `<div class="skeleton">${brandRow()}<div>Loading</div></div>`;
-  const d = await api('bootstrap'); applyBootstrap(d);
+  const d = await api('bootstrap'); applyBootstrap(d); store.del('board_upd_reloads');
   renderShell();
   if (!location.hash || location.hash === '#') location.hash = '#/pipeline';
   route();
@@ -1449,11 +1449,19 @@ function showUpdateScreen(newV) {
   const el = document.createElement('div'); el.id = 'updGate';
   el.innerHTML = `<div class="upd-card">${brandRow()}<div class="upd-dot"><i class="ti ti-refresh"></i></div><h2>BOARD has been updated${v}</h2><p>You are on an older copy (${esc(APP_VERSION)}). Reload to carry on. Your saved changes are safe, and you stay signed in.</p><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD now</button><div class="muted" style="font-size:12.5px;margin-top:10px">Reloading by itself in <span id="updCount">30</span> seconds.</div></div>`;
   document.body.appendChild(el);
+  /* 1.1.4: if BOARD has already reloaded itself twice in the last 10 minutes and is still being told to update, it stops and explains, instead of looping */
+  let hist = []; try { hist = JSON.parse(store.get('board_upd_reloads') || '[]').filter(t => Date.now() - t < 600000); } catch (e) { hist = []; }
+  if (hist.length >= 2) {
+    el.querySelector('.upd-card p').innerHTML = `BOARD is part way through an update and is not ready yet. This is not your device. Please try again in a few minutes, and tell Oli if it lasts longer than that.`;
+    el.querySelector('.muted').textContent = 'BOARD will not reload by itself again for now.';
+    return;
+  }
   let n = 30; const tick = () => { const c = $('#updCount'); if (!c) return; if (--n <= 0) return hardReload(); c.textContent = n; setTimeout(tick, 1000); };
   setTimeout(tick, 1000);
 }
 /* 1.1.2: GitHub Pages lets browsers keep a copy for up to 10 minutes, so a plain reload can bring back the old page. A fresh address forces the new one. */
 function hardReload() {
+  try { const h = JSON.parse(store.get('board_upd_reloads') || '[]').filter(t => Date.now() - t < 600000); h.push(Date.now()); store.set('board_upd_reloads', JSON.stringify(h)); } catch (e) {}
   const q = new URLSearchParams(location.search); q.set('v', String(Date.now()));
   location.replace(location.pathname + '?' + q.toString() + location.hash);
 }
@@ -1477,6 +1485,9 @@ function forceUpdate(v, tries) {
   showUpdateScreen(v);
 }
 const WHATS_NEW = [
+  ['1.1.4', [
+    ['ti-shield-check', 'No more reload loops', 'If BOARD is mid-update and not ready, it now stops after two tries and says so, instead of reloading over and over.'],
+  ]],
   ['1.1.3', [
     ['ti-notes', 'Release notes show the whole update', 'The pop-up and the Release notes button now show everything in this update, with the big new features first and the smaller fixes underneath.'],
   ]],
