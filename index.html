@@ -472,6 +472,7 @@ button.lab-cell:hover { filter: brightness(.94); }
 .lg-form .lbl { font-size: 10px; }
 .lg-check { display: flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 500; cursor: pointer; }
 .lg-check input { accent-color: var(--stp); width: 16px; height: 16px; }
+.lg-notice { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; margin: 0 0 14px; border-radius: 10px; border: 1px solid var(--color-text-danger); background: color-mix(in srgb, var(--color-text-danger) 9%, transparent); color: var(--color-text-primary); font-size: 13.5px; line-height: 1.5; } .lg-notice .ti { font-size: 20px; color: var(--color-text-danger); flex: 0 0 auto; margin-top: 1px; }
 .lg-msg { font-size: 12.5px; min-height: 18px; color: var(--color-text-secondary); } .lg-msg.err { color: var(--color-text-danger); font-weight: 600; }
 .lg-form .btn-primary { height: 48px; font-size: 14px; border-radius: 10px; }
 .lg-right .love { margin-top: 6px; }
@@ -707,7 +708,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.1.1';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
@@ -1373,7 +1374,7 @@ ACT.more = el => {
 };
 
 /* ---------------- auth ---------------- */
-function onAuthLost() { if (!S.token) return; S.token = null; S.me = null; tokenDel(); showLogin('Your session has ended. Please sign in again.', 'info'); }
+function onAuthLost() { if (!S.token) return; S.token = null; S.me = null; tokenDel(); closeModal(true); showLogin('You have been signed out. Your sign-in expired or was reset, so nothing was lost. Sign in again to carry on.', 'notice'); }
 function signOut() { S.token = null; S.me = null; tokenDel(); S._tlScrolled = false; seeded = false; S.wt = { on: false, ids: [], i: 0 }; closeDrawer(true); showLogin('You have signed out.', 'info'); }
 
 async function showLogin(msg, kind) {
@@ -1386,11 +1387,12 @@ async function showLogin(msg, kind) {
       </div>
       <div class="lg-right"><form class="lg-form" id="loginForm" autocomplete="on">
         <h2>Sign in</h2>
+        ${kind === 'notice' && msg ? `<div class="lg-notice"><i class="ti ti-alert-circle"></i><div><b>Please sign in again</b><br>${esc(msg)}</div></div>` : ''}
         <p id="lgNote">Sign in with your full name and your own passcode.</p>
         <div class="field"><span class="lbl">Full name</span><input class="inp" id="lgUser" name="username" autocomplete="username" autocapitalize="words" spellcheck="false"></div>
         <div class="field"><span class="lbl">Passcode</span><input class="inp" id="lgPass" name="password" type="password" autocomplete="current-password"></div>
         <label class="lg-check"><input type="checkbox" id="lgRem">Remember me on this device (not on shared computers)</label>
-        <div class="lg-msg${kind === 'info' ? '' : ' err'}" id="lgErr">${esc(msg || '')}</div>
+        <div class="lg-msg${kind === 'info' || kind === 'notice' ? '' : ' err'}" id="lgErr">${kind === 'notice' ? '' : esc(msg || '')}</div>
         <button class="btn btn-primary btn-lg" type="submit" id="lgBtn">Sign in</button>
         <div class="tagline tagline-i love">${LOVE}</div>
       </form></div>
@@ -1435,6 +1437,10 @@ function showUpdateScreen() {
   $('#app').innerHTML = `<div class="skeleton" style="padding:24px">${brandRow()}<div style="max-width:380px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.6;color:var(--color-text-primary)"><b style="font-size:18px">BOARD has been updated</b><br>This page is an older copy. Reload it to carry on. You will not lose anything.</div><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD</button></div>`;
 }
 const WHATS_NEW = [
+  ['1.1.1', [
+    ['ti-plug-connected', 'No more surprise sign-outs', 'If BOARD is slow to load (usually for a minute while it is being updated), it now waits and tries again, and you stay signed in. If you really do need to sign in again, BOARD says so clearly.'],
+    ['ti-users', 'Pod, not Team', 'The column in My projects is now called Pod. Thanks, Oli.'],
+  ]],
   ['1.1.0', [
     ['ti-moon', 'Dark mode', 'The new button is bottom left, above Release notes (under More on your phone). Light is still the default, and BOARD remembers your choice on each device. Thanks, Jasmin.'],
     ['ti-trash', 'Only super admins delete projects', 'Deleting a whole project line is now for super admins only. Everything else you can do is unchanged. Thanks, Gully.'],
@@ -1533,9 +1539,26 @@ async function boot() {
   const q = new URLSearchParams(location.search);
   if (q.get('view') === 'live' && q.get('k')) { return startReadonly(q.get('k')); }
   S.token = tokenGet();
-  if (S.token && API) { try { await loadApp(); return; } catch (e) { if (S.updating) return; S.token = null; tokenDel(); } }
+  if (S.token && API) {
+    try { await loadApp(); return; }
+    catch (e) {
+      if (S.updating || !S.token) return;   /* update screen, or a real expired session (onAuthLost has already shown sign-in) */
+      return showConnectScreen(e.message);  /* 1.1.1: anything else (slow server, mid-update, no wifi) keeps you signed in */
+    }
+  }
   showLogin('');
 }
+/* 1.1.1: shown when BOARD cannot load but your sign-in is still good. It tries again by itself. */
+let bootRetryT = null;
+function showConnectScreen(why) {
+  clearTimeout(bootRetryT);
+  $('#app').innerHTML = `<div class="skeleton" style="padding:24px">${brandRow()}<div style="max-width:420px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.6;color:var(--color-text-primary)"><b style="font-size:18px">BOARD could not load just now</b><br>You are still signed in. This usually happens for a minute while BOARD is being updated, or when the connection drops. Trying again in <span id="bootCount">15</span> seconds.<div class="muted" style="font-size:12.5px;margin-top:6px">${esc(why || '')}</div></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary btn-lg" data-act="bootretry"><i class="ti ti-refresh"></i>Try again now</button><button class="btn btn-plain" data-act="bootsignin">Sign in as someone else</button></div></div>`;
+  let n = 15;
+  const tick = () => { n--; const c = $('#bootCount'); if (!c) return; if (n <= 0) return boot(); c.textContent = n; bootRetryT = setTimeout(tick, 1000); };
+  bootRetryT = setTimeout(tick, 1000);
+}
+ACT.bootretry = () => { clearTimeout(bootRetryT); boot(); };
+ACT.bootsignin = () => { clearTimeout(bootRetryT); S.token = null; S.me = null; tokenDel(); showLogin(''); };
 
 /* ================================================================
    Views: table engine, project board, my projects
@@ -2041,7 +2064,7 @@ async function moveProject(id, stage, beforeId) {
    ================================================================ */
 const MINE_COLS = [
   { k: 'name', l: 'Project', w: 300, min: 140, sticky: 1 }, { k: 'client', l: 'Client', w: 180 }, { k: 'role', l: 'My role', w: 200 },
-  { k: 'status', l: 'Status', w: 200 }, { k: 'timeline', l: 'Edit timeline', w: 200, date: 1 }, { k: 'team', l: 'Team', w: 150 }
+  { k: 'status', l: 'Status', w: 200 }, { k: 'timeline', l: 'Edit timeline', w: 200, date: 1 }, { k: 'team', l: 'Pod', w: 150 }
 ];
 function rolesOf(p, id) {
   const out = [];
