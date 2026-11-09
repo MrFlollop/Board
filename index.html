@@ -733,12 +733,12 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.2.0';
+const APP_VERSION = '1.2.1';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
-const NEED_VER = '1.2.0';   /* the backend must be at least this version */
-const MIN_SCHEMA = 11;   /* the backend must report at least this, or BOARD warns that changes may not save */
+const NEED_VER = '1.2.1';   /* the backend must be at least this version */
+const MIN_SCHEMA = 12;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
 const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
 /* Sunday Treat logo files, kept in the repo next to index.html. If a file will not load, BOARD tries once more, then shows a text wordmark. */
@@ -947,14 +947,22 @@ function statusColour(s) {
   const c = STATUS_COL[norm(s)]; if (c) return legible(c, 2);
   const i = statusList().indexOf(s); return legible(LABEL_FALLBACK[(i < 0 ? 0 : i) % LABEL_FALLBACK.length], 2);
 }
-const INV_LABELS = ['Not Invoiced', 'Partially Invoiced', 'Invoiced', 'Paid', 'N/A'];
-const INV_LEGACY = { 'not invoiced': 'Not Invoiced', 'no estimate': 'Not Invoiced', 'estimate pending': 'Not Invoiced', 'estimate accepted': 'Not Invoiced', 'partially invoiced': 'Partially Invoiced', 'sent but not portal uploaded': 'Invoiced', 'invoiced': 'Invoiced', 'paid': 'Paid', 'n/a': 'N/A', 'na': 'N/A' };
+/* 1.2.1: invoicing runs in this order. N/A stays as an extra choice for work that needs no invoice (and is what a failed or cancelled project gets). */
+const INV_LABELS = ['Estimate pending', 'Estimate approved', 'Invoicing started', 'Invoicing complete', 'Paid', 'N/A'];
+/* older labels (from earlier builds and the Monday import) are mapped to their nearest new one */
+const INV_LEGACY = {
+  'not invoiced': 'Estimate pending', 'no estimate': 'Estimate pending', 'estimate pending': 'Estimate pending',
+  'estimate accepted': 'Estimate approved', 'estimate approved': 'Estimate approved',
+  'partially invoiced': 'Invoicing started', 'invoicing started': 'Invoicing started',
+  'sent but not portal uploaded': 'Invoicing complete', 'invoiced': 'Invoicing complete', 'invoicing complete': 'Invoicing complete',
+  'paid': 'Paid', 'n/a': 'N/A', 'na': 'N/A'
+};
 const normInv = v => INV_LEGACY[norm(v)] || (v ? String(v) : '');
 const invOf = p => normInv(fget(p, 'invoicing'));
-const INV_COL = { 'Not Invoiced': '#F4BF73', 'Partially Invoiced': '#F08A62', 'Invoiced': '#87D4CC', 'Paid': '#69D196', 'N/A': '#999999' };
+const INV_COL = { 'Estimate pending': '#F4BF73', 'Estimate approved': '#F08A62', 'Invoicing started': '#549DCA', 'Invoicing complete': '#87D4CC', 'Paid': '#69D196', 'N/A': '#999999' };
 const invColour = v => (v ? legible(INV_COL[v] || '#797E91', 2) : '#9AA0AB');
-/* 0.8.0: a project is "invoiced enough" for out processing once it is Invoiced, Paid or N/A */
-const INV_DONE = ['Invoiced', 'Paid', 'N/A'];
+/* a project is "invoiced enough" for out processing once invoicing is complete, paid or N/A */
+const INV_DONE = ['Invoicing complete', 'Paid', 'N/A'];
 const invOk = p => INV_DONE.includes(invOf(p));
 function labCell(label, col, attrs, ed, blank) {
   if (!label) return ed ? `<button class="lab-cell" style="background:var(--color-background-tertiary);color:var(--color-text-secondary);text-shadow:none" ${attrs}><span>${esc(blank || '-')}</span></button>` : '';
@@ -965,8 +973,9 @@ const lchip = (label, col) => (label ? `<span class="lchip" style="background:${
 const canEdit = () => !S.readonly && S.me && S.me.rank >= 1 && lockAllowsMe();
 const canEditBase = () => !S.readonly && S.me && S.me.rank >= 1;
 const isAdmin = () => !S.readonly && S.me && S.me.rank >= 2;
-/* 1.1.0: deleting a whole project is for super admins only */
+/* 1.2.1: deleting a whole project is for admins and super admins (it was super admins only in 1.1.0) */
 const isSuper = () => !S.readonly && !!S.me && S.me.rank >= 3;
+const canDelete = () => isAdmin();
 const seesMoney = () => !S.readonly && !!S.me && S.me.rank >= 1;
 const isViewer = () => !S.readonly && !!S.me && S.me.rank < 1;
 const isOutStage = s => /out[\s-]?proc|closeout|handover/i.test(s || '');
@@ -1185,7 +1194,7 @@ function renderHealthBar() {
   const lostTxt = lost ? `Not saved: ${esc(uniq(notSaved).join(', '))}.` : '';
   const oddTxt = odd ? `${badRows.length} row${badRows.length === 1 ? '' : 's'} in the sheet ${badRows.length === 1 ? 'has' : 'have'} an id BOARD does not accept (${esc(uniq(badRows).join(', '))}), so ${badRows.length === 1 ? 'it is' : 'they are'} hidden. Ids can only use letters, numbers, - and _.` : '';
   const list = isAdmin() && h && h.problems.length ? `<ul>${h.problems.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
-  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo120().' : 'Oli has been emailed. Run upgradeTo120() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
+  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo121().' : 'Oli has been emailed. Run upgradeTo121() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
   bar.innerHTML = `<i class="ti ${off && !bad && !lost && !odd && !stale ? 'ti-wifi-off' : stale && !bad ? 'ti-refresh' : 'ti-alert-triangle'}"></i><div><div>${offTxt} ${staleTxt} ${why} ${lostTxt} ${oddTxt} ${fix}</div>${list}</div><span class="sp"></span>${stale ? '<button class="btn btn-sm" data-act="reload">Reload</button>' : ''}${lost ? '<button class="btn btn-sm" data-act="healthok">Dismiss</button>' : ''}`;
 }
 let refreshing = false;
@@ -1462,7 +1471,7 @@ async function showLogin(msg, kind) {
   if (!API) { $('#lgNote').innerHTML = '<b>No backend connected.</b> Paste your Apps Script web app URL into <code>API_URL</code> at the top of index.html.'; return; }
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=ping').then(x => x.json());
-    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo120().`;
+    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo121().`;
     else if (r && vcmp(r.server_version, APP_VERSION) > 0 && !forceUpdate(r.server_version) && $('#lgNote')) $('#lgNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
   } catch (e) {}
 }
@@ -1529,6 +1538,12 @@ function forceUpdate(v, tries) {
   showUpdateScreen(v);
 }
 const WHATS_NEW = [
+  ['1.2.1', [
+    ['ti-coin-pound', 'Invoicing has a new order', 'Estimate pending, Estimate approved, Invoicing started, Invoicing complete, then Paid. N/A is still there for work that needs no invoice. Existing projects have moved across: Not invoiced is now Estimate pending, Partially invoiced is Invoicing started and Invoiced is Invoicing complete. Items in Out processing still unlock once invoicing is complete, paid or N/A.'],
+    ['ti-layout-board', 'Finance view rebuilt to match', 'Five tiles and five sections in the new order, each with a plain-English line saying what it is waiting for. N/A and Not set are folded away until you open them.'],
+    ['ti-trash', 'Admins can delete projects', 'Deleting a whole project is now for admins as well as super admins.'],
+    ['ti-mail', 'Cleaner feedback emails', 'Feedback now arrives as BOARD v1.2.1 Feedback - Name, with no mention of alpha. Whether it was a bug, feedback or an idea is at the top of the message.']
+  ]],
   ['1.2.0', [
     ['ti-mood-sad', 'Failed and cancelled projects move themselves', 'Set a project to Failed Pitch or Cancelled Project and it rains sad faces, then moves to Out Processing with invoicing and every checklist item set to N/A. It is not archived, and the status keeps a record of what happened. Complete still celebrates and moves as before.'],
     ['ti-list-details', 'Lead source', 'A new Lead source field sits in the project panel, and a project cannot go to the Archive without one. Every project from Monday has been filled in already. Projects in Out processing that still need one say so, and Meeting mode asks for it.'],
@@ -2395,7 +2410,7 @@ document.addEventListener('pointerdown', e => {
 
 /* ================================================================
    Out processing (+ Meeting mode)
-   0.8.0: invoicing is part of it. The checklist items only unlock once a project is Invoiced, Paid or N/A,
+   0.8.0: invoicing is part of it. The checklist items only unlock once a project is Invoicing complete, Paid or N/A,
    and a project cannot go to the Archive until invoicing and every item are done.
    ================================================================ */
 const coFields = () => S.cfg.closeout_fields || [];
@@ -2420,7 +2435,7 @@ function coFlagsInner(p, ed) {
   if (ed && !hasCode(p)) out.push(`<button class="flag-pill flag-btn" data-act="cogen" data-id="${p.id}" title="Build the code from the client code and project name">Generate code</button>`);
   return out.join('');
 }
-const coLockMsg = 'Invoice this project first. The items unlock once Invoicing is Invoiced, Paid or N/A.';
+const coLockMsg = 'Invoice this project first. The items unlock once Invoicing is Invoicing complete, Paid or N/A.';
 const coOptions = (list, v, locked) => `<option value="">-</option>` + list.map(o => `<option value="${esc(o)}"${o === v ? ' selected' : ''}${locked && coDone(o) && o !== v ? ' disabled' : ''}>${esc(o)}</option>`).join('');
 
 /* every invoicing change goes through here, so Paid always asks first */
@@ -2547,7 +2562,7 @@ function wtHTML() {
   }
   const p = q[S.wt.i], done = coDoneCount(p), ok = canArchive(p), locked = !invOk(p), inv = invOf(p);
   const invCard = `<div class="wt-q ${invOk(p) ? 'done' : 'todo'}"><div class="qh"><span class="qn">Invoicing</span><span class="qs">${invOk(p) ? 'Done' : (inv ? esc(inv) : 'To answer')}</span></div>
-    <div class="wt-opts">${INV_LABELS.map(o => `<button class="wt-opt${inv === o ? ' sel ' + (o === 'N/A' ? 'na' : o === 'Not Invoiced' ? 'bad' : o === 'Partially Invoiced' ? 'warn' : 'ok') : ''}" data-act="wtinv" data-id="${p.id}" data-v="${esc(o)}" ${ed ? '' : 'disabled'}>${esc(o)}</button>`).join('')}</div></div>`;
+    <div class="wt-opts">${INV_LABELS.map(o => `<button class="wt-opt${inv === o ? ' sel ' + (o === 'N/A' ? 'na' : o === 'Estimate pending' ? 'bad' : (o === 'Estimate approved' || o === 'Invoicing started') ? 'warn' : 'ok') : ''}" data-act="wtinv" data-id="${p.id}" data-v="${esc(o)}" ${ed ? '' : 'disabled'}>${esc(o)}</button>`).join('')}</div></div>`;
   const cards = F.map(([k, l]) => {
     const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]);
     const isDone = coDone(p[k]);
@@ -2559,7 +2574,7 @@ function wtHTML() {
   return `<div class="wt">${top}
     <div class="wt-body"><div class="lbl">${esc(p.stage)}${p.client ? ' · ' + esc(p.client) : ''}</div><div class="wt-title">${esc(p.name)}</div>
       <div class="wt-sub"><span>${done} of ${coTotal()} done</span><div class="bar"><i style="width:${coPct(p)}%"></i></div></div></div>
-    ${locked ? `<div class="wt-note"><i class="ti ti-lock" style="vertical-align:-3px"></i> Start with Invoicing. The other items unlock once it is Invoiced, Paid or N/A.</div>` : ''}
+    ${locked ? `<div class="wt-note"><i class="ti ti-lock" style="vertical-align:-3px"></i> Start with Invoicing. The other items unlock once it is Invoicing complete, Paid or N/A.</div>` : ''}
     <div class="wt-grid">${codeCard}${invCard}${cards}
       <div class="wt-q ${p.size_location ? 'done' : 'todo'}"><div class="qh"><span class="qn">Size + Location</span><span class="qs">${p.size_location ? 'Done' : 'To answer'}</span></div>
         <input class="inp" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="e.g. 2TB, Edit drive 3, Shelf B"></div></div>
@@ -2570,10 +2585,11 @@ function wtHTML() {
    Finance
    A reminder pane for invoices. No profit or budget numbers here.
    0.8.0: every invoicing section shows at once, like the Live projects board, and Paid is included.
+   1.2.1: rebuilt around the new order (Estimate pending, Estimate approved, Invoicing started, Invoicing complete, Paid), with N/A and Not set folded away.
    Only projects in Live projects or Out processing appear. Anything in the Archive is found in the Archive.
    ================================================================ */
-const FIN_ORDER = ['Not Invoiced', 'Partially Invoiced', 'Invoiced', 'Paid', 'N/A', ''];
-const FIN_SUB = { 'Not Invoiced': 'Needs an invoice', 'Partially Invoiced': 'The rest still needs sending', 'Invoiced': 'Awaiting payment', 'Paid': 'Money received', 'N/A': 'No invoice needed', '': 'Invoicing not set yet' };
+const FIN_ORDER = ['Estimate pending', 'Estimate approved', 'Invoicing started', 'Invoicing complete', 'Paid', 'N/A', ''];
+const FIN_SUB = { 'Estimate pending': 'Waiting for the estimate to be approved', 'Estimate approved': 'Approved, ready to start invoicing', 'Invoicing started': 'Some invoices sent, more still to come', 'Invoicing complete': 'All sent, awaiting payment', 'Paid': 'Money received', 'N/A': 'No invoice needed', '': 'Invoicing not set yet' };
 const FIN_COLS = [
   { k: 'name', l: 'Project', w: 320, min: 140, sticky: 1 }, { k: 'client', l: 'Client', w: 190 }, { k: 'stage', l: 'Stage', w: 170 },
   { k: 'lead', l: 'Account', tip: 'Account lead', w: 120, cc: 1 }, { k: 'invoicing', l: 'Invoicing', w: 220 }
@@ -2594,7 +2610,7 @@ function finBody() {
   const cnt = l => all.filter(p => inv(p) === l).length;
   const tile = (l, t1, t3) => `<button class="fin-tile click${S.fin.inv === l ? ' sel' : ''}" style="background:${invColour(l)}" data-act="fintile" data-g="${esc(l)}"><span class="t1">${t1}</span><span class="t2">${cnt(l)}</span><span class="t3">${t3}</span></button>`;
   const callout = `<div class="callout"><i class="ti ti-info-circle"></i><span class="tx"><b>Only projects in Live projects or Out processing appear here.</b> Can’t find what you’re looking for? Check the archive instead.</span><button class="btn btn-secondary btn-sm" data-act="go" data-v="archive"><i class="ti ti-archive"></i>Open the Archive</button></div>`;
-  const tiles = `<div class="fin-tiles">${tile('Not Invoiced', 'Not invoiced', 'Needs an invoice')}${tile('Partially Invoiced', 'Partially invoiced', 'The rest still to send')}${tile('Invoiced', 'Invoiced', 'Awaiting payment')}${tile('Paid', 'Paid', 'Money received')}</div>`;
+  const tiles = `<div class="fin-tiles">${tile('Estimate pending', 'Estimate pending', 'Awaiting approval')}${tile('Estimate approved', 'Estimate approved', 'Ready to invoice')}${tile('Invoicing started', 'Invoicing started', 'More still to send')}${tile('Invoicing complete', 'Invoicing complete', 'Awaiting payment')}${tile('Paid', 'Paid', 'Money received')}</div>`;
   const q = norm(S.fin.q), f = S.fin.inv;
   const show = l => !f || (f === '__none' ? l === '' : f === l);
   const val = (p, k) => k === 'stage' ? S.cfg.stages.indexOf(p.stage) : k === 'lead' ? norm((personById(leadOf(p, 'lead')) || {}).name) : k === 'invoicing' ? INV_LABELS.indexOf(inv(p)) + 1 : norm(p[k]);
@@ -3050,7 +3066,7 @@ function drawerHTML(p, arch) {
   </div>
   ${isDraft ? draftFoot() : ro ? '' : `<div class="drawer-foot">
     ${arch ? `<button class="btn btn-secondary" data-act="restore" data-id="${p.id}"><i class="ti ti-arrow-back-up"></i>Restore to board</button>` : `<button class="btn btn-secondary${archBtn}" data-act="archive" data-id="${p.id}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Send to Archive</button>`}
-    <span class="sp"></span>${isSuper() ? `<button class="btn btn-danger" data-act="delproject" data-id="${p.id}"><i class="ti ti-trash"></i>Delete</button>` : ''}</div>`}`;
+    <span class="sp"></span>${canDelete() ? `<button class="btn btn-danger" data-act="delproject" data-id="${p.id}"><i class="ti ti-trash"></i>Delete</button>` : ''}</div>`}`;
 }
 function openDrawer(id, from) {
   const arch = from === 'archive', p = recordFor(id, arch ? 'archive' : null); if (!p) return;
@@ -3140,7 +3156,7 @@ ACT.archive = async el => {
   const id = el.dataset.id, p = projectById(id); if (!p || !canEdit()) return;
   const out = coOutstanding(p);
   if (out.length) {
-    openModal(`<h3>Not ready to archive</h3><div><b>${esc(p.name)}</b> still has ${out.length} thing${out.length === 1 ? '' : 's'} to finish before it can go to the Archive. Invoicing must be Invoiced, Paid or N/A, and every other item needs a final response:</div>
+    openModal(`<h3>Not ready to archive</h3><div><b>${esc(p.name)}</b> still has ${out.length} thing${out.length === 1 ? '' : 's'} to finish before it can go to the Archive. Invoicing must be Invoicing complete, Paid or N/A, and every other item needs a final response:</div>
       <ul>${out.map(l => `<li>${esc(l)}</li>`).join('')}</ul>
       <div class="actions"><button class="btn btn-plain" data-act="closemodal">Close</button>${S.view !== 'closeout' ? `<button class="btn btn-primary" data-act="gocloseout">Open out processing</button>` : ''}</div>`);
     return;
@@ -3182,7 +3198,7 @@ ACT.restore = async el => {
   } catch (e) {}
 };
 ACT.delproject = async el => {
-  if (!isSuper()) { toast('Only super admins can delete a project', 'err'); return; }
+  if (!canDelete()) { toast('Only admins can delete a project', 'err'); return; }
   const id = el.dataset.id, from = S.drawerFrom, p = recordFor(id, from); if (!p) return;
   if (!await confirmBox(`Permanently delete "${p.name}"? It disappears for everyone. A copy is kept in the sheet's Log tab and in the nightly backup, so Oli can put it back if needed.`, 'Delete', true, 'Delete project')) return;
   const w = workModal('Deleting ' + p.name, 'Taking it off the sheet. A copy is kept in the Log tab.', 'ti-trash');
@@ -3301,7 +3317,7 @@ async function loadHealth() { try { S.health = await api('health'); } catch (e) 
 
 /* ---- people ---- */
 const ACCESS = ['viewer', 'editor', 'admin', 'superadmin'];
-const ACCESS_HELP = 'Viewer: sees the board without money, notes or out processing (freelancers). Editor: edits projects. Admin: also Settings, people and departments. Super admin: everything an admin can do, plus deleting whole projects and managing other admins and super admins.';
+const ACCESS_HELP = 'Viewer: sees the board without money, notes or out processing (freelancers). Editor: edits projects. Admin: also Settings, people and departments, and deleting whole projects. Super admin: everything an admin can do, plus managing other admins and super admins.';
 /* 1.1.0: active people first, then an Alumni heading and anyone who is no longer active. Each group runs highest access first, then by name. */
 const ALUMNI_ROW = '<tr class="alumni-div"><td colspan="8"><span class="lbl">Alumni</span><span class="muted" style="margin-left:10px;font-size:12px">No longer active. Switch Active back on to bring someone back.</span></td></tr>';
 function ppSplit() {
@@ -3486,8 +3502,8 @@ ACT.rcadd = async el => {
 function setSystem() {
   const h = S.health, link = S.adminKey ? `${location.origin}${location.pathname}?view=live&k=${S.adminKey}` : '';
   const tabs = h && h.tabs ? Object.keys(h.tabs).map(k => `${k}: ${h.tabs[k]}`).join('  |  ') : '';
-  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo120() once') : '';
-  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo120() once';
+  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo121() once') : '';
+  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo121() once';
   return `<div style="max-width:720px;display:flex;flex-direction:column;gap:16px">
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Build</div><div class="kv">
       <span class="muted">Front end</span><span>BOARD ${APP_VERSION}</span>
