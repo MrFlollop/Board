@@ -699,6 +699,25 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 [data-theme="dark"] .lg-form .inp { background: #1D1D21; }
 [data-theme="dark"] .palm { filter: drop-shadow(0 0 1px #000); }
 [data-theme="dark"] .scrim { background: rgba(0,0,0,.62); }
+
+/* ---------- 1.2.0 ---------- */
+.confetti.sad::before { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(60,72,96,.30), rgba(60,72,96,0) 75%); animation: st-wash 5.5s ease-out forwards; }
+@keyframes st-wash { 0% { opacity: 0; } 12% { opacity: 1; } 100% { opacity: 0; } }
+.adding.work .av { background: var(--stp); color: #fff; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; width: var(--s); height: var(--s); }
+.adding.work .av { position: relative; }
+.adding.work:not(.done) .av::after { content: ''; position: absolute; inset: -10px; border: 3px solid transparent; border-top-color: var(--stp); border-radius: 50%; animation: bspin 1s linear infinite; }
+.modal.work { width: min(380px, calc(100vw - 24px)); }
+.modal.work .work-spacer { min-height: 190px; }
+.nm-ed { flex: none; width: 26px; height: 30px; opacity: .4; }
+.nm-ed:hover, .nm-wrap:hover .nm-ed { opacity: .9; }
+.cell-inp.nm-inp[readonly] { cursor: pointer; text-overflow: ellipsis; }
+.cell-inp.nm-inp[readonly]:hover { text-decoration: underline; text-decoration-color: var(--stp); text-underline-offset: 3px; }
+.co-flags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 3px; }
+.co-flags:empty { display: none; }
+.flag-pill { display: inline-block; font-size: 10.5px; font-weight: 700; line-height: 1.4; padding: 1px 8px; border-radius: 999px; background: var(--stp-alpha); color: var(--color-text-primary); white-space: nowrap; }
+button.flag-btn { border: 0.5px solid var(--color-border-secondary, var(--color-border-tertiary)); background: var(--color-background-secondary); cursor: pointer; font-family: inherit; }
+button.flag-btn:hover { background: var(--stp-alpha); }
+@media (prefers-reduced-motion: reduce) { .adding .av { animation: none; } .adding.work:not(.done) .av::after { animation-duration: 2.4s; } .confetti.sad::before { animation: none; display: none; } .spin { animation-duration: 1.8s; } }
 </style>
 </head>
 <body>
@@ -714,12 +733,12 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.1.4';
+const APP_VERSION = '1.2.0';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
-const NEED_VER = '0.9.0';   /* the backend must be at least this version */
-const MIN_SCHEMA = 10;   /* the backend must report at least this, or BOARD warns that changes may not save */
+const NEED_VER = '1.2.0';   /* the backend must be at least this version */
+const MIN_SCHEMA = 11;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
 const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
 /* Sunday Treat logo files, kept in the repo next to index.html. If a file will not load, BOARD tries once more, then shows a text wordmark. */
@@ -912,11 +931,14 @@ const LEAD_ROLES = [['lead', 'Account lead', 'Account'], ['creative', 'Creative 
 const leadOf = (p, role) => (role === 'lead' ? (p.lead || '') : ((p[role] || [])[0] || ''));
 
 /* ---------------- status + invoicing labels (Monday colours) ---------------- */
-const STATUSES = ['Writing Pitch', 'Tendering', 'Awaiting KO', 'Pre Production', 'Edit', 'Awaiting Client Feedback', 'Awaiting Handover', 'Complete', 'Failed Pitch', 'Cancelled Project'];
+/* 1.2.0: this order is also the A to Z sort order for Status. Keep it in step with STATUSES in the backend. */
+const STATUSES = ['Tendering', 'Awaiting Handover', 'Awaiting Kickoff', 'Pre Production', 'Edit', 'Awaiting Client Feedback', 'Complete', 'Failed Pitch', 'Cancelled Project'];
+/* 1.2.0: Failed Pitch and Cancelled Project mean the work has ended. Setting either moves the project to Out Processing. */
+const isOutcome = v => ['failed pitch', 'cancelled project'].includes(norm(v));
 const statusList = () => STATUSES.slice();
 const STATUS_COL = {
   'complete': '#BADB66', 'awaiting client feedback': '#70CE92', 'writing pitch': '#F1B7F1', 'tendering': '#99D4FC', 'failed pitch': '#D9707F',
-  'awaiting ko': '#EB559F', 'pre production': '#F8D756', 'cancelled project': '#F09695', 'edit': '#6146A3',
+  'awaiting ko': '#EB559F', 'awaiting kickoff': '#EB559F', 'pre production': '#F8D756', 'cancelled project': '#F09695', 'edit': '#6146A3',
   'awaiting handover': '#E8873A'
 };
 const LABEL_FALLBACK = ['#549DCA', '#87D4CC', '#F4BF73', '#9B7FD4', '#69D196'];
@@ -1032,13 +1054,35 @@ function openPop(anchor, html) {
 }
 function closePop() { $('#pop') && $('#pop').remove(); }
 
+/* 1.2.0: one working animation for every slow save. It covers the box (a pop-up or the project panel) while the sheet is written,
+   so it is clear something is happening and nothing can be pressed twice. done() shows a tick, fail() takes the cover off again. */
+function workStart(host, o) {
+  const isModal = !!host && host.id === 'modal';
+  const ov = document.createElement('div'); ov.className = 'adding work'; ov.setAttribute('role', 'status');
+  ov.innerHTML = `<span class="av"><i class="ti ${o.icon || 'ti-loader-2'}"></i></span><div class="at">${esc(o.text)}</div><div class="as">${esc(o.sub || 'Saving to the sheet. This can take a few seconds.')}</div>`;
+  host.appendChild(ov); if (isModal) modalLock = true;
+  return {
+    el: ov,
+    async done(text, ms) { ov.classList.add('done'); $('.av', ov).innerHTML = '<i class="ti ti-check"></i>'; $('.at', ov).textContent = text || 'Done'; $('.as', ov).textContent = ''; await sleep(ms == null ? 700 : ms); if (isModal) modalLock = false; },
+    fail() { ov.remove(); if (isModal) modalLock = false; }
+  };
+}
+/* the same, for something that happens on the page itself (no pop-up of its own): a small box that closes when it is done */
+function workModal(text, sub, icon) {
+  const m = openModal('<div class="work-spacer"></div>', 'work');
+  const w = workStart(m, { text, sub, icon });
+  return { done: async (t, ms) => { await w.done(t, ms); closeModal(true); }, fail: () => { w.fail(); closeModal(true); } };
+}
+
 /* ---------------- celebration ---------------- */
 const PARTY = ['\u{1F389}', '\u{1F973}', '\u{1F38A}', '\u{2728}', '\u{1F37E}', '\u{1F9E1}', '\u{1F496}', '\u{1F31F}'];
 const FLOPPY = ['\u{1F4BE}'];
-function celebrate(set = PARTY) {
+/* 1.2.0: for a failed pitch or a cancelled project */
+const SAD = ['\u{1F622}', '\u{1F62D}', '\u{1F61E}', '\u{1F494}', '\u{1F940}', '\u{1F327}\u{FE0F}', '\u{2601}\u{FE0F}', '\u{1F63F}', '\u{1F342}', '\u{1FAE0}', '\u{1F614}', '\u{2614}'];
+function celebrate(set = PARTY, mood) {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const box = document.createElement('div'); box.className = 'confetti'; box.setAttribute('aria-hidden', 'true');
-  const n = innerWidth < 600 ? 45 : 90;
+  const box = document.createElement('div'); box.className = 'confetti' + (mood ? ' ' + mood : ''); box.setAttribute('aria-hidden', 'true');
+  const n = Math.round((innerWidth < 600 ? 45 : 90) * (mood === 'sad' ? 1.6 : 1));
   let html = '';
   for (let i = 0; i < n; i++) {
     const left = Math.random() * 100, size = 20 + Math.random() * 26, dur = 2.2 + Math.random() * 2.2, delay = Math.random() * 1.4, rot = (Math.random() < .5 ? -1 : 1) * (180 + Math.random() * 540);
@@ -1141,7 +1185,7 @@ function renderHealthBar() {
   const lostTxt = lost ? `Not saved: ${esc(uniq(notSaved).join(', '))}.` : '';
   const oddTxt = odd ? `${badRows.length} row${badRows.length === 1 ? '' : 's'} in the sheet ${badRows.length === 1 ? 'has' : 'have'} an id BOARD does not accept (${esc(uniq(badRows).join(', '))}), so ${badRows.length === 1 ? 'it is' : 'they are'} hidden. Ids can only use letters, numbers, - and _.` : '';
   const list = isAdmin() && h && h.problems.length ? `<ul>${h.problems.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
-  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo110().' : 'Oli has been emailed. Run upgradeTo110() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
+  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo120().' : 'Oli has been emailed. Run upgradeTo120() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
   bar.innerHTML = `<i class="ti ${off && !bad && !lost && !odd && !stale ? 'ti-wifi-off' : stale && !bad ? 'ti-refresh' : 'ti-alert-triangle'}"></i><div><div>${offTxt} ${staleTxt} ${why} ${lostTxt} ${oddTxt} ${fix}</div>${list}</div><span class="sp"></span>${stale ? '<button class="btn btn-sm" data-act="reload">Reload</button>' : ''}${lost ? '<button class="btn btn-sm" data-act="healthok">Dismiss</button>' : ''}`;
 }
 let refreshing = false;
@@ -1418,7 +1462,7 @@ async function showLogin(msg, kind) {
   if (!API) { $('#lgNote').innerHTML = '<b>No backend connected.</b> Paste your Apps Script web app URL into <code>API_URL</code> at the top of index.html.'; return; }
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=ping').then(x => x.json());
-    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo110().`;
+    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo120().`;
     else if (r && vcmp(r.server_version, APP_VERSION) > 0 && !forceUpdate(r.server_version) && $('#lgNote')) $('#lgNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
   } catch (e) {}
 }
@@ -1485,6 +1529,18 @@ function forceUpdate(v, tries) {
   showUpdateScreen(v);
 }
 const WHATS_NEW = [
+  ['1.2.0', [
+    ['ti-mood-sad', 'Failed and cancelled projects move themselves', 'Set a project to Failed Pitch or Cancelled Project and it rains sad faces, then moves to Out Processing with invoicing and every checklist item set to N/A. It is not archived, and the status keeps a record of what happened. Complete still celebrates and moves as before.'],
+    ['ti-list-details', 'Lead source', 'A new Lead source field sits in the project panel, and a project cannot go to the Archive without one. Every project from Monday has been filled in already. Projects in Out processing that still need one say so, and Meeting mode asks for it.'],
+    ['ti-arrows-sort', 'Statuses in a new order', 'Writing Pitch has gone. The order is now Tendering, Awaiting Handover, Awaiting Kickoff, Pre Production, Edit, Awaiting Client Feedback, Complete, then Failed Pitch and Cancelled Project. Sorting Status A to Z follows the same order.'],
+    ['ti-lock', 'Archived projects are locked', 'Opening a project in the Archive now asks whether you want to edit it first, so nothing changes by accident.'],
+    ['ti-pointer', 'Click a project name to open it', 'On the Project board, clicking the name opens the project panel. The pencil next to it renames the project.'],
+    ['ti-loader-2', 'One working animation for every save', 'Adding a project, sending feedback, deleting a project and adding a client all show that they are working, and cannot be pressed twice.'],
+    ['ti-circle-check', 'Add to board wakes up when you are ready', 'The button becomes available as soon as the client, project code and account lead are filled in. The message at the bottom left has gone.'],
+    ['ti-user-check', 'You are the account lead of what you add', 'A new project starts with you as its account lead. Change it if it is someone else.'],
+    ['ti-hash', 'Generate code in Out processing', 'A project with no project code now has a Generate code button in Out processing and in Meeting mode.'],
+    ['ti-user-shield', 'New people start as viewers', 'Anyone added in Settings starts with viewer access until you change it.']
+  ]],
   ['1.1.4', [
     ['ti-shield-check', 'No more reload loops', 'If BOARD is mid-update and not ready, it now stops after two tries and says so, instead of reloading over and over.'],
   ]],
@@ -1833,7 +1889,7 @@ function pipeRow(p, g, cols) {
   const ed = canEdit();
   const cell = c => {
     switch (c.k) {
-      case 'name': return td(c, g, ed ? `<div class="nm-wrap"><button class="icon-btn nm-mv" data-act="movemenu" data-id="${p.id}" title="Move to a different stage by hand"><i class="ti ti-dots-vertical"></i></button><input class="cell-inp nm-inp" data-chg="cell" data-id="${p.id}" data-f="name" value="${esc(p.name)}" placeholder="Project name"></div>` : `<span class="cell-txt nm-txt" data-act="open" data-id="${p.id}" style="cursor:pointer">${esc(p.name)}</span>`);
+      case 'name': return td(c, g, ed ? `<div class="nm-wrap"><button class="icon-btn nm-mv" data-act="movemenu" data-id="${p.id}" title="Move to a different stage by hand"><i class="ti ti-dots-vertical"></i></button><input class="cell-inp nm-inp" readonly data-act="open" data-chg="cell" data-id="${p.id}" data-f="name" value="${esc(p.name)}" placeholder="Project name" title="Click to open. Use the pencil to rename."><button class="icon-btn nm-ed" data-act="rename" data-id="${p.id}" title="Rename"><i class="ti ti-pencil"></i></button></div>` : `<span class="cell-txt nm-txt" data-act="open" data-id="${p.id}" style="cursor:pointer">${esc(p.name)}</span>`);
       case 'client': return td(c, g, ed ? clientBtn(p) : `<span class="cell-txt">${esc(p.client)}</span>`);
       case 'project_code': return td(c, g, ed ? `<input class="cell-inp" data-chg="cell" data-id="${p.id}" data-f="project_code" value="${esc(p.project_code)}" placeholder="Add code">` : `<span class="cell-txt">${esc(p.project_code)}</span>`);
       case 'status': return td(c, g, labCell(p.status, statusColour(p.status), `data-act="labpick" data-kind="status" data-id="${p.id}"`, ed), 'zp');
@@ -1849,6 +1905,17 @@ function pipeRow(p, g, cols) {
   return `<tr class="prow" data-id="${p.id}" data-stage="${esc(p.stage)}">${cols.map(cell).join('')}</tr>`;
 }
 
+/* 1.2.0: clicking a project's name opens it. The pencil next to it renames it on the spot. */
+ACT.rename = el => {
+  const i = $('.nm-inp', el.closest('.nm-wrap')); if (!i || !canEdit()) return;
+  i.readOnly = false; i.dataset.was = i.value; i.focus(); i.select();
+};
+document.addEventListener('focusout', e => { const t = e.target; if (t.classList && t.classList.contains('nm-inp')) t.readOnly = true; });
+document.addEventListener('keydown', e => {
+  const t = e.target; if (!t.classList || !t.classList.contains('nm-inp') || t.readOnly) return;
+  if (e.key === 'Enter') { e.preventDefault(); t.blur(); }
+  else if (e.key === 'Escape') { t.value = t.dataset.was || t.value; t.blur(); }
+});
 /* inline editing */
 INP.cell = el => {
   const id = el.dataset.id, f = el.dataset.f, p = projectById(id); if (!p || !canEdit()) return;
@@ -1890,12 +1957,30 @@ function stageForStatus(p, status) {
   if (isPreStage(status)) { const pre = S.cfg.stages.find(isPreStage); return pre && p.stage !== pre ? pre : null; }
   return null;
 }
+/* 1.2.0: what the server does for a failed or cancelled project, done on the page straight away (the server's answer replaces it) */
+const naOpt = k => ((S.cfg.closeout_options || {})[k] || []).find(o => norm(o) === 'n/a') || 'n/a';
+function applyOutcome(p) {
+  const out = closeoutStages()[0];
+  if (!invOk(p)) p.invoicing = 'N/A';
+  coFields().forEach(([k]) => { if (!coDone(p[k])) p[k] = naOpt(k); });
+  if (out && p.stage !== out) { p.stage = out; p.sort = S.projects.filter(x => x.stage === out).reduce((m, x) => Math.max(m, Number(x.sort) || 0), 0) + 10; }
+}
 /* 0.6.1: marking a project Complete asks first (it moves to Out Processing), then celebrates */
 async function setStatus(p, v, from) {
   if (from !== 'archive' && isPreStage(v) && !hasCode(p) && !await requireCode(p, { act: 'status', v })) return false;
   const t = from === 'archive' ? null : stageForStatus(p, v);
   const done = norm(v) === 'complete' && !!t && isOutStage(t);
   if (done && !await confirmBox(`Mark "${p.name}" as complete? It will move off the Project board to Out Processing, where the closeout checklist is worked through before it is archived.`, 'Mark complete', false, 'Project complete')) return false;
+  /* 1.2.0: failed or cancelled. The server fills in the N/A answers and moves it to Out Processing in this same save (it is never archived).
+     The page does the same now, so it moves at once. The status stays, so the outcome is always on record. */
+  if (from !== 'archive' && isOutcome(v) && !isOutcome(p.status)) {
+    if (!await confirmBox(`Mark "${p.name}" as ${v}? It moves to Out Processing with invoicing and every checklist item set to N/A (anything already finished is left alone). It is not archived, and the status keeps a record of what happened.`, norm(v) === 'failed pitch' ? 'Yes, it failed' : 'Yes, cancel it', true, v)) return false;
+    applyOutcome(p);
+    saveFields(p.id, { status: v }, from, true);
+    S.stale = false; rerenderBody();
+    celebrate(SAD, 'sad'); toast('\u{1F622} ' + p.name + ' is in Out Processing as ' + v + '.');
+    return true;
+  }
   saveFields(p.id, { status: v }, from, true);
   if (t) await moveProject(p.id, t);
   if (done) { celebrate(PARTY); toast('\u{1F389} ' + p.name + ' is complete. Nice work.'); }
@@ -1997,7 +2082,7 @@ ACT.lpclear = () => {
 INP['f-q'] = el => { S.f.q = el.value; rerenderBody(); };
 INP['f-person'] = el => { S.f.person = el.value; rerenderBody(); };
 INP['f-status'] = el => { S.f.status = el.value; rerenderBody(); };
-ACT.open = el => { if (S.dragging || S._noOpen) return; openDrawer(el.dataset.id, el.dataset.from); };
+ACT.open = el => { if (S.dragging || S._noOpen || (el.tagName === 'INPUT' && !el.readOnly)) return; openDrawer(el.dataset.id, el.dataset.from); };
 
 /* ---------------- timeline range picker (Monday style) ----------------
    0.8.0: no week numbers, bank holidays marked, and it stays open after the last day is picked (it saves straight away). Click anywhere else to close it. */
@@ -2323,7 +2408,18 @@ const coDoneCount = p => coFields().filter(([k]) => coDone(p[k])).length + (invO
 const coStagesShown = () => closeoutStages();
 const coPct = p => Math.round(coDoneCount(p) / coTotal() * 100);
 /* a done answer is only allowed once the project is invoiced (clearing it or saying in progress is always fine) */
-const coBlocked = (p, k, v) => !invOk(p) && coFields().some(([f]) => f === k) && coDone(v) && coDone(p[k]) === false;
+/* 1.2.0: lead source is known from the start, so it is the one item that does not wait for invoicing */
+const coBlocked = (p, k, v) => k !== 'lead_source' && !invOk(p) && coFields().some(([f]) => f === k) && coDone(v) && coDone(p[k]) === false;
+const coTip = p => (canArchive(p) ? 'Send to the Archive' : 'Still to finish: ' + coOutstanding(p).join(', '));
+const leadOpts = p => { const l = ((S.cfg.closeout_options || {}).lead_source || []).slice(); if (p && p.lead_source && !l.includes(p.lead_source)) l.push(p.lead_source); return l; };
+const leadSourceField = (p, dis) => `<div class="field"><span class="lbl">Lead source</span><select class="sel" data-chg="pf" data-f="lead_source" ${dis}>${optList(leadOpts(p), p.lead_source, '-')}</select></div>`;
+/* the Out processing table has a column for every checklist item except lead source, which lives in the project panel and Meeting mode. These flag what is missing. */
+function coFlagsInner(p, ed) {
+  const out = [];
+  if (coFields().some(([k]) => k === 'lead_source') && !coDone(p.lead_source)) out.push('<span class="flag-pill" title="Open the project to set it, or use Meeting mode">Lead source needed</span>');
+  if (ed && !hasCode(p)) out.push(`<button class="flag-pill flag-btn" data-act="cogen" data-id="${p.id}" title="Build the code from the client code and project name">Generate code</button>`);
+  return out.join('');
+}
 const coLockMsg = 'Invoice this project first. The items unlock once Invoicing is Invoiced, Paid or N/A.';
 const coOptions = (list, v, locked) => `<option value="">-</option>` + list.map(o => `<option value="${esc(o)}"${o === v ? ' selected' : ''}${locked && coDone(o) && o !== v ? ' disabled' : ''}>${esc(o)}</option>`).join('');
 
@@ -2349,7 +2445,7 @@ function coBody() { return `<div id="wtWrap">${wtHTML()}</div><div id="coTable">
 function coTableHTML() {
   const q = norm(S.co.q), F = coFields(), ed = canEdit(), stages = coStagesShown();
   const cols = withFirst([{ k: 'name', l: 'Project', w: 280, min: 140, sticky: 1 }, { k: 'progress', l: 'Progress', w: 140 }, { k: 'invoicing', l: 'Invoicing', w: 180 }]
-    .concat(F.map(([k, l]) => ({ k, l, w: 150 }))).concat([{ k: 'size_location', l: 'Size + Location', w: 220 }, { k: 'act', l: '', w: 130, min: 100, nosort: 1, noresize: 1 }]));
+    .concat(F.filter(([k]) => k !== 'lead_source').map(([k, l]) => ({ k, l, w: 150 }))).concat([{ k: 'size_location', l: 'Size + Location', w: 220 }, { k: 'act', l: '', w: 130, min: 100, nosort: 1, noresize: 1 }]));
   const opts = S.cfg.closeout_options || {};
   const val = (p, k) => k === 'progress' ? coDoneCount(p) : k === 'invoicing' ? (invOf(p) ? INV_LABELS.indexOf(invOf(p)) + 1 : '') : norm(p[k]);
   const groups = stages.map(stage => {
@@ -2360,11 +2456,11 @@ function coTableHTML() {
   return tableHTML('closeout', cols, groups, (p, g, cs) => {
     const done = coDoneCount(p), locked = !invOk(p);
     return `<tr class="prow" data-id="${p.id}">${cs.map(c => {
-      if (c.k === 'name') return td(c, g, `<div class="nm co-name" style="cursor:pointer;overflow:hidden;text-overflow:ellipsis" data-act="open" data-id="${p.id}">${esc(p.name)}</div><div class="nm-sub">${esc(p.client)}</div>`);
+      if (c.k === 'name') return td(c, g, `<div class="nm co-name" style="cursor:pointer;overflow:hidden;text-overflow:ellipsis" data-act="open" data-id="${p.id}">${esc(p.name)}</div><div class="nm-sub">${esc(p.client)}</div><div class="co-flags">${coFlagsInner(p, ed)}</div>`);
       if (c.k === 'progress') return td(c, g, `<div class="row" style="gap:8px"><div class="bar"><i class="co-bar" style="width:${coPct(p)}%"></i></div><span class="muted co-cnt" style="font-size:11px">${done}/${coTotal()}</span></div>`);
       if (c.k === 'invoicing') { const v = invOf(p); return td(c, g, labCell(v, invColour(v), `data-act="labpick" data-kind="invoicing" data-id="${p.id}"`, ed), 'zp'); }
       if (c.k === 'size_location') return td(c, g, `<input class="cell-inp" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="-">`);
-      if (c.k === 'act') return td(c, g, ed ? `<button class="btn btn-ghost btn-sm co-arch${canArchive(p) ? '' : ' is-locked'}" data-act="archive" data-id="${p.id}" title="${canArchive(p) ? 'Send to the Archive' : 'Invoicing and every item need a final response first'}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Archive</button>` : '');
+      if (c.k === 'act') return td(c, g, ed ? `<button class="btn btn-ghost btn-sm co-arch${canArchive(p) ? '' : ' is-locked'}" data-act="archive" data-id="${p.id}" title="${esc(coTip(p))}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Archive</button>` : '');
       const v = p[c.k] || '', list = (opts[c.k] || []).slice(); if (v && !list.includes(v)) list.push(v);
       return td(c, g, `<select class="sel co-sel ${coClass(v)}" data-chg="co" data-id="${p.id}" data-k="${c.k}" ${ed ? '' : 'disabled'}${locked ? ` style="opacity:.7" title="${esc(coLockMsg)}"` : ''}>${coOptions(list, v, locked)}</select>`);
     }).join('')}</tr>`;
@@ -2380,7 +2476,7 @@ function coAfterChange(id) {
   $$(`#coTable tr.prow[data-id="${id}"]`).forEach(tr => {
     const b = $('.co-bar', tr); if (b) b.style.width = coPct(p) + '%';
     const n = $('.co-cnt', tr); if (n) n.textContent = `${done}/${coTotal()}`;
-    const a = $('.co-arch', tr); if (a) { a.classList.toggle('is-locked', !ok); a.title = ok ? 'Send to the Archive' : 'Invoicing and every item need a final response first'; const ic = $('i', a); if (ic) ic.className = 'ti ' + (ok ? 'ti-archive' : 'ti-lock'); }
+    const a = $('.co-arch', tr); if (a) { a.classList.toggle('is-locked', !ok); a.title = coTip(p); const fl = $('.co-flags', tr); if (fl) fl.innerHTML = coFlagsInner(p, canEdit()); const ic = $('i', a); if (ic) ic.className = 'ti ' + (ok ? 'ti-archive' : 'ti-lock'); }
   });
 }
 INP.co = el => {
@@ -2390,6 +2486,16 @@ INP.co = el => {
   if (el.tagName === 'SELECT') el.className = 'sel co-sel ' + coClass(el.value);
   coAfterChange(id);
   const w = $('#wtWrap'); if (w) w.innerHTML = wtHTML();
+};
+
+/* 1.2.0: Generate code, for a project in Out processing that never got a project code */
+ACT.cogen = async el => {
+  const p = projectById(el.dataset.id); if (!p || !canEdit()) return;
+  const code = genCode(p.client_code, p.name);
+  if (!code) { toast('Needs a client with a code and a project name to build a code. Open the project to fix that.', 'err'); return; }
+  const w = workModal('Generating the project code', 'Saving it to the sheet.', 'ti-hash');
+  try { await saveFields(p.id, { project_code: code }, null, true); await w.done(code, 900); rerenderBody(); if (S.wt && S.wt.on) wtRefresh(); }
+  catch (e) { w.fail(); }
 };
 
 /* ---- meeting mode: one project at a time. Back and Next live in the top bar so they never move. ---- */
@@ -2445,14 +2551,16 @@ function wtHTML() {
   const cards = F.map(([k, l]) => {
     const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]);
     const isDone = coDone(p[k]);
-    return `<div class="wt-q ${isDone ? 'done' : 'todo'}${locked && !isDone ? ' locked' : ''}"><div class="qh"><span class="qn">${esc(l)}</span><span class="qs">${isDone ? 'Done' : (p[k] ? esc(p[k]) : 'To answer')}</span></div>
-      <div class="wt-opts">${list.map(o => { const c = coClass(o).replace('co-', ''); const off = !ed || (locked && coDone(o) && p[k] !== o); return `<button class="wt-opt${p[k] === o ? ' sel ' + (c || 'ok') : ''}" data-act="wtpick" data-id="${p.id}" data-k="${k}" data-v="${esc(o)}" ${off ? 'disabled' : ''}>${esc(o)}</button>`; }).join('')}</div></div>`;
+    return `<div class="wt-q ${isDone ? 'done' : 'todo'}${locked && k !== 'lead_source' && !isDone ? ' locked' : ''}"><div class="qh"><span class="qn">${esc(l)}</span><span class="qs">${isDone ? 'Done' : (p[k] ? esc(p[k]) : 'To answer')}</span></div>
+      <div class="wt-opts">${list.map(o => { const c = coClass(o).replace('co-', ''); const off = !ed || (locked && k !== 'lead_source' && coDone(o) && p[k] !== o); return `<button class="wt-opt${p[k] === o ? ' sel ' + (c || 'ok') : ''}" data-act="wtpick" data-id="${p.id}" data-k="${k}" data-v="${esc(o)}" ${off ? 'disabled' : ''}>${esc(o)}</button>`; }).join('')}</div></div>`;
   }).join('');
+  const codeCard = `<div class="wt-q ${hasCode(p) ? 'done' : 'todo'}"><div class="qh"><span class="qn">Project code</span><span class="qs">${hasCode(p) ? 'Done' : 'To answer'}</span></div>
+    <div class="row"><input class="inp" data-chg="co" data-id="${p.id}" data-k="project_code" value="${esc(p.project_code)}" ${ed ? '' : 'disabled'} placeholder="CLIENT_ProjectTitle">${ed && !hasCode(p) ? `<button class="btn btn-ghost btn-sm" data-act="cogen" data-id="${p.id}">Generate</button>` : ''}</div></div>`;
   return `<div class="wt">${top}
     <div class="wt-body"><div class="lbl">${esc(p.stage)}${p.client ? ' · ' + esc(p.client) : ''}</div><div class="wt-title">${esc(p.name)}</div>
       <div class="wt-sub"><span>${done} of ${coTotal()} done</span><div class="bar"><i style="width:${coPct(p)}%"></i></div></div></div>
     ${locked ? `<div class="wt-note"><i class="ti ti-lock" style="vertical-align:-3px"></i> Start with Invoicing. The other items unlock once it is Invoiced, Paid or N/A.</div>` : ''}
-    <div class="wt-grid">${invCard}${cards}
+    <div class="wt-grid">${codeCard}${invCard}${cards}
       <div class="wt-q ${p.size_location ? 'done' : 'todo'}"><div class="qh"><span class="qn">Size + Location</span><span class="qs">${p.size_location ? 'Done' : 'To answer'}</span></div>
         <input class="inp" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="e.g. 2TB, Edit drive 3, Shelf B"></div></div>
     <div class="wt-foot">${ok ? `<span class="wt-ready"><i class="ti ti-circle-check"></i>Everything is done</span>${ed ? `<button class="btn btn-secondary btn-sm" data-act="archive" data-id="${p.id}"><i class="ti ti-archive"></i>Send to Archive</button>` : ''}` : `<span class="muted" style="font-weight:600;font-size:12px">${coOutstanding(p).length} still to do. The arrow keys also move between projects.</span>`}</div></div>`;
@@ -2823,13 +2931,14 @@ INP['cg-newcode'] = el => { const v = el.value.toUpperCase().replace(/[^A-Z0-9]/
 ACT.cgadd = async el => {
   const c = S.codes;
   if (String(c.newCode || '').length !== 5) { toast('A client code must be exactly 5 letters or numbers', 'err'); const i = $('#cgNewCode'); if (i) i.focus(); return; }
-  el.disabled = true;
+  const w = workModal('Adding ' + (String(c.newName).trim() || 'the client') + ' to the code sheet', 'Saving to the Project Code Generator sheet.', 'ti-building');
   try {
     const d = await write('client_add', { name: c.newName, code: c.newCode });
     S.clients = d.clients; c.mode = 'existing'; c.client = d.client.name; c.codeEdited = false; c.newName = ''; c.newCode = '';
+    await w.done(`${d.client.name} (${d.client.code}) is in the sheet`);
     toast(`Added ${d.client.name} (${d.client.code})`); renderView(); updateCodeOut();
     if (S.draft && S.draftBack) { S.draft.client = d.client.name; S.draft.client_code = d.client.code; S.draftBack = false; ACT.draftreturn(); }
-  } catch (e) { el.disabled = false; }
+  } catch (e) { w.fail(); }
 };
 ACT.cgcopy = async () => {
   const v = $('#cgOut').textContent; if (!genCode(cgCurrentCode(), S.codes.title)) return;
@@ -2847,21 +2956,27 @@ const bgRefresh = debounce(() => { if (['pipeline', 'timeline', 'closeout', 'min
 function saveFields(id, fields, from, immediate) {
   const p = recordFor(id, from); if (!p) return;
   if (!canEdit()) { blockedEditToast(); return; }
-  if (p === S.draft) { Object.assign(p, fields); draftUpdate(); return; }
+  if (p === S.draft) { Object.assign(p, fields); draftUpdate(); return Promise.resolve(); }
   Object.assign(p, fields);
   const key = (from === 'archive' ? 'a:' : 'p:') + id;
   pendingSave[key] = Object.assign(pendingSave[key] || {}, fields);
   clearTimeout(saveTimers[key]);
   const run = () => {
-    const f = pendingSave[key]; delete pendingSave[key]; delete flushers[key]; if (!f) return;
-    write('project_save', { id, fields: f, from: from === 'archive' ? 'archive' : undefined }).then(res => {
+    const f = pendingSave[key]; delete pendingSave[key]; delete flushers[key]; if (!f) return Promise.resolve();
+    const pr = write('project_save', { id, fields: f, from: from === 'archive' ? 'archive' : undefined }).then(res => {
       const r = recordFor(id, from); if (r && res.project) ['fy', 'updated_at', 'updated_by', 'created_at'].forEach(k => { r[k] = res.project[k]; });
+      /* 1.2.0: the server moved it (failed or cancelled), so take its answer for the stage and the N/A answers */
+      if (r && res.moved && res.project) { Object.assign(r, cleanProject(res.project)); rerenderBody(); if (S.drawer === id) refreshDrawer(true); }
       setDrawerSync('Saved');
-    }).catch(() => setDrawerSync('Not saved'));
+      return res;
+    });
+    pr.catch(() => setDrawerSync('Not saved'));
+    return pr;
   };
   flushers[key] = run; setDrawerSync('Saving');
-  if (immediate) run(); else saveTimers[key] = setTimeout(run, 600);
+  let out; if (immediate) out = run(); else saveTimers[key] = setTimeout(run, 600);
   bgRefresh();
+  return out;
 }
 function flushAll() { Object.keys(flushers).forEach(k => { clearTimeout(saveTimers[k]); flushers[k](); }); }
 addEventListener('beforeunload', () => { if (Object.keys(flushers).length) flushAll(); });
@@ -2888,7 +3003,9 @@ function acctBlock(p, ro, arch) {
 }
 function drawerHTML(p, arch) {
   const isDraft = p === S.draft, locked = !arch && !!S.drawerLocked, li = lockInfo(), sl = !arch && !!li && !isLockHolder(li);
-  const ro = !canEdit() || locked, pub = S.readonly, basic = pub || !seesMoney();
+  /* 1.2.0: an archived project opens locked. Edit it only after confirming. */
+  const archLocked = arch && !isDraft && S.arUnlocked !== p.id;
+  const ro = !canEdit() || locked || archLocked, pub = S.readonly, basic = pub || !seesMoney();
   const dis = ro ? 'disabled' : '';
   const inp = (f, label, val, extra = '') => `<div class="field"><span class="lbl">${label}</span><input class="inp" data-inp="pf" data-f="${f}" value="${esc(val)}" ${dis} ${extra}></div>`;
   const F = coFields(), opts = S.cfg.closeout_options || {};
@@ -2897,7 +3014,7 @@ function drawerHTML(p, arch) {
   const archBtn = canArchive(p) ? '' : ' is-locked';
   const m = marginOf(p), invV = invOf(p);
   return `
-  ${locked ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>View only here. Edit it on the Project board.</span><span class="sp"></span>${canEditBase() ? `<button class="btn btn-ghost btn-sm" data-act="editonboard" data-id="${p.id}">Edit on Project board</button>` : ''}</div>` : (sl ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>Stand-up lock is on. Only ${esc(li.by || 'the person running stand-up')} can make changes right now.</span></div>` : '')}
+  ${locked ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>View only here. Edit it on the Project board.</span><span class="sp"></span>${canEditBase() ? `<button class="btn btn-ghost btn-sm" data-act="editonboard" data-id="${p.id}">Edit on Project board</button>` : ''}</div>` : (archLocked ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>This project is in the Archive and is locked, so nothing changes by accident.</span><span class="sp"></span>${canEditBase() ? `<button class="btn btn-ghost btn-sm" data-act="arunlock" data-id="${p.id}"><i class="ti ti-lock-open"></i>Unlock to edit</button>` : ''}</div>` : (sl ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>Stand-up lock is on. Only ${esc(li.by || 'the person running stand-up')} can make changes right now.</span></div>` : ''))}
   <div class="drawer-head"><div><div class="lbl">${arch ? 'Archived project' : (isDraft ? 'New project' : 'Project')}</div></div><span class="sp"></span><span class="muted" style="font-size:11px;font-weight:600" id="dsync"></span>
     <button class="icon-btn" data-act="closedrawer" title="Close"><i class="ti ti-x"></i></button></div>
   <div class="drawer-body" id="drawerBody">
@@ -2911,6 +3028,7 @@ function drawerHTML(p, arch) {
       ${arch ? `<div class="field"><span class="lbl">Year</span><input class="inp" value="${esc(p.fy)}" disabled></div>` : `<div class="field"><span class="lbl">Stage</span><select class="sel" data-chg="pf-stage" ${dis}>${optList(S.cfg.stages, p.stage)}</select></div>`}
       <div class="field"><span class="lbl">Status</span><select class="sel" data-chg="pf" data-f="status" ${dis}>${optList(stList, p.status, '-')}</select></div>
     </div>
+    ${basic ? '' : leadSourceField(p, dis)}
     <div class="sec-title"><span class="lbl">Team</span></div>
     ${acctBlock(p, ro, arch)}
     ${ROLE_BLOCKS.map(([r, l]) => roleBlock(r, l, p[r] || [], ro)).join('')}
@@ -2926,7 +3044,7 @@ function drawerHTML(p, arch) {
     <div class="field"><span class="lbl">Invoicing</span><select class="sel" data-chg="pf-fin" data-k="invoicing" ${dis}>${optList(INV_LABELS, invV, '-')}</select></div>
     <div class="field"><span class="lbl">Notes</span><textarea class="txt" data-inp="pf" data-f="notes" maxlength="5000" ${dis}>${esc(p.notes)}</textarea></div>
     ${isDraft ? '' : `<div class="sec-title"><span class="lbl">Out processing</span></div>
-    <div class="grid2">${F.map(([k, l]) => { const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]); return `<div class="field"><span class="lbl">${esc(l)}</span><select class="sel ${coClass(p[k])}" data-chg="pf" data-f="${esc(k)}" ${dis}>${coOptions(list, p[k], !arch && !invOk(p))}</select></div>`; }).join('')}</div>
+    <div class="grid2">${F.filter(([k]) => k !== 'lead_source').map(([k, l]) => { const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]); return `<div class="field"><span class="lbl">${esc(l)}</span><select class="sel ${coClass(p[k])}" data-chg="pf" data-f="${esc(k)}" ${dis}>${coOptions(list, p[k], !arch && !invOk(p))}</select></div>`; }).join('')}</div>
     ${inp('size_location', 'Size + Location', p.size_location)}`}`}
     ${pub ? '' : `<div class="muted" style="font-size:11px">${p.created_at ? 'Created ' + esc(p.created_at) + '. ' : ''}${p.updated_at ? 'Last edit ' + esc(p.updated_at) + (updBy ? ' by ' + esc(updBy.name) : '') + '.' : ''}</div>`}
   </div>
@@ -2937,7 +3055,7 @@ function drawerHTML(p, arch) {
 function openDrawer(id, from) {
   const arch = from === 'archive', p = recordFor(id, arch ? 'archive' : null); if (!p) return;
   S.draftHold = id === DRAFT; closeDrawer(true); S.draftHold = false;
-  S.drawer = id; S.drawerFrom = arch ? 'archive' : null; S.drawerLocked = false;
+  S.drawer = id; S.drawerFrom = arch ? 'archive' : null; S.drawerLocked = false; S.arUnlocked = null;
   const sc = document.createElement('div'); sc.className = 'scrim'; sc.id = 'drawerScrim'; sc.addEventListener('click', () => requestCloseDrawer());
   const d = document.createElement('aside'); d.className = 'drawer'; d.id = 'drawer'; d.innerHTML = drawerHTML(p, arch);
   document.body.appendChild(sc); document.body.appendChild(d);
@@ -2945,7 +3063,7 @@ function openDrawer(id, from) {
 }
 const focusInDrawer = () => { const a = document.activeElement; return !!(a && a.closest && a.closest('#drawer') && /^(INPUT|TEXTAREA)$/.test(a.tagName)); };
 function refreshDrawer(force) {
-  const d = $('#drawer'); if (!d || !S.drawer) return;
+  const d = $('#drawer'); if (!d || !S.drawer || S._adding) return;
   const p = recordFor(S.drawer, S.drawerFrom);
   if (!p) { closeDrawer(true); toast('That project was moved or removed by someone else'); return; }
   if (!force && focusInDrawer()) return;
@@ -2955,9 +3073,14 @@ function refreshDrawer(force) {
 }
 function closeDrawer(silent) {
   flushAll(); $('#drawer') && $('#drawer').remove(); $('#drawerScrim') && $('#drawerScrim').remove();
-  S.drawer = null; S.drawerFrom = null; S.drawerLocked = false; if (!S.draftHold) S.draft = null; if (!silent) bgRefresh();
+  S.drawer = null; S.drawerFrom = null; S.drawerLocked = false; S.arUnlocked = null; if (!S.draftHold) S.draft = null; if (!silent) bgRefresh();
 }
 ACT.closedrawer = () => requestCloseDrawer();
+ACT.arunlock = async el => {
+  const p = recordFor(el.dataset.id, 'archive'); if (!p || !canEditBase()) return;
+  if (!await confirmBox(`"${p.name}" is in the Archive, and archived projects are locked so they are not changed by accident. Do you want to edit it?`, 'Yes, unlock it', false, 'Edit archived project')) return;
+  S.arUnlocked = p.id; refreshDrawer(true);
+};
 ACT.editonboard = el => { const id = el.dataset.id; closeDrawer(true); go('pipeline'); setTimeout(() => openDrawer(id), 60); };
 
 INP.pf = async el => {
@@ -3062,36 +3185,38 @@ ACT.delproject = async el => {
   if (!isSuper()) { toast('Only super admins can delete a project', 'err'); return; }
   const id = el.dataset.id, from = S.drawerFrom, p = recordFor(id, from); if (!p) return;
   if (!await confirmBox(`Permanently delete "${p.name}"? It disappears for everyone. A copy is kept in the sheet's Log tab and in the nightly backup, so Oli can put it back if needed.`, 'Delete', true, 'Delete project')) return;
+  const w = workModal('Deleting ' + p.name, 'Taking it off the sheet. A copy is kept in the Log tab.', 'ti-trash');
   try {
     await write('project_delete', { id, from: from === 'archive' ? 'archive' : undefined });
     if (from === 'archive') { S.ar.rows = S.ar.rows.filter(x => x.id !== id); S.ar.total--; } else S.projects = S.projects.filter(x => x.id !== id);
-    closeDrawer(true); renderView(); toast('Deleted');
-  } catch (e) {}
+    await w.done('Deleted'); closeDrawer(true); renderView(); toast('Deleted');
+  } catch (e) { w.fail(); }
 };
 
 /* ---------------- new project (0.8.0) ----------------
    New project opens an empty form. Nothing is added to the board until you press Add to board.
    A client, a project code and an account lead are required (and a name, because a project has to be called something). The rest can stay blank. */
 const DRAFT = 'draft';
-const DRAFT_KEYS = ['name', 'stage', 'client', 'client_code', 'project_code', 'status', 'lead', 'lead_more', 'lead_cover', 'creative', 'production', 'edit', 'budget', 'notes', 'profit_margin', 'invoicing', 'edit_start', 'edit_end'];
+const DRAFT_KEYS = ['name', 'stage', 'client', 'client_code', 'project_code', 'status', 'lead_source', 'lead', 'lead_more', 'lead_cover', 'creative', 'production', 'edit', 'budget', 'notes', 'profit_margin', 'invoicing', 'edit_start', 'edit_end'];
 const draftMissing = d => [!String(d.name || '').trim() && 'a project name', !d.client && 'a client', !String(d.project_code || '').trim() && 'a project code', !d.lead && 'an account lead'].filter(Boolean);
-const draftHasContent = () => !!S.draft && (draftMissing(S.draft).length < 4 || ['notes', 'budget', 'status', 'edit_start', 'edit_end'].some(k => S.draft[k]) || ['creative', 'production', 'edit'].some(k => (S.draft[k] || []).length));
+/* 1.2.0: a new project starts with you as account lead, so that alone does not count as something worth keeping */
+const draftHasContent = () => !!S.draft && (['name', 'client', 'project_code', 'lead_source'].some(k => String(S.draft[k] || '').trim()) || (!!S.draft.lead && S.draft.lead !== (S.me && S.me.id)) || ['notes', 'budget', 'status', 'edit_start', 'edit_end'].some(k => S.draft[k]) || ['creative', 'production', 'edit'].some(k => (S.draft[k] || []).length));
 const joinList = a => (a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : a[0] || '');
 function draftUpdate() {
   const d = S.draft; if (!d) return;
   const miss = draftMissing(d), b = $('#draftAdd'), h = $('#draftHelp');
   if (b) b.disabled = miss.length > 0;
-  if (h) { h.classList.toggle('ok', !miss.length); h.textContent = miss.length ? 'Still needed: ' + joinList(miss) + '.' : 'Ready to add to the board.'; }
+  if (h) { h.classList.remove('ok'); h.textContent = miss.length ? 'Still needed: ' + joinList(miss) + '.' : ''; }   /* 1.2.0: no "ready" message. The Add to board button waking up is the signal. */
 }
 function draftFoot() {
   const miss = draftMissing(S.draft);
-  return `<div class="drawer-foot"><span class="draft-help${miss.length ? '' : ' ok'}" id="draftHelp">${miss.length ? 'Still needed: ' + esc(joinList(miss)) + '.' : 'Ready to add to the board.'}</span>
+  return `<div class="drawer-foot"><span class="draft-help" id="draftHelp">${miss.length ? 'Still needed: ' + esc(joinList(miss)) + '.' : ''}</span>
     <button class="btn btn-plain" data-act="closedrawer">Cancel</button><button class="btn btn-primary" id="draftAdd" data-act="draftadd" ${miss.length ? 'disabled' : ''}><i class="ti ti-plus"></i>Add to board</button></div>`;
 }
 ACT.newproject = () => {
   if (!canEdit()) return;
   closePop();
-  S.draft = { id: DRAFT, name: '', stage: S.cfg.stages[0], client: '', client_code: '', project_code: '', status: '', lead: '', creative: [], production: [], edit: [], budget: '', notes: '', size_location: '', sort: '', invoicing: '' };
+  S.draft = { id: DRAFT, name: '', stage: S.cfg.stages[0], client: '', client_code: '', project_code: '', status: '', lead_source: '', lead: (S.me && S.me.id && activePeople().some(x => x.id === S.me.id)) ? S.me.id : '', creative: [], production: [], edit: [], budget: '', notes: '', size_location: '', sort: '', invoicing: '' };
   S.draftBack = false;
   openDrawer(DRAFT);
   const n = $('#drawer .name-inp'); if (n && !matchMedia('(max-width:860px)').matches) n.focus();
@@ -3100,6 +3225,7 @@ ACT.draftadd = async () => {
   const d = S.draft; if (!d || !canEdit() || S._adding) return;
   const miss = draftMissing(d); if (miss.length) { toast('Still needed: ' + joinList(miss), 'err'); return; }
   S._adding = true; const btn = $('#draftAdd'); if (btn) btn.disabled = true; setDrawerSync('Adding');
+  const w = workStart($('#drawer'), { text: 'Adding ' + (String(d.name).trim() || 'the project') + ' to the board', icon: 'ti-plus' });
   const fields = {};
   DRAFT_KEYS.forEach(k => { const v = d[k]; if (v !== undefined && v !== '' && !(Array.isArray(v) && !v.length)) fields[k] = v; });
   fields.name = String(d.name).trim(); fields.project_code = String(d.project_code).trim();
@@ -3107,8 +3233,9 @@ ACT.draftadd = async () => {
   try {
     const r = await write('project_save', { fields });
     if (!S.projects.some(x => x.id === r.project.id)) S.projects.push(cleanProject(r.project));
+    S._adding = false; await w.done(r.project.name + ' is on the board');
     closeDrawer(true); renderView(); toast(`${r.project.name} added to the board`);
-  } catch (e) { draftUpdate(); setDrawerSync('Not added'); } finally { S._adding = false; }
+  } catch (e) { w.fail(); draftUpdate(); setDrawerSync('Not added'); } finally { S._adding = false; }
 };
 /* + ADD NEW in the client list: go to the Code generator's New client section. A new project in progress is kept and comes back with the client filled in. */
 ACT.clientnew = () => {
@@ -3146,11 +3273,11 @@ ACT.feedback = () => {
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="fbGo">Send</button></div>`);
   $('#fbGo', m).onclick = async () => {
     const message = $('#fbMsg', m).value.trim(); if (!message) { $('#fbMsg', m).focus(); return; }
-    $('#fbGo', m).disabled = true;
+    const w = workStart(m, { text: 'Sending your feedback', sub: 'It goes straight to Oli.', icon: 'ti-send' });
     try {
       await api('feedback', { message, kind: $('#fbKind', m).value, view: S.view, client_version: APP_VERSION, ua: navigator.userAgent });
-      closeModal(); toast('Thanks, feedback sent');
-    } catch (e) { toast(e.message, 'err'); $('#fbGo', m).disabled = false; }
+      await w.done('Thanks, feedback sent'); closeModal(true); toast('Thanks, feedback sent');
+    } catch (e) { w.fail(); toast(e.message, 'err'); }
   };
 };
 
@@ -3220,7 +3347,7 @@ ACT.ppadd = () => {
     <div class="grid2"><div class="field"><span class="lbl">Initials</span><input class="inp" id="paIni" maxlength="3" style="text-transform:uppercase"></div>
     <div class="field"><span class="lbl">Department</span><select class="sel" id="paDept">${S.depts.map(d => `<option value="${d.id}">${esc(d.name)}</option>`).join('')}</select></div></div>
     ${fl ? `<div class="muted" style="font-size:12px">Choose <b>${esc(fl.name)}</b> for freelancers, with Viewer access. They show up in Edit capacity alongside Post.</div>` : ''}
-    <div class="grid2"><div class="field"><span class="lbl">Access</span><select class="sel" id="paAcc">${ACCESS.filter(a => a !== 'superadmin' || superMe).map(a => `<option${a === 'editor' ? ' selected' : ''}>${a}</option>`).join('')}</select></div>
+    <div class="grid2"><div class="field"><span class="lbl">Access</span><select class="sel" id="paAcc">${ACCESS.filter(a => a !== 'superadmin' || superMe).map(a => `<option${a === 'viewer' ? ' selected' : ''}>${a}</option>`).join('')}</select></div>
     <div class="field"><span class="lbl">Passcode (12+ characters, optional)</span><input class="inp" id="paPass" autocomplete="off"></div></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="paGo">Add</button></div>`);
   $('#paGo', m).onclick = async () => {
@@ -3350,7 +3477,8 @@ ACT.rcadd = async el => {
   $('#rcGo', m).onclick = async () => {
     const cv = $('#rcCode', m).value.toUpperCase().replace(/[^A-Z0-9]/g, ''); $('#rcCode', m).value = cv;
     if (cv.length !== 5) { toast('A client code must be exactly 5 letters or numbers', 'err'); $('#rcCode', m).focus(); return; }
-    try { const d = await write('client_add', { name: $('#rcName', m).value, code: $('#rcCode', m).value }); S.clients = d.clients; closeModal(); rerenderBody(); toast(`Added ${d.client.name} (${d.client.code})`); } catch (e) {}
+    const w = workStart(m, { text: 'Adding ' + ($('#rcName', m).value.trim() || 'the client') + ' to the code sheet', sub: 'Saving to the Project Code Generator sheet.', icon: 'ti-building' });
+    try { const d = await write('client_add', { name: $('#rcName', m).value, code: $('#rcCode', m).value }); S.clients = d.clients; await w.done(`${d.client.name} (${d.client.code}) is in the sheet`); closeModal(true); rerenderBody(); toast(`Added ${d.client.name} (${d.client.code})`); } catch (e) { w.fail(); }
   };
 };
 
@@ -3358,8 +3486,8 @@ ACT.rcadd = async el => {
 function setSystem() {
   const h = S.health, link = S.adminKey ? `${location.origin}${location.pathname}?view=live&k=${S.adminKey}` : '';
   const tabs = h && h.tabs ? Object.keys(h.tabs).map(k => `${k}: ${h.tabs[k]}`).join('  |  ') : '';
-  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo110() once') : '';
-  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo110() once';
+  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo120() once') : '';
+  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo120() once';
   return `<div style="max-width:720px;display:flex;flex-direction:column;gap:16px">
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Build</div><div class="kv">
       <span class="muted">Front end</span><span>BOARD ${APP_VERSION}</span>
