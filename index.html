@@ -265,6 +265,9 @@ button.lab-cell:hover { filter: brightness(.94); }
 .tl-pill.none { background: var(--color-background-tertiary); color: var(--color-text-secondary); font-weight: 400; }
 .tl-pill.overdue, .tl-pill.overdue:hover { background: var(--color-text-danger); color: #fff; }
 .tl-pill.overdue:hover { filter: brightness(.92); }
+/* 1.2.2: orange on the day it is due, red (above) once that day has passed */
+.tl-pill.due, .tl-pill.due:hover { background: var(--color-text-warning); color: #fff; }
+.tl-pill.due:hover { filter: brightness(.92); }
 
 /* stage banners */
 .stage-row td { padding: 0; border-bottom: 0; height: auto; overflow: visible; }
@@ -690,8 +693,8 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .cell-pick.orphan .t { color: var(--color-text-warning); }
 .cell-pick .ph { color: var(--color-text-secondary); }
 /* dark mode: the few colours that were written out by hand */
-[data-theme="dark"] .tl-pill:not(.overdue):not(.none) { background: #3A3A43; color: #F2F2F4; }
-[data-theme="dark"] .tl-pill:not(.overdue):not(.none):hover { background: #4A4A55; }
+[data-theme="dark"] .tl-pill:not(.overdue):not(.due):not(.none) { background: #3A3A43; color: #F2F2F4; }
+[data-theme="dark"] .tl-pill:not(.overdue):not(.due):not(.none):hover { background: #4A4A55; }
 [data-theme="dark"] .tl-bh { background: repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 4px, rgba(255,255,255,.02) 4px 8px); }
 [data-theme="dark"] .tl-cell.d.hol { background: rgba(255,255,255,.07); }
 [data-theme="dark"] .legend i.hol { background: repeating-linear-gradient(135deg, rgba(255,255,255,.35) 0 2px, rgba(255,255,255,.1) 2px 4px); }
@@ -717,6 +720,19 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .flag-pill { display: inline-block; font-size: 10.5px; font-weight: 700; line-height: 1.4; padding: 1px 8px; border-radius: 999px; background: var(--stp-alpha); color: var(--color-text-primary); white-space: nowrap; }
 button.flag-btn { border: 0.5px solid var(--color-border-secondary, var(--color-border-tertiary)); background: var(--color-background-secondary); cursor: pointer; font-family: inherit; }
 button.flag-btn:hover { background: var(--stp-alpha); }
+/* 1.2.2 */
+.sub-tbl tr.pp-head td { padding: 22px 8px 8px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.sub-tbl tr.pp-head:first-child td { padding-top: 6px; }
+.pp-count { display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--color-background-tertiary); color: var(--color-text-secondary); }
+.pass-row { display: flex; gap: 8px; align-items: center; } .pass-row .inp { flex: 1; min-width: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .5px; }
+.inp.gen { color: var(--stp); border-color: var(--stp); }
+.inp.gen-done { animation: passpop .7s ease-out; }
+@keyframes passpop { 0% { box-shadow: 0 0 0 0 rgba(255,80,189,.55); } 100% { box-shadow: 0 0 0 12px rgba(255,80,189,0); } }
+.pass-out { display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.pass-out code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 16px; font-weight: 700; letter-spacing: 1px; padding: 8px 14px; border-radius: 10px; background: var(--color-background-tertiary); user-select: all; }
+/* iPhone: Safari zooms the page when a field with small text is tapped. 16px stops that. */
+@media (max-width: 860px) { input:not([type=checkbox]):not([type=color]):not([readonly]), select, textarea { font-size: 16px !important; } }
+@media (prefers-reduced-motion: reduce) { .inp.gen-done { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .adding .av { animation: none; } .adding.work:not(.done) .av::after { animation-duration: 2.4s; } .confetti.sad::before { animation: none; display: none; } .spin { animation-duration: 1.8s; } }
 </style>
 </head>
@@ -733,12 +749,12 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.2.1';
+const APP_VERSION = '1.2.2';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
-const NEED_VER = '1.2.1';   /* the backend must be at least this version */
-const MIN_SCHEMA = 12;   /* the backend must report at least this, or BOARD warns that changes may not save */
+const NEED_VER = '1.2.2';   /* the backend must be at least this version */
+const MIN_SCHEMA = 13;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
 const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
 /* Sunday Treat logo files, kept in the repo next to index.html. If a file will not load, BOARD tries once more, then shows a text wordmark. */
@@ -911,7 +927,9 @@ const isPostStage = s => /post/i.test(s || '');
 const personById = id => S.people.find(p => p.id === id) || null;
 const deptById = id => S.depts.find(d => d.id === id) || null;
 const deptColour = id => fixDept((deptById(id) || {}).colour);
-const activePeople = () => S.people.filter(p => p.active !== false);
+const byName = (a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, { sensitivity: 'base' });
+/* 1.2.2: every people picker runs A to Z */
+const activePeople = () => S.people.filter(p => p.active !== false).sort(byName);
 function av(id, size = '') {
   const p = personById(id);
   if (!p) return `<span class="av av-empty ${size}" title="Unknown">?</span>`;
@@ -931,10 +949,12 @@ const LEAD_ROLES = [['lead', 'Account lead', 'Account'], ['creative', 'Creative 
 const leadOf = (p, role) => (role === 'lead' ? (p.lead || '') : ((p[role] || [])[0] || ''));
 
 /* ---------------- status + invoicing labels (Monday colours) ---------------- */
-/* 1.2.0: this order is also the A to Z sort order for Status. Keep it in step with STATUSES in the backend. */
-const STATUSES = ['Tendering', 'Awaiting Handover', 'Awaiting Kickoff', 'Pre Production', 'Edit', 'Awaiting Client Feedback', 'Complete', 'Failed Pitch', 'Cancelled Project'];
+/* 1.2.0: this order is also the A to Z sort order for Status.
+   1.2.2: these lists are only the starting point. The backend sends the real ones when BOARD loads (applyLabels), so a label only has to change in Code.gs. */
+let STATUSES = ['Tendering', 'Awaiting Handover', 'Awaiting Kickoff', 'Pre Production', 'Edit', 'Awaiting Client Feedback', 'Complete', 'Failed Pitch', 'Cancelled Project'];
 /* 1.2.0: Failed Pitch and Cancelled Project mean the work has ended. Setting either moves the project to Out Processing. */
-const isOutcome = v => ['failed pitch', 'cancelled project'].includes(norm(v));
+let OUTCOMES = ['failed pitch', 'cancelled project'];
+const isOutcome = v => OUTCOMES.includes(norm(v));
 const statusList = () => STATUSES.slice();
 const STATUS_COL = {
   'complete': '#BADB66', 'awaiting client feedback': '#70CE92', 'writing pitch': '#F1B7F1', 'tendering': '#99D4FC', 'failed pitch': '#D9707F',
@@ -948,9 +968,9 @@ function statusColour(s) {
   const i = statusList().indexOf(s); return legible(LABEL_FALLBACK[(i < 0 ? 0 : i) % LABEL_FALLBACK.length], 2);
 }
 /* 1.2.1: invoicing runs in this order. N/A stays as an extra choice for work that needs no invoice (and is what a failed or cancelled project gets). */
-const INV_LABELS = ['Estimate pending', 'Estimate approved', 'Invoicing started', 'Invoicing complete', 'Paid', 'N/A'];
+let INV_LABELS = ['Estimate pending', 'Estimate approved', 'Invoicing started', 'Invoicing complete', 'Paid', 'N/A'];
 /* older labels (from earlier builds and the Monday import) are mapped to their nearest new one */
-const INV_LEGACY = {
+let INV_LEGACY = {
   'not invoiced': 'Estimate pending', 'no estimate': 'Estimate pending', 'estimate pending': 'Estimate pending',
   'estimate accepted': 'Estimate approved', 'estimate approved': 'Estimate approved',
   'partially invoiced': 'Invoicing started', 'invoicing started': 'Invoicing started',
@@ -962,8 +982,18 @@ const invOf = p => normInv(fget(p, 'invoicing'));
 const INV_COL = { 'Estimate pending': '#F4BF73', 'Estimate approved': '#F08A62', 'Invoicing started': '#549DCA', 'Invoicing complete': '#87D4CC', 'Paid': '#69D196', 'N/A': '#999999' };
 const invColour = v => (v ? legible(INV_COL[v] || '#797E91', 2) : '#9AA0AB');
 /* a project is "invoiced enough" for out processing once invoicing is complete, paid or N/A */
-const INV_DONE = ['Invoicing complete', 'Paid', 'N/A'];
+let INV_DONE = ['Invoicing complete', 'Paid', 'N/A'];
 const invOk = p => INV_DONE.includes(invOf(p));
+/* 1.2.2: take the status and invoicing lists from the backend, so the page and Code.gs can never disagree */
+function applyLabels(c) {
+  if (!c) return;
+  const ok = v => Array.isArray(v) && v.length > 0 && v.every(x => typeof x === 'string' && x);
+  if (ok(c.statuses)) STATUSES = c.statuses.slice();
+  if (ok(c.outcome_statuses)) OUTCOMES = c.outcome_statuses.map(norm);
+  if (ok(c.invoicing)) INV_LABELS = c.invoicing.slice();
+  if (ok(c.inv_done)) INV_DONE = c.inv_done.slice();
+  if (c.inv_legacy && typeof c.inv_legacy === 'object' && !Array.isArray(c.inv_legacy)) INV_LEGACY = Object.assign({}, c.inv_legacy);
+}
 function labCell(label, col, attrs, ed, blank) {
   if (!label) return ed ? `<button class="lab-cell" style="background:var(--color-background-tertiary);color:var(--color-text-secondary);text-shadow:none" ${attrs}><span>${esc(blank || '-')}</span></button>` : '';
   return ed ? `<button class="lab-cell" style="background:${col}" ${attrs}><span>${esc(label)}</span></button>` : `<div class="lab-cell" style="background:${col}"><span>${esc(label)}</span></div>`;
@@ -1102,13 +1132,16 @@ function celebrate(set = PARTY, mood) {
 }
 
 /* ---------------- API ---------------- */
-async function api(action, params = {}, timeoutMs = 40000) {
+let leaving = false;   /* 1.2.2: true while the tab is closing, so the last saves go straight out */
+async function api(action, params = {}, timeoutMs = 40000, keep = false) {
   if (!API) throw new Error('No backend connected yet');
   const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), timeoutMs);
   let res, slow = false; const t0 = Date.now();
   const slowT = setTimeout(() => { slow = true; if (S.syncState === 'saved' || S.syncState === 'saving') setSync('slow'); }, 6000);
   try {
-    res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action, token: S.token, cv: APP_VERSION }, params)), signal: ctl.signal });
+    const body = JSON.stringify(Object.assign({ action, token: S.token, cv: APP_VERSION }, params));
+    /* 1.2.2: keepalive lets a save finish even if the tab is closed straight after (browsers allow it for small requests only) */
+    res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body, signal: ctl.signal, keepalive: !!keep && body.length < 30000 });
   } catch (e) { throw new Error(e.name === 'AbortError' ? 'The server took too long to answer' : 'Cannot reach the server'); }
   finally { clearTimeout(to); clearTimeout(slowT); if (slow && S.syncState === 'slow') setSync(inflight ? 'saving' : 'saved'); }
   let data; try { data = await res.json(); } catch (e) { throw new Error('The server sent something unexpected'); }
@@ -1122,9 +1155,9 @@ async function api(action, params = {}, timeoutMs = 40000) {
   return data;
 }
 /* a save that finds the sheet busy is tried again (up to twice). A busy answer means nothing was saved, so trying again is safe. Timeouts are never retried. */
-async function apiRetry(action, params) {
+async function apiRetry(action, params, keep) {
   for (let i = 0; ; i++) {
-    try { return await api(action, params); }
+    try { return await api(action, params, 40000, keep); }
     catch (e) { if (i < 2 && /busy/i.test(e.message)) { await sleep(1500 + Math.random() * 1000); continue; } throw e; }
   }
 }
@@ -1149,7 +1182,9 @@ function setSync(state) {
 let chain = Promise.resolve(), inflight = 0;
 function write(action, params) {
   inflight++; setSync('saving');
-  const p = chain.then(() => apiRetry(action, params)).then(res => {
+  /* 1.2.2: every save is sent so that it survives the tab closing. While the tab is closing it does not wait its turn either. */
+  const send = () => apiRetry(action, params, true);
+  const p = (leaving ? send() : chain.then(send)).then(res => {
     if (res.not_saved && res.not_saved.length) { notSaved = notSaved.concat(res.not_saved); toast('The sheet could not save: ' + res.not_saved.join(', '), 'err'); renderHealthBar(); }
     if (res.version != null) { if (res.version !== S.version + 1) refreshSoon(300 + Math.random() * 700); S.version = Math.max(S.version, res.version); }
     return res;
@@ -1165,7 +1200,7 @@ let blockedAt = 0;
 function blockedEditToast() {
   if (Date.now() - blockedAt < 4000) return; blockedAt = Date.now();
   const li = lockInfo();
-  if (li && !isLockHolder(li)) toast(`${li.by || 'Someone'} has the board until ${hhmm(li.until)}, so that change was not saved.`, 'err');
+  if (li) toast(`BOARD is locked for an update until ${hhmm(li.until)}, so that change was not saved.`, 'err');
   else if (isViewer()) toast('You have view-only access, so that change was not saved.', 'err');
   else toast('That change was not saved.', 'err');
 }
@@ -1174,8 +1209,10 @@ function blockedEditToast() {
 function applyBootstrap(d) {
   badRows = [];
   S.me = d.me; S.people = cleanList(d.people, 'person'); S.depts = cleanList(d.departments, 'department'); S.cfg = Object.assign(S.cfg, d.config);
+  applyLabels(S.cfg);
   S.projects = cleanList(d.projects, 'project').map(cleanProject); S.version = d.version;
   if (d.readonly_key !== undefined) S.adminKey = d.readonly_key;
+  if (S.clients) refreshClients();
   S.health0 = { schema: Number(d.schema_version || 0), ok: d.schema_ok !== false && Number(d.schema_version || 0) >= MIN_SCHEMA, server: d.server_version || 'unknown', problems: (d.schema && d.schema.problems) || [] };
   renderHealthBar();
 }
@@ -1194,7 +1231,7 @@ function renderHealthBar() {
   const lostTxt = lost ? `Not saved: ${esc(uniq(notSaved).join(', '))}.` : '';
   const oddTxt = odd ? `${badRows.length} row${badRows.length === 1 ? '' : 's'} in the sheet ${badRows.length === 1 ? 'has' : 'have'} an id BOARD does not accept (${esc(uniq(badRows).join(', '))}), so ${badRows.length === 1 ? 'it is' : 'they are'} hidden. Ids can only use letters, numbers, - and _.` : '';
   const list = isAdmin() && h && h.problems.length ? `<ul>${h.problems.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
-  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo121().' : 'Oli has been emailed. Run upgradeTo121() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
+  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo122().' : 'Oli has been emailed. Run upgradeTo122() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
   bar.innerHTML = `<i class="ti ${off && !bad && !lost && !odd && !stale ? 'ti-wifi-off' : stale && !bad ? 'ti-refresh' : 'ti-alert-triangle'}"></i><div><div>${offTxt} ${staleTxt} ${why} ${lostTxt} ${oddTxt} ${fix}</div>${list}</div><span class="sp"></span>${stale ? '<button class="btn btn-sm" data-act="reload">Reload</button>' : ''}${lost ? '<button class="btn btn-sm" data-act="healthok">Dismiss</button>' : ''}`;
 }
 let refreshing = false;
@@ -1290,7 +1327,7 @@ function renderShell() {
       </div>
     </nav>
     <div class="main">
-      <div class="topbar">${logoHTML()}${brandName()}<h1 class="page-title" id="pageTitle"></h1>${isViewer() ? '<span class="pill pill-ro">View only</span>' : ''}<span class="spacer"></span>${canEditBase() ? '<button class="btn btn-plain btn-sm lock-btn" id="lockBtn" data-act="standup"></button>' : ''}<span class="sync" id="sync"></span></div>
+      <div class="topbar">${logoHTML()}${brandName()}<h1 class="page-title" id="pageTitle"></h1>${isViewer() ? '<span class="pill pill-ro">View only</span>' : ''}<span class="spacer"></span><span class="sync" id="sync"></span></div>
       <div class="healthbar" id="healthbar" hidden></div>
       <div class="lockbar" id="lockbar" hidden></div>
       <div class="content-wrap"><div class="content" id="content"></div></div>
@@ -1304,33 +1341,25 @@ function renderShell() {
   lockWas = null; renderLockUI(); lockWas = lockKey(); renderHealthBar();
 }
 
-/* ---------------- stand-up lock ---------------- */
-const LOCK_MIN = 15;
+/* ---------------- update lock (1.2.2: replaces the stand-up lock) ----------------
+   A super admin turns it on in Settings > System before putting a new version in. While it is on, BOARD is view only
+   for everyone, super admins included. It ends by itself after 30 minutes, or a super admin can release it. */
+const LOCK_MIN = 30;
 let lockWas = null;
 function lockInfo() {
-  const parts = String((S.cfg || {}).standup_lock_until || '').split('|'), t = Date.parse(String(parts[0] || '').trim());
+  const parts = String((S.cfg || {}).update_lock_until || '').split('|'), t = Date.parse(String(parts[0] || '').trim());
   return !isNaN(t) && t > nowMs() ? { until: t, by: String(parts[1] || '').trim(), id: String(parts[2] || '').trim() } : null;
 }
-const sameId = (a, b) => !!a && !!b && norm(a) === norm(b);
-const isLockHolder = li => !!li && !!S.me && (li.id ? sameId(li.id, S.me.id) : !!li.by && norm(li.by) === norm(S.me.name));
-const lockAllowsMe = () => { const li = lockInfo(); return !li || isLockHolder(li); };
+const lockAllowsMe = () => !lockInfo();
 const lockKey = () => { const li = lockInfo(); return li ? li.until + '|' + li.id : ''; };
 const mmss = ms => { const t = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
 const hhmm = ms => { const d = new Date(ms); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
-const canUnlock = li => !!li && !S.readonly && !!S.me && (S.me.rank >= 2 || isLockHolder(li) || (!li.id && !li.by));
+const canUnlock = () => !S.readonly && !!S.me && S.me.rank >= 3;
 function renderLockUI() {
-  const li = lockInfo(), mine = isLockHolder(li), b = $('#lockBtn'), bar = $('#lockbar');
-  if (b) {
-    b.classList.toggle('on', !!li); b.classList.toggle('mine', mine);
-    b.title = li ? (mine ? 'You have the board. Click to unlock' : (canUnlock(li) ? `${li.by || 'Someone'} has the board. Click to unlock` : `${li.by || 'Someone'} has the board`)) : 'Take the board for 15 minutes: only you can edit';
-    b.innerHTML = li ? `<i class="ti ti-lock"></i><span class="t" id="lockT1">${mmss(li.until - nowMs())}</span>` : `<i class="ti ti-lock-open"></i><span class="t0">Stand-up lock</span>`;
-  }
-  if (bar) {
-    bar.hidden = !li; bar.classList.toggle('mine', mine);
-    if (li) bar.innerHTML = mine
-      ? `<i class="ti ti-lock"></i><span>You have the board. Only you can make changes until ${hhmm(li.until)} (<span id="lockT2">${mmss(li.until - nowMs())}</span> left). Everyone else can still look.</span><span class="sp"></span><button class="btn btn-sm" data-act="standup">Unlock now</button>`
-      : `<i class="ti ti-lock"></i><span>Stand-up lock is on. Only ${esc(li.by || 'the person running stand-up')} can make changes until ${hhmm(li.until)} (<span id="lockT2">${mmss(li.until - nowMs())}</span> left).</span><span class="sp"></span>${canUnlock(li) ? '<button class="btn btn-sm" data-act="standup">Unlock now</button>' : ''}`;
-  }
+  const li = lockInfo(), bar = $('#lockbar');
+  if (!bar) return;
+  bar.hidden = !li;
+  if (li) bar.innerHTML = `<i class="ti ti-lock"></i><span>BOARD is being updated${li.by ? ' by ' + esc(li.by) : ''}. It is view only for everyone until ${hhmm(li.until)} (<span id="lockT2">${mmss(li.until - nowMs())}</span> left). You can look around, but nothing can be changed.</span><span class="sp"></span>${canUnlock() ? '<button class="btn btn-sm" data-act="updlock">Unlock now</button>' : ''}`;
 }
 function lockChanged() {
   renderLockUI(); lockWas = lockKey(); closePop();
@@ -1346,7 +1375,7 @@ setInterval(() => {
 async function setLock(minutes) {
   try {
     flushAll();
-    const r = await write('standup_lock', { minutes });
+    const r = await write('update_lock', { minutes });
     S.cfg = Object.assign(S.cfg, r.config);
   } catch (e) { /* write() shows why */ }
   lockChanged();
@@ -1390,7 +1419,7 @@ function afterRender() {
   setVW();
   if (S.view === 'archive' && !S.ar.loaded && !S.ar.loading) loadArchive(true);
   if (S.view === 'budgets') budLoad();
-  if (S.view === 'codes') { if (!S.clients) loadClients(); updateCodeOut(); }
+  if (S.view === 'codes') { if (!S.clients) loadClients(); else refreshClients(); updateCodeOut(); }
   if (S.view === 'settings') settingsAfter();
   if ((S.view === 'pipeline' || S.view === 'mine') && seesMoney() && !S.clients && !S._clientsTried) { S._clientsTried = true; loadClients(); }
 }
@@ -1416,13 +1445,12 @@ document.addEventListener('keydown', e => {
   }
 });
 
-ACT.standup = async () => {
-  const li = lockInfo();
-  if (li) { if (!canUnlock(li)) { toast('Only ' + (li.by || 'the person running stand-up') + ' or an admin can unlock early'); return; } await setLock(0); if (!lockInfo()) toast('Unlocked. Everyone can edit again.'); return; }
-  if (!canEditBase()) return;
-  if (!await confirmBox(`Take the board for ${LOCK_MIN} minutes? Only you will be able to make changes. Everyone else can still look around, and sees that you have the board. You or an admin can unlock early.`, 'Take the board', false, 'Stand-up lock')) return;
+ACT.updlock = async () => {
+  if (!canUnlock()) { toast('Only a super admin can use the update lock', 'err'); return; }
+  if (lockInfo()) { await setLock(0); if (!lockInfo()) toast('Unlocked. Everyone can edit again.'); return; }
+  if (!await confirmBox(`Lock BOARD for ${LOCK_MIN} minutes? It becomes view only for everyone, you included, until the time runs out or a super admin unlocks it. Use it while you put a new version in.`, 'Lock BOARD', false, 'Update lock')) return;
   await setLock(LOCK_MIN);
-  if (lockInfo() && !lockAllowsMe()) toast('The lock is on but BOARD does not recognise you as the holder. Please send feedback.', 'err');
+  if (lockInfo()) toast(`BOARD is locked until ${hhmm(lockInfo().until)}`);
 };
 
 ACT.go = el => { closePop(); go(el.dataset.v); };
@@ -1471,7 +1499,7 @@ async function showLogin(msg, kind) {
   if (!API) { $('#lgNote').innerHTML = '<b>No backend connected.</b> Paste your Apps Script web app URL into <code>API_URL</code> at the top of index.html.'; return; }
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=ping').then(x => x.json());
-    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo121().`;
+    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo122().`;
     else if (r && vcmp(r.server_version, APP_VERSION) > 0 && !forceUpdate(r.server_version) && $('#lgNote')) $('#lgNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
   } catch (e) {}
 }
@@ -1538,6 +1566,22 @@ function forceUpdate(v, tries) {
   showUpdateScreen(v);
 }
 const WHATS_NEW = [
+  ['1.2.2', [
+    ['ti-lock', 'Update lock replaces the stand-up lock', 'The stand-up lock has gone from the top bar. In its place, a super admin can lock BOARD for 30 minutes from Settings, System, while a new version goes in. BOARD is view only for everyone while it is on, with a banner showing the time left.'],
+    ['ti-users', 'People page in three sections', 'Settings, People now runs Internal, Freelance and Alumni, each A to Z.'],
+    ['ti-key', 'Passcodes when adding someone', 'Add person has a Generate button that spins a passcode into place, and a Copy button. Once they are saved you see the passcode one more time, ready to copy and send. Saving a passcode shows it is working.'],
+    ['ti-sort-ascending-letters', 'People pickers run A to Z', 'Every list you pick a person from is in alphabetical order.'],
+    ['ti-building', 'New clients show up straight away', 'The client list is read again whenever you open it, so a client somebody has just added (Tinder, for one) is there without reloading. If an add looks like it failed but did reach the sheet, BOARD spots that and carries on.'],
+    ['ti-hash', 'Project code in Finance', 'Finance has a Project code column between Account and Invoicing.'],
+    ['ti-calendar-due', 'Timeline goes orange, then red', 'A timeline is orange on the day it is due and red with a warning once that day has passed.'],
+    ['ti-trash', 'Deleted projects are kept', 'Deleting a project moves the whole thing to a Deleted tab in the sheet, so it can be put back.'],
+    ['ti-history', 'The log shows what it was before', 'The change log now records the old value next to the new one.'],
+    ['ti-device-floppy', 'Edits survive closing the tab', 'If you type something and close the tab straight away, the change is still saved.'],
+    ['ti-shield-lock', 'Security fixes', 'Scrambled passcodes are no longer written to the change log, and the ones already there have been removed. A run of wrong sign-ins no longer pauses sign-in for the whole team: Oli is emailed instead, and each name is still locked for 15 minutes after 5 wrong tries.'],
+    ['ti-device-mobile', 'No more zooming on iPhone', 'Tapping a field on a phone no longer zooms the page in.'],
+    ['ti-mail', 'Feedback emails stay separate', 'Each feedback email has its own reference, so they no longer stack into one conversation.'],
+    ['ti-tags', 'Labels come from one place', 'Status and invoicing labels are now read from the backend, so the page and the sheet can never disagree.']
+  ]],
   ['1.2.1', [
     ['ti-coin-pound', 'Invoicing has a new order', 'Estimate pending, Estimate approved, Invoicing started, Invoicing complete, then Paid. N/A is still there for work that needs no invoice. Existing projects have moved across: Not invoiced is now Estimate pending, Partially invoiced is Invoicing started and Invoiced is Invoicing complete. Items in Out processing still unlock once invoicing is complete, paid or N/A.'],
     ['ti-layout-board', 'Finance view rebuilt to match', 'Five tiles and five sections in the new order, each with a plain-English line saying what it is waiting for. N/A and Not set are folded away until you open them.'],
@@ -1879,16 +1923,17 @@ function leadCell(p, role, ed) {
   const inner = `<span class="lstack">${circ}${empty}</span>`;
   return ed ? `<button class="cell-btn" data-act="leadpick" data-id="${p.id}" data-role="${role}" title="${esc(label)}${names ? ': ' + esc(names) : ''}">${inner}</button>` : (list.length ? `<span title="${esc(names)}">${inner}</span>` : '');
 }
-/* the timeline goes red (with a warning) once the last day is today or has passed, unless the project is finished with */
+/* 1.2.2: the timeline goes orange on its last day and red (with a warning) once that day has passed, unless the project is finished with */
 const TL_DONE = ['complete', 'cancelled project', 'failed pitch', 'awaiting handover'];
-function tlOverdue(p) {
-  if (!p || closeoutStages().includes(p.stage) || TL_DONE.includes(norm(p.status))) return false;
-  const e = epOf(p).e; return !!e && e <= todayStr();
+function tlState(p) {
+  if (!p || closeoutStages().includes(p.stage) || TL_DONE.includes(norm(p.status))) return '';
+  const e = epOf(p).e, t = todayStr(); return !e ? '' : (e < t ? 'overdue' : (e === t ? 'due' : ''));
 }
 function timelineCell(p, ed) {
-  const ep = epOf(p), txt = ep.s || ep.e ? frange(ep.s, ep.e) : '', od = !!txt && tlOverdue(p), warn = od ? '⚠️ ' : '';
-  if (ed) return `<button class="tl-pill${txt ? '' : ' none'}${od ? ' overdue' : ''}" data-act="rpopen" data-id="${p.id}" title="${od ? 'Deadline is today or has passed. ' : ''}Set the edit timeline">${txt ? warn + esc(txt) : 'Set dates'}</button>`;
-  return txt ? `<span class="tl-pill${od ? ' overdue' : ''}"${od ? ' title="Deadline is today or has passed"' : ''}>${warn}${esc(txt)}</span>` : '';
+  const ep = epOf(p), txt = ep.s || ep.e ? frange(ep.s, ep.e) : '', st = txt ? tlState(p) : '', warn = st === 'overdue' ? '⚠️ ' : '';
+  const why = st === 'overdue' ? 'The deadline has passed' : (st === 'due' ? 'The deadline is today' : '');
+  if (ed) return `<button class="tl-pill${txt ? '' : ' none'}${st ? ' ' + st : ''}" data-act="rpopen" data-id="${p.id}" title="${why ? why + '. ' : ''}Set the edit timeline">${txt ? warn + esc(txt) : 'Set dates'}</button>`;
+  return txt ? `<span class="tl-pill${st ? ' ' + st : ''}"${why ? ` title="${why}"` : ''}>${warn}${esc(txt)}</span>` : '';
 }
 function marginCell(p, ed) {
   const m = marginOf(p);
@@ -2023,6 +2068,7 @@ ACT.clientpick = el => {
   if (!S.clients) { toast('Clients are still loading. Try again in a moment.'); loadClients(); return; }
   CP.id = p.id; CP.q = '';
   openPop(el, cpHTML()); const pop = $('#pop'); pop.classList.add('pop-lead'); placePop(pop, el);
+  refreshClients();
   const q = $('#cpQ', pop); if (q && !matchMedia('(max-width:860px)').matches) q.focus();
 };
 INP['cp-q'] = el => {
@@ -2294,7 +2340,7 @@ function ecStages() {
   if (!S.ec.internal) { const ex = st.filter(s => !/internal/i.test(s)); if (ex.length) st = ex; }
   return st;
 }
-const ecPeople = () => activePeople().filter(p => /post|freelanc/i.test((deptById(p.department) || {}).name || ''));
+const ecPeople = () => S.people.filter(p => p.active !== false).filter(p => /post|freelanc/i.test((deptById(p.department) || {}).name || ''));
 function ecDayW() {
   const cw = ($('#content') || {}).clientWidth || (innerWidth - 236);
   return Math.max(14, Math.floor((cw - tlLabelW() - 2) / (S.ec.days || 10)));
@@ -2588,11 +2634,12 @@ function wtHTML() {
    1.2.1: rebuilt around the new order (Estimate pending, Estimate approved, Invoicing started, Invoicing complete, Paid), with N/A and Not set folded away.
    Only projects in Live projects or Out processing appear. Anything in the Archive is found in the Archive.
    ================================================================ */
-const FIN_ORDER = ['Estimate pending', 'Estimate approved', 'Invoicing started', 'Invoicing complete', 'Paid', 'N/A', ''];
+const finOrder = () => INV_LABELS.concat(['']);   /* 1.2.2: follows the backend's invoicing list */
+const FIN_TILE = { 'Estimate pending': 'Awaiting approval', 'Estimate approved': 'Ready to invoice', 'Invoicing started': 'More still to send', 'Invoicing complete': 'Awaiting payment', 'Paid': 'Money received' };
 const FIN_SUB = { 'Estimate pending': 'Waiting for the estimate to be approved', 'Estimate approved': 'Approved, ready to start invoicing', 'Invoicing started': 'Some invoices sent, more still to come', 'Invoicing complete': 'All sent, awaiting payment', 'Paid': 'Money received', 'N/A': 'No invoice needed', '': 'Invoicing not set yet' };
 const FIN_COLS = [
   { k: 'name', l: 'Project', w: 320, min: 140, sticky: 1 }, { k: 'client', l: 'Client', w: 190 }, { k: 'stage', l: 'Stage', w: 170 },
-  { k: 'lead', l: 'Account', tip: 'Account lead', w: 120, cc: 1 }, { k: 'invoicing', l: 'Invoicing', w: 220 }
+  { k: 'lead', l: 'Account', tip: 'Account lead', w: 120, cc: 1 }, { k: 'project_code', l: 'Project code', w: 200 }, { k: 'invoicing', l: 'Invoicing', w: 220 }
 ];
 function viewFinance() {
   /* the first time, Not set and N/A start folded away so the sections that need action are what you see */
@@ -2610,14 +2657,14 @@ function finBody() {
   const cnt = l => all.filter(p => inv(p) === l).length;
   const tile = (l, t1, t3) => `<button class="fin-tile click${S.fin.inv === l ? ' sel' : ''}" style="background:${invColour(l)}" data-act="fintile" data-g="${esc(l)}"><span class="t1">${t1}</span><span class="t2">${cnt(l)}</span><span class="t3">${t3}</span></button>`;
   const callout = `<div class="callout"><i class="ti ti-info-circle"></i><span class="tx"><b>Only projects in Live projects or Out processing appear here.</b> Can’t find what you’re looking for? Check the archive instead.</span><button class="btn btn-secondary btn-sm" data-act="go" data-v="archive"><i class="ti ti-archive"></i>Open the Archive</button></div>`;
-  const tiles = `<div class="fin-tiles">${tile('Estimate pending', 'Estimate pending', 'Awaiting approval')}${tile('Estimate approved', 'Estimate approved', 'Ready to invoice')}${tile('Invoicing started', 'Invoicing started', 'More still to send')}${tile('Invoicing complete', 'Invoicing complete', 'Awaiting payment')}${tile('Paid', 'Paid', 'Money received')}</div>`;
+  const tiles = `<div class="fin-tiles">${INV_LABELS.filter(l => norm(l) !== 'n/a').map(l => tile(l, esc(l), FIN_TILE[l] || '')).join('')}</div>`;
   const q = norm(S.fin.q), f = S.fin.inv;
   const show = l => !f || (f === '__none' ? l === '' : f === l);
   const val = (p, k) => k === 'stage' ? S.cfg.stages.indexOf(p.stage) : k === 'lead' ? norm((personById(leadOf(p, 'lead')) || {}).name) : k === 'invoicing' ? INV_LABELS.indexOf(inv(p)) + 1 : norm(p[k]);
   const match = p => !q || norm(p.name + ' ' + p.client + ' ' + p.project_code).includes(q);
-  const groups = FIN_ORDER.filter(show).map(l => {
+  const groups = finOrder().filter(show).map(l => {
     const mine = all.filter(p => inv(p) === l);
-    return { key: l || 'none', title: l || 'Not set', colour: invColour(l), sub: FIN_SUB[l], items: sortRows(mine.filter(match).sort(bySort), 'finance', val), total: mine.length };
+    return { key: l || 'none', title: l || 'Not set', colour: invColour(l), sub: FIN_SUB[l] || '', items: sortRows(mine.filter(match).sort(bySort), 'finance', val), total: mine.length };
   });
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('finance');
   const sel = $('#finSel'); if (sel) sel.innerHTML = finSelOpts();
@@ -2628,6 +2675,7 @@ function finBody() {
       case 'client': return td(c, g, `<span class="cell-txt">${esc(p.client)}</span>`);
       case 'stage': return td(c, g, lchip(p.stage, stageColour(p.stage)));
       case 'lead': return td(c, g, leadCell(p, 'lead', false), 'cc');
+      case 'project_code': return td(c, g, `<span class="cell-txt" title="${esc(p.project_code)}">${esc(p.project_code)}</span>`);
       case 'invoicing': return td(c, g, labCell(inv(p), invColour(inv(p)), `data-act="labpick" data-kind="invoicing" data-id="${p.id}"`, ed), 'zp');
       default: return td(c, g, '');
     }
@@ -2894,9 +2942,27 @@ function findClient(txt) {
   const x = norm(txt); if (!x || !S.clients) return null;
   return S.clients.find(c => norm(c.name) === x) || S.clients.find(c => norm(c.code) === x) || null;
 }
+/* 1.2.2: the client list used to be read once per session, so a client someone else added did not show until a reload.
+   It is now re-read (quietly, at most every 20 seconds) when a client list is opened and when the board picks up a change. Resolves true if the list changed. */
+async function refreshClients(force) {
+  if (!seesMoney() || !S.clients || S._clientsBusy) return false;
+  if (!force && Date.now() - (S._clientsAt || 0) < 20000) return false;
+  S._clientsBusy = true;
+  try {
+    const d = await api('clients'), was = JSON.stringify(S.clients);
+    S._clientsAt = Date.now();
+    if (JSON.stringify(d.clients) === was) return false;
+    S.clients = d.clients;
+    const pop = $('#pop'), q = pop && $('#cpQ', pop);
+    if (q) { const had = document.activeElement === q, st = pop.scrollTop; pop.innerHTML = cpHTML(); pop.scrollTop = st; const q2 = $('#cpQ', pop); if (had && q2) { q2.focus(); q2.setSelectionRange(q2.value.length, q2.value.length); } }
+    if (S.drawer && !focusInDrawer()) refreshDrawer();
+    if (!typing() && !S.dragging) { if (S.view === 'codes' && S.codes.mode !== 'new') renderView(); else if (S.view === 'pipeline' || S.view === 'mine' || (S.view === 'settings' && S.settingsTab === 'clients')) rerenderBody(); }
+    return true;
+  } catch (e) { return false; } finally { S._clientsBusy = false; }
+}
 async function loadClients() {
   if (!seesMoney()) { S.clients = []; return; }
-  try { const d = await api('clients'); S.clients = d.clients; } catch (e) { S.clients = []; toast(e.message, 'err'); }
+  try { const d = await api('clients'); S.clients = d.clients; S._clientsAt = Date.now(); } catch (e) { S.clients = []; toast(e.message, 'err'); }
   if (S.view === 'codes') renderView();
   else if (S.view === 'pipeline' && !typing()) rerenderBody();
   else if (S.view === 'settings' && S.settingsTab === 'clients') rerenderBody();
@@ -2950,12 +3016,26 @@ ACT.cgadd = async el => {
   const w = workModal('Adding ' + (String(c.newName).trim() || 'the client') + ' to the code sheet', 'Saving to the Project Code Generator sheet.', 'ti-building');
   try {
     const d = await write('client_add', { name: c.newName, code: c.newCode });
-    S.clients = d.clients; c.mode = 'existing'; c.client = d.client.name; c.codeEdited = false; c.newName = ''; c.newCode = '';
+    S.clients = d.clients; S._clientsAt = Date.now();
     await w.done(`${d.client.name} (${d.client.code}) is in the sheet`);
-    toast(`Added ${d.client.name} (${d.client.code})`); renderView(); updateCodeOut();
-    if (S.draft && S.draftBack) { S.draft.client = d.client.name; S.draft.client_code = d.client.code; S.draftBack = false; ACT.draftreturn(); }
-  } catch (e) { w.fail(); }
+    toast(`Added ${d.client.name} (${d.client.code})`); cgAdded(d.client);
+  } catch (e) {
+    w.fail();
+    /* 1.2.2: an add that timed out, or was pressed twice, may still have reached the sheet. Read the list again, and if the client is there, carry on as if it had worked. */
+    const want = norm(c.newName);
+    try {
+      const d = await api('clients'); S.clients = d.clients; S._clientsAt = Date.now();
+      const hit = want && S.clients.find(x => norm(x.name) === want);
+      if (hit) { toast(`${hit.name} (${hit.code}) is in the code sheet and ready to use`); cgAdded(hit); }
+    } catch (e2) {}
+  }
 };
+function cgAdded(client) {
+  const c = S.codes;
+  c.mode = 'existing'; c.client = client.name; c.codeEdited = false; c.newName = ''; c.newCode = '';
+  renderView(); updateCodeOut();
+  if (S.draft && S.draftBack) { S.draft.client = client.name; S.draft.client_code = client.code; S.draftBack = false; ACT.draftreturn(); }
+}
 ACT.cgcopy = async () => {
   const v = $('#cgOut').textContent; if (!genCode(cgCurrentCode(), S.codes.title)) return;
   try { await navigator.clipboard.writeText(v); toast('Copied ' + v); } catch (e) { toast('Copy failed. Select the code and copy it.', 'err'); }
@@ -2996,6 +3076,14 @@ function saveFields(id, fields, from, immediate) {
 }
 function flushAll() { Object.keys(flushers).forEach(k => { clearTimeout(saveTimers[k]); flushers[k](); }); }
 addEventListener('beforeunload', () => { if (Object.keys(flushers).length) flushAll(); });
+/* 1.2.2: closing the tab, or leaving the page on a phone, no longer loses the last edit. Whatever is being typed is committed and sent before the page goes. */
+addEventListener('pagehide', () => {
+  leaving = true;
+  try { const a = document.activeElement; if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.closest('.content, #drawer')) a.blur(); } catch (e) {}
+  flushAll();
+});
+addEventListener('pageshow', () => { leaving = false; });
+document.addEventListener('visibilitychange', () => { if (document.hidden && Object.keys(flushers).length) flushAll(); });
 
 /* ---------------- drawer ---------------- */
 const clientNames = () => uniq((S.clients || []).map(c => c.name).concat(S.projects.map(p => p.client)).filter(Boolean)).sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
@@ -3018,7 +3106,7 @@ function acctBlock(p, ro, arch) {
     ${cover ? `<div class="muted" style="font-size:11px">${esc((personById(cover) || {}).name || '')} shows in front on the board. ${ids.map(i => esc((personById(i) || {}).name || '')).join(', ')} shows greyed out with a palm tree.</div>` : ''}</div>`}`;
 }
 function drawerHTML(p, arch) {
-  const isDraft = p === S.draft, locked = !arch && !!S.drawerLocked, li = lockInfo(), sl = !arch && !!li && !isLockHolder(li);
+  const isDraft = p === S.draft, locked = !arch && !!S.drawerLocked, li = lockInfo(), sl = !arch && !!li;
   /* 1.2.0: an archived project opens locked. Edit it only after confirming. */
   const archLocked = arch && !isDraft && S.arUnlocked !== p.id;
   const ro = !canEdit() || locked || archLocked, pub = S.readonly, basic = pub || !seesMoney();
@@ -3030,7 +3118,7 @@ function drawerHTML(p, arch) {
   const archBtn = canArchive(p) ? '' : ' is-locked';
   const m = marginOf(p), invV = invOf(p);
   return `
-  ${locked ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>View only here. Edit it on the Project board.</span><span class="sp"></span>${canEditBase() ? `<button class="btn btn-ghost btn-sm" data-act="editonboard" data-id="${p.id}">Edit on Project board</button>` : ''}</div>` : (archLocked ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>This project is in the Archive and is locked, so nothing changes by accident.</span><span class="sp"></span>${canEditBase() ? `<button class="btn btn-ghost btn-sm" data-act="arunlock" data-id="${p.id}"><i class="ti ti-lock-open"></i>Unlock to edit</button>` : ''}</div>` : (sl ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>Stand-up lock is on. Only ${esc(li.by || 'the person running stand-up')} can make changes right now.</span></div>` : ''))}
+  ${locked ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>View only here. Edit it on the Project board.</span><span class="sp"></span>${canEditBase() ? `<button class="btn btn-ghost btn-sm" data-act="editonboard" data-id="${p.id}">Edit on Project board</button>` : ''}</div>` : (archLocked ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>This project is in the Archive and is locked, so nothing changes by accident.</span><span class="sp"></span>${canEditBase() ? `<button class="btn btn-ghost btn-sm" data-act="arunlock" data-id="${p.id}"><i class="ti ti-lock-open"></i>Unlock to edit</button>` : ''}</div>` : (sl ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>BOARD is locked for an update until ${hhmm(li.until)}. View only for now.</span></div>` : ''))}
   <div class="drawer-head"><div><div class="lbl">${arch ? 'Archived project' : (isDraft ? 'New project' : 'Project')}</div></div><span class="sp"></span><span class="muted" style="font-size:11px;font-weight:600" id="dsync"></span>
     <button class="icon-btn" data-act="closedrawer" title="Close"><i class="ti ti-x"></i></button></div>
   <div class="drawer-body" id="drawerBody">
@@ -3076,6 +3164,7 @@ function openDrawer(id, from) {
   const d = document.createElement('aside'); d.className = 'drawer'; d.id = 'drawer'; d.innerHTML = drawerHTML(p, arch);
   document.body.appendChild(sc); document.body.appendChild(d);
   if (seesMoney() && !S.clients) loadClients().then(() => { if (S.drawer === id && !focusInDrawer()) refreshDrawer(); });
+  else refreshClients();
 }
 const focusInDrawer = () => { const a = document.activeElement; return !!(a && a.closest && a.closest('#drawer') && /^(INPUT|TEXTAREA)$/.test(a.tagName)); };
 function refreshDrawer(force) {
@@ -3200,8 +3289,8 @@ ACT.restore = async el => {
 ACT.delproject = async el => {
   if (!canDelete()) { toast('Only admins can delete a project', 'err'); return; }
   const id = el.dataset.id, from = S.drawerFrom, p = recordFor(id, from); if (!p) return;
-  if (!await confirmBox(`Permanently delete "${p.name}"? It disappears for everyone. A copy is kept in the sheet's Log tab and in the nightly backup, so Oli can put it back if needed.`, 'Delete', true, 'Delete project')) return;
-  const w = workModal('Deleting ' + p.name, 'Taking it off the sheet. A copy is kept in the Log tab.', 'ti-trash');
+  if (!await confirmBox(`Permanently delete "${p.name}"? It disappears for everyone. The whole project is moved to the sheet's Deleted tab, so Oli can put it back if needed.`, 'Delete', true, 'Delete project')) return;
+  const w = workModal('Deleting ' + p.name, 'Moving it to the Deleted tab of the sheet.', 'ti-trash');
   try {
     await write('project_delete', { id, from: from === 'archive' ? 'archive' : undefined });
     if (from === 'archive') { S.ar.rows = S.ar.rows.filter(x => x.id !== id); S.ar.total--; } else S.projects = S.projects.filter(x => x.id !== id);
@@ -3311,26 +3400,30 @@ function settingsBody() {
 ACT.settab = el => { S.settingsTab = el.dataset.t; renderView(); };
 function settingsAfter() {
   if (S.settingsTab === 'system' && !S.health) loadHealth();
-  if (S.settingsTab === 'clients') { if (!S.clients) loadClients(); if (!S.ar.loaded && !S.ar.loading) loadArchive(true); }
+  if (S.settingsTab === 'clients') { if (!S.clients) loadClients(); else refreshClients(); if (!S.ar.loaded && !S.ar.loading) loadArchive(true); }
 }
 async function loadHealth() { try { S.health = await api('health'); } catch (e) { S.health = { error: e.message }; } if (S.view === 'settings' && S.settingsTab === 'system') rerenderBody(); }
 
 /* ---- people ---- */
 const ACCESS = ['viewer', 'editor', 'admin', 'superadmin'];
 const ACCESS_HELP = 'Viewer: sees the board without money, notes or out processing (freelancers). Editor: edits projects. Admin: also Settings, people and departments, and deleting whole projects. Super admin: everything an admin can do, plus managing other admins and super admins.';
-/* 1.1.0: active people first, then an Alumni heading and anyone who is no longer active. Each group runs highest access first, then by name. */
-const ALUMNI_ROW = '<tr class="alumni-div"><td colspan="8"><span class="lbl">Alumni</span><span class="muted" style="margin-left:10px;font-size:12px">No longer active. Switch Active back on to bring someone back.</span></td></tr>';
+/* 1.2.2: three sections, Internal, Freelance (anyone in the Freelance department) and Alumni (no longer active), each A to Z */
+const isFreelance = p => /freelanc/i.test((deptById(p.department) || {}).name || '');
+const ppHead = h => `<tr class="pp-head"><td colspan="8"><span class="lbl">${esc(h.head)}</span><span class="pp-count">${h.n}</span><span class="muted" style="margin-left:10px;font-size:12px">${esc(h.sub)}</span></td></tr>`;
 function ppSplit() {
-  const by = (a, b) => (b.rank || 0) - (a.rank || 0) || String(a.name).localeCompare(String(b.name));
-  const live = S.people.filter(p => p.active !== false).sort(by), old = S.people.filter(p => p.active === false).sort(by);
-  return old.length ? live.concat(['alumni'], old) : live;
+  const live = S.people.filter(p => p.active !== false), out = [];
+  [['Internal', 'The Sunday Treat team.', live.filter(p => !isFreelance(p))],
+   ['Freelance', 'Anyone in the Freelance department.', live.filter(isFreelance)],
+   ['Alumni', 'No longer active. Switch Active back on to bring someone back.', S.people.filter(p => p.active === false)]
+  ].forEach(([head, sub, list]) => { if (list.length) { out.push({ head, sub, n: list.length }); list.slice().sort(byName).forEach(p => out.push(p)); } });
+  return out;
 }
 function setPeople() {
   const superMe = S.me.rank >= 3;
   return `<div class="row wrap" style="margin-bottom:12px"><div class="muted sp" style="min-width:240px">Add the team and freelancers, set their department (this sets the circle colour and decides who shows in Edit capacity) and what they can do. Deactivate instead of deleting so history keeps their initials.${superMe ? '' : ' Admins and super admins can only be changed by a super admin.'}</div><button class="btn btn-primary" data-act="ppadd"><i class="ti ti-plus"></i>Add person</button></div>
   <div class="muted" style="font-size:12px;margin-bottom:12px;max-width:820px">${ACCESS_HELP}</div>
   <div class="tbl-wrap"><table class="sub-tbl" style="min-width:860px"><thead><tr><th></th><th>Name</th><th>Initials</th><th>Department</th><th>Access</th><th>Passcode</th><th>Active</th><th></th></tr></thead><tbody>
-  ${ppSplit().map(p => { if (p === 'alumni') return ALUMNI_ROW; const locked = p.rank >= 2 && p.id !== S.me.id && !superMe; const self = p.id === S.me.id; const d = locked ? 'disabled' : '';
+  ${ppSplit().map(p => { if (p.head) return ppHead(p); const locked = p.rank >= 2 && p.id !== S.me.id && !superMe; const self = p.id === S.me.id; const d = locked ? 'disabled' : '';
     return `<tr data-pid="${esc(p.id)}"><td>${av(p.id, 'av-lg')}</td>
       <td><input class="inp" style="min-width:160px" value="${esc(p.name)}" data-chg="pp" data-id="${p.id}" data-k="name" ${d}></td>
       <td><input class="inp" style="width:64px;text-transform:uppercase" maxlength="3" value="${esc(p.initials)}" data-chg="pp" data-id="${p.id}" data-k="initials" ${d}></td>
@@ -3351,10 +3444,20 @@ INP.pp = el => {
 ACT.ppass = el => {
   const id = el.dataset.id, p = personById(id);
   const m = openModal(`<h3>Passcode for ${esc(p.name)}</h3><div class="muted">At least 12 characters. Passcodes are stored scrambled (hashed) in the backend, never in the sheet, so nobody can read them back. Send it to ${esc(p.name)} separately from the BOARD link, and ask them to change it from the key icon next to their name. Leave blank and save to remove it.</div>
-    <div class="field"><span class="lbl">New passcode</span><div class="row"><input class="inp" id="ppVal" type="text" autocomplete="off"><button class="btn btn-ghost btn-sm" id="ppGen">Generate</button></div></div>
+    <div class="field"><span class="lbl">New passcode</span><div class="pass-row"><input class="inp" id="ppVal" type="text" autocomplete="off" spellcheck="false"><button class="btn btn-ghost btn-sm" id="ppGen" type="button"><i class="ti ti-dice-5"></i>Generate</button><button class="btn btn-ghost btn-sm" id="ppCopy" type="button" title="Copy the passcode"><i class="ti ti-copy"></i>Copy</button></div></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="ppGo">Save</button></div>`);
-  $('#ppGen', m).onclick = () => { $('#ppVal', m).value = makePass(); };
-  $('#ppGo', m).onclick = async () => { const v = $('#ppVal', m).value; if (v && v.length < 12) { toast('Passcodes need at least 12 characters', 'err'); return; } try { const r = await write('person_save', { person: { id, passcode: v } }); S.people = cleanList(r.people, 'person'); closeModal(); rerenderBody(); toast('Passcode updated'); } catch (e) {} };
+  $('#ppGen', m).onclick = () => passSpin($('#ppVal', m));
+  $('#ppCopy', m).onclick = () => { const v = $('#ppVal', m).value; if (v) copyText(v, 'Passcode copied'); };
+  $('#ppGo', m).onclick = async () => {
+    const inp = $('#ppVal', m); if (inp._spin || S._savingPass) return;
+    const v = inp.value; if (v && v.length < 12) { toast('Passcodes need at least 12 characters', 'err'); return; }
+    S._savingPass = true;
+    const w = workStart(m, { text: (v ? 'Saving the passcode for ' : 'Removing the passcode for ') + p.name, sub: 'Scrambling it and saving. This can take a few seconds.', icon: 'ti-key' });
+    try {
+      const r = await write('person_save', { person: { id, passcode: v } }); S.people = cleanList(r.people, 'person');
+      await w.done(v ? 'Passcode saved' : 'Passcode removed'); closeModal(true); rerenderBody(); toast('Passcode updated');
+    } catch (e) { w.fail(); } finally { S._savingPass = false; }
+  };
 };
 ACT.ppadd = () => {
   const superMe = S.me.rank >= 3, fl = S.depts.find(d => /freelanc/i.test(d.name));
@@ -3363,11 +3466,13 @@ ACT.ppadd = () => {
     <div class="grid2"><div class="field"><span class="lbl">Initials</span><input class="inp" id="paIni" maxlength="3" style="text-transform:uppercase"></div>
     <div class="field"><span class="lbl">Department</span><select class="sel" id="paDept">${S.depts.map(d => `<option value="${d.id}">${esc(d.name)}</option>`).join('')}</select></div></div>
     ${fl ? `<div class="muted" style="font-size:12px">Choose <b>${esc(fl.name)}</b> for freelancers, with Viewer access. They show up in Edit capacity alongside Post.</div>` : ''}
-    <div class="grid2"><div class="field"><span class="lbl">Access</span><select class="sel" id="paAcc">${ACCESS.filter(a => a !== 'superadmin' || superMe).map(a => `<option${a === 'viewer' ? ' selected' : ''}>${a}</option>`).join('')}</select></div>
-    <div class="field"><span class="lbl">Passcode (12+ characters, optional)</span><input class="inp" id="paPass" autocomplete="off"></div></div>
+    <div class="field"><span class="lbl">Access</span><select class="sel" id="paAcc">${ACCESS.filter(a => a !== 'superadmin' || superMe).map(a => `<option${a === 'viewer' ? ' selected' : ''}>${a}</option>`).join('')}</select></div>
+    <div class="field"><span class="lbl">Passcode (12+ characters). Without one they cannot sign in yet</span><div class="pass-row"><input class="inp" id="paPass" autocomplete="off" spellcheck="false"><button class="btn btn-ghost btn-sm" id="paGen" type="button"><i class="ti ti-dice-5"></i>Generate</button><button class="btn btn-ghost btn-sm" id="paCopy" type="button" title="Copy the passcode"><i class="ti ti-copy"></i>Copy</button></div></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="paGo">Add</button></div>`);
+  $('#paGen', m).onclick = () => passSpin($('#paPass', m));
+  $('#paCopy', m).onclick = () => { const v = $('#paPass', m).value; if (v) copyText(v, 'Passcode copied'); };
   $('#paGo', m).onclick = async () => {
-    if (S._addingPerson) return;
+    if (S._addingPerson || $('#paPass', m)._spin) return;
     const name = $('#paName', m).value.trim(); if (!name) { $('#paName', m).focus(); return; }
     const person = { name, initials: $('#paIni', m).value, department: $('#paDept', m).value, access: $('#paAcc', m).value };
     if ($('#paPass', m).value) { if ($('#paPass', m).value.length < 12) { toast('Passcodes need at least 12 characters', 'err'); return; } person.passcode = $('#paPass', m).value; }
@@ -3382,7 +3487,15 @@ ACT.ppadd = () => {
     try {
       const r = await write('person_save', { person }); S.people = cleanList(r.people, 'person');
       ov.classList.add('done'); $('.av', ov).innerHTML = '<i class="ti ti-check"></i>'; $('.at', ov).textContent = name + ' is on BOARD'; $('.as', ov).textContent = '';
-      await new Promise(res => setTimeout(res, 800));
+      if (person.passcode) {
+        /* 1.2.2: the passcode is shown once more with a Copy button, because it cannot be read back later */
+        $('.as', ov).textContent = 'Send them this passcode, separately from the BOARD link. It cannot be shown again after you close this.';
+        const box = document.createElement('div'); box.className = 'pass-out';
+        box.innerHTML = `<code>${esc(person.passcode)}</code><button class="btn btn-ghost btn-sm" type="button" id="paOutCopy"><i class="ti ti-copy"></i>Copy</button><button class="btn btn-primary btn-sm" type="button" id="paOutDone">Done</button>`;
+        ov.appendChild(box);
+        $('#paOutCopy', ov).onclick = () => copyText(person.passcode, 'Passcode copied');
+        await new Promise(res => { $('#paOutDone', ov).onclick = res; });
+      } else await new Promise(res => setTimeout(res, 800));
       modalLock = false; closeModal(true); rerenderBody();
       const nu = S.people.find(x => !before.has(x.id)), row = nu && $('tr[data-pid="' + nu.id + '"]');
       if (row) { row.classList.add('row-new'); row.scrollIntoView({ block: 'center', behavior: 'smooth' }); setTimeout(() => row.classList.remove('row-new'), 2600); }
@@ -3502,9 +3615,14 @@ ACT.rcadd = async el => {
 function setSystem() {
   const h = S.health, link = S.adminKey ? `${location.origin}${location.pathname}?view=live&k=${S.adminKey}` : '';
   const tabs = h && h.tabs ? Object.keys(h.tabs).map(k => `${k}: ${h.tabs[k]}`).join('  |  ') : '';
-  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo121() once') : '';
-  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo121() once';
+  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo122() once') : '';
+  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo122() once';
+  const li = lockInfo();
+  const lockPanel = S.me.rank >= 3 ? `<div class="panel pad"><div class="lbl" style="margin-bottom:6px">Update lock</div>
+      <div class="muted" style="margin-bottom:10px">Makes BOARD view only for everyone, you included, for ${LOCK_MIN} minutes, so nothing changes while a new version goes in. Everyone sees a banner with the time left. It ends by itself, or a super admin can unlock it early. Only super admins see this.</div>
+      <div class="row wrap"><button class="btn ${li ? 'btn-ghost' : 'btn-primary'}" data-act="updlock"><i class="ti ${li ? 'ti-lock-open' : 'ti-lock'}"></i>${li ? 'Unlock now' : `Lock BOARD for ${LOCK_MIN} minutes`}</button>${li ? `<span class="muted">Locked${li.by ? ' by ' + esc(li.by) : ''} until ${hhmm(li.until)} (<span id="lockT1">${mmss(li.until - nowMs())}</span> left)</span>` : ''}</div></div>` : '';
   return `<div style="max-width:720px;display:flex;flex-direction:column;gap:16px">
+    ${lockPanel}
     <div class="panel pad"><div class="lbl" style="margin-bottom:10px">Build</div><div class="kv">
       <span class="muted">Front end</span><span>BOARD ${APP_VERSION}</span>
       <span class="muted">Backend</span><span>${h ? esc(h.server_version || h.error || '') : 'Checking'}</span>
@@ -3517,9 +3635,9 @@ function setSystem() {
       <span class="muted">Sheet check</span><span>${sch ? (sch.ok ? '<b class="pct-good">All columns present</b>' : `<b class="pct-low">${sch.problems.map(esc).join('<br>')}</b>`) : 'Checking'}</span>
       <span class="muted">Daily check</span><span>${esc(chk)}</span>
       <span class="muted">Backups</span><span>${bk}</span>
-      <span class="muted">Change log</span><span>Every change is recorded in the Log tab of the sheet: who, what and when. Passcodes are never logged.</span>
+      <span class="muted">Change log</span><span>Every change is recorded in the Log tab of the sheet: who, what and when, with the old value next to the new one. Passcodes are never logged. Deleted projects are kept in the Deleted tab.</span>
       <span class="muted">Project data</span><span>Saved in the sheet only. Nothing about projects is kept in a browser.</span>
-      <span class="muted">Statuses</span><span>Fixed in BOARD's code (${STATUSES.length} of them), the same for everyone</span>
+      <span class="muted">Statuses</span><span>Set in the backend (${STATUSES.length} of them), the same for everyone</span>
       <span class="muted">Saved pods</span><span>Shared with the whole team, saved in the sheet</span>
       <span class="muted">Bank holidays</span><span>England and Wales, worked out from the standing rules and checked against gov.uk every April and October (you get a short email). Last check: ${h ? esc(h.bank_holiday_checked || 'not yet') : ''}</span>
       <span class="muted">Oldest page allowed</span><span>${h ? esc(h.min_client_version || '') : ''}. Older copies of BOARD are asked to reload.</span>
@@ -3537,6 +3655,22 @@ ACT.rorotate = async () => {
   try { const r = await write('readonly_rotate', {}); S.adminKey = r.readonly_key; rerenderBody(); toast('New link ready'); } catch (e) {}
 };
 /* ---- change my own passcode (everyone) ---- */
+/* 1.2.2: the passcode spins into place, one character settling at a time (straight in if the device asks for less motion) */
+function passSpin(inp, done) {
+  if (!inp || inp._spin) return;
+  const fin = makePass(), w = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { inp.value = fin; if (done) done(fin); return; }
+  let i = 0; inp._spin = true; inp.classList.remove('gen-done'); inp.classList.add('gen');
+  const t = setInterval(() => {
+    i++; const fixed = Math.min(fin.length, Math.floor(i / 2));
+    let s = fin.slice(0, fixed); for (let k = fixed; k < fin.length; k++) s += w[Math.floor(Math.random() * w.length)];
+    inp.value = s;
+    if (fixed >= fin.length) { clearInterval(t); inp._spin = false; inp.value = fin; inp.classList.remove('gen'); inp.classList.add('gen-done'); setTimeout(() => inp.classList.remove('gen-done'), 750); if (done) done(fin); }
+  }, 32);
+}
+async function copyText(v, okMsg) {
+  try { await navigator.clipboard.writeText(v); toast(okMsg || 'Copied'); return true; } catch (e) { toast('Could not copy. Select it and copy by hand.', 'err'); return false; }
+}
 function makePass() {
   const w = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789', a = new Uint32Array(12); crypto.getRandomValues(a);
   return Array.from(a, n => w[n % w.length]).join('');
@@ -3566,6 +3700,7 @@ ACT.healthok = () => { notSaved = []; renderHealthBar(); };
 function loadPublic(d) {
   badRows = [];
   S.people = cleanList(d.people, 'person'); S.depts = cleanList(d.departments, 'department'); S.cfg.stages = d.stages; S.cfg.public_stages = d.stages;
+  applyLabels({ statuses: d.statuses, outcome_statuses: d.outcome_statuses });
   S.projects = cleanList(d.projects, 'project').map(cleanProject); S.me = { id: '', rank: -1, name: '' };
 }
 ACT.rochange = el => { location.hash = '#/' + el.dataset.v; };
