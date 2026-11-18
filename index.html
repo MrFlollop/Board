@@ -296,6 +296,15 @@ button.lab-cell:hover { filter: brightness(.94); }
 .btn.is-locked { opacity: .5; }
 
 /* meeting mode (0.8.0: calmer sizes, back / next sit in the top bar so they never move) */
+/* 1.3.1: Ready to archive panel, sits above Meeting mode in Out processing */
+.rdy { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin: 16px 20px 0; padding: 14px 20px; border: 1px solid var(--color-border-tertiary); border-radius: 20px; background: var(--color-background-secondary); position: sticky; left: 20px; width: calc(var(--vw, 100vw) - 40px); max-width: calc(100vw - 40px); }
+.rdy-i { width: 44px; height: 44px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 22px; background: var(--color-background-primary); border: 1px solid var(--color-border-tertiary); flex: none; }
+.rdy-t { flex: 1; min-width: 200px; }
+.rdy-b { font-size: 16px; font-weight: 800; }
+.rdy-n { font-size: 12px; margin-top: 2px; }
+.rdy-list { display: flex; flex-direction: column; gap: 2px; max-height: 280px; overflow: auto; margin: 10px 0; padding: 4px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--r-md); }
+.rdy-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; cursor: pointer; }
+.rdy-row:hover { background: var(--color-background-secondary); }
 /* 1.2.3: Meeting mode refresh. A progress strip, a hero with a ring, then grouped cards with one row per question instead of a grid of boxes. */
 .wt { --wt-pt: #B80E7A; margin: 16px 20px 8px; border: 1px solid var(--color-border-tertiary); border-radius: 20px; background: var(--color-background-primary); position: sticky; left: 20px; width: calc(var(--vw, 100vw) - 40px); max-width: calc(100vw - 40px); overflow: hidden; }
 [data-theme="dark"] .wt { --wt-pt: #FF7FCF; }
@@ -841,11 +850,11 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.3.0';
+const APP_VERSION = '1.3.1';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
-const NEED_VER = '1.3.0';   /* the backend must be at least this version */
+const NEED_VER = '1.3.1';   /* the backend must be at least this version */
 const MIN_SCHEMA = 15;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
 const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
@@ -1484,19 +1493,25 @@ function lockChanged(fresh) {
   else if (fresh || was === '') lockAnim(lockInfo());
 }
 setInterval(() => {
-  if (!S.me) return;
+  if (!S.me || lockBusy) return;
   const now = lockKey();
   if (lockWas !== null && now !== lockWas) { lockChanged(); return; }
   const li = lockInfo(); if (!li) return;
   const t = mmss(li.until - nowMs()); ['#lockT1', '#lockT2'].forEach(q => { const e = $(q); if (e) e.textContent = t; });
 }, 1000);
-async function setLock(minutes) {
+/* 1.3.1: locking and unlocking show the same working animation as every other save (w), then the big lock animation plays for a lock.
+   lockBusy keeps the once-a-second check from starting that animation early, while the working box is still on screen. */
+let lockBusy = false;
+async function setLock(minutes, w) {
+  lockBusy = true; let ok = true;
   try {
     flushAll();
     const r = await write('update_lock', { minutes });
     S.cfg = Object.assign(S.cfg, r.config);
-  } catch (e) { /* write() shows why */ }
-  lockChanged(minutes > 0);
+  } catch (e) { ok = false; /* write() shows why */ }
+  if (w) { if (ok) await w.done(minutes > 0 ? 'BOARD is locked' : 'BOARD is unlocked', 800); else w.fail(); }
+  lockBusy = false;
+  lockChanged(ok && minutes > 0);
 }
 function markNav() {
   $$('[data-nav]').forEach(b => b.classList.toggle('on', b.dataset.nav === S.view));
@@ -1565,9 +1580,9 @@ document.addEventListener('keydown', e => {
 
 ACT.updlock = async () => {
   if (!canUnlock()) { toast('Only a super admin can use the update lock', 'err'); return; }
-  if (lockInfo()) { await setLock(0); if (!lockInfo()) toast('Unlocked. Everyone can edit again.'); return; }
+  if (lockInfo()) { await setLock(0, workModal('Unlocking BOARD', 'Letting everyone edit again.', 'ti-lock-open')); if (!lockInfo()) toast('Unlocked. Everyone can edit again.'); return; }
   if (!await confirmBox(`Lock BOARD for ${LOCK_MIN} minutes? It becomes view only for everyone, you included, until the time runs out or a super admin unlocks it. Use it while you put a new version in.`, 'Lock BOARD', false, 'Update lock')) return;
-  await setLock(LOCK_MIN);
+  await setLock(LOCK_MIN, workModal('Locking BOARD', 'Making BOARD view only for everyone. This can take a few seconds.', 'ti-lock'));
   if (lockInfo()) toast(`BOARD is locked until ${hhmm(lockInfo().until)}`);
 };
 
@@ -1687,18 +1702,23 @@ function forceUpdate(v, tries) {
    A feature release (x.x.0) is [version, rows]. Each row is [icon, title, text, thanks]. It leads the page.
    A fix release (x.x.1 and up) is [version, lines]. Each line is [text, thanks]: ONE change per line, so a credit only ever sits on the change that person raised.
    (An old-style [version, 'text', thanks] still works and counts as one line.) Keep a line to one or two short sentences (FIX_MAX letters).
-   thanks is a list of first names for anyone other than Oli who asked for that change. Oli's own feedback is never credited.
+   thanks is a list of first names for whoever asked for that change, Oli included (from 1.3.1 his own feedback is thanked too).
    The page only ever shows the CURRENT release line (APP_VERSION 1.4.x shows 1.4, and so on), so this list can keep growing without the page getting longer. */
 const FIX_MAX = 160;
 const WHATS_NEW = [
+  ['1.3.1', [
+    ['Out processing has a Ready to archive panel at the top, so everything that is finished can go to the Archive in one go.', ['Oli']],
+    ['Locking or unlocking BOARD now shows the same working animation as every other save.', ['Oli']],
+    ['Release notes now thank whoever raised a change, Oli included, and Amy is thanked for the clear deadlines.', ['Oli']]
+  ]],
   ['1.3.0', [
-    ['ti-calendar-due', 'Clear deadlines for feedback and edits', 'Set a project to Awaiting Client Feedback and BOARD asks when feedback is due. The Timeline then counts working days only: a green Due tomorrow and Due today, then a red count of days overdue. Edit uses the same words. Orange is gone.'],
+    ['ti-calendar-due', 'Clear deadlines for feedback and edits', 'Set a project to Awaiting Client Feedback and BOARD asks when feedback is due. The Timeline then counts working days only: a green Due tomorrow and Due today, then a red count of days overdue. Edit uses the same words. Orange is gone.', ['Oli', 'Amy']],
     ['ti-alert-triangle', 'Edit is red on the day it is due', 'If a project is still in Edit on its due day, the pill goes red with a warning sign instead of waiting until the day after.', ['Amy']],
-    ['ti-users', 'Edit capacity: internal editors only', 'A new button leaves freelancers off the timeline. Awaiting Client Feedback bars are green and turn red once feedback is overdue, and Edit bars stay purple.'],
-    ['ti-hash', 'A tidier Code generator', 'One card instead of two boxes. The new code, Copy, and the button that takes you back to your new project now sit together, so nothing feels random.'],
-    ['ti-building', 'Clients live in the Code generator', 'A new Clients tab shows every client and code. Admins can add and rename clients, everyone else can look. Settings, Clients has gone. Codes never change.'],
-    ['ti-lock', 'An Update lock you cannot miss', 'A bigger banner with a touch of sparkle, and a short animation when BOARD locks, so it is clear new features and bug fixes are on the way.'],
-    ['ti-notes', 'Release notes show this release only', 'The pop-up and the Release notes button now show the same thing: the current release, with the big features first and the fixes that follow underneath.']
+    ['ti-users', 'Edit capacity: internal editors only', 'A new button leaves freelancers off the timeline. Awaiting Client Feedback bars are green and turn red once feedback is overdue, and Edit bars stay purple.', ['Oli']],
+    ['ti-hash', 'A tidier Code generator', 'One card instead of two boxes. The new code, Copy, and the button that takes you back to your new project now sit together, so nothing feels random.', ['Oli']],
+    ['ti-building', 'Clients live in the Code generator', 'A new Clients tab shows every client and code. Admins can add and rename clients, everyone else can look. Settings, Clients has gone. Codes never change.', ['Oli']],
+    ['ti-lock', 'An Update lock you cannot miss', 'A bigger banner with a touch of sparkle, and a short animation when BOARD locks, so it is clear new features and bug fixes are on the way.', ['Oli']],
+    ['ti-notes', 'Release notes show this release only', 'The pop-up and the Release notes button now show the same thing: the current release, with the big features first and the fixes that follow underneath.', ['Oli']]
   ]],
   ['1.2.3', [
     ['Meeting mode in Out processing is redesigned, with a progress ring and grouped questions.'],
@@ -1761,7 +1781,7 @@ const isFeature = g => /\.0$/.test(String(g[0]).split('-')[0]) && Array.isArray(
 const isFix = g => !isFeature(g);
 const fixLines = g => typeof g[1] === 'string' ? [[g[1], g[2]]] : (g[1] || []).map(l => typeof l === 'string' ? [l] : l);
 const thanksText = by => {
-  const n = (by || []).map(x => String(x).trim()).filter(x => x && !/^oli(ver)?(\s+clubb)?$/i.test(x));
+  const n = (by || []).map(x => String(x).trim()).filter(Boolean);
   return n.length ? 'Thanks, ' + (n.length > 1 ? n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1] : n[0]) : '';
 };
 const thanksTag = by => { const t = thanksText(by); return t ? `<span class="rn-by">${esc(t)}</span>` : ''; };
@@ -2762,7 +2782,18 @@ const WT_GROUPS = [
   ['Promotion and growth', 'ti-speakerphone', ['social', 'referral', 'on_client_board', 'lead_source'], false],
   ['Delivery and assets', 'ti-movie', ['vimeo', 'website', 'deck', 'archive', 'music_licensing'], false]
 ];
-function wtHTML() {
+/* 1.3.1: every project in Out processing that is finished (invoicing sorted and every item answered), so they can all go to the Archive together */
+const readyList = () => coStagesShown().reduce((a, s) => a.concat(S.projects.filter(p => p.stage === s && canArchive(p)).sort(bySort)), []);
+function readyHTML() {
+  if (!canEdit()) return '';
+  const r = readyList(); if (!r.length) return '';
+  const names = r.slice(0, 4).map(p => esc(p.name)).join(', ') + (r.length > 4 ? ` and ${r.length - 4} more` : '');
+  return `<div class="rdy"><span class="rdy-i"><i class="ti ti-archive"></i></span>
+    <div class="rdy-t"><div class="lbl">Ready to archive</div><div class="rdy-b">${r.length} project${r.length === 1 ? ' is' : 's are'} finished</div><div class="muted rdy-n">${names}</div></div>
+    <button class="btn btn-primary" data-act="archiveready"><i class="ti ti-archive"></i>Review and archive</button></div>`;
+}
+function wtHTML() { return (S.wt.on ? '' : readyHTML()) + wtCore(); }
+function wtCore() {
   const ed = canEdit(), F = coFields(), opts = S.cfg.closeout_options || {};
   if (!S.wt.on) {
     const n = coStagesShown().reduce((a, s) => a + S.projects.filter(p => p.stage === s && !canArchive(p)).length, 0);
@@ -3534,6 +3565,44 @@ ACT.archive = async el => {
     } catch (e) {
       modalLock = false; delete go.dataset.busy; go.classList.remove('is-busy'); go.innerHTML = 'Yes, archive it'; hint.remove();
       $$('button, input', m).forEach(x => { x.disabled = false; });
+    }
+  };
+};
+/* 1.3.1: archive everything that is ready in one go. Done in groups of 10 so a long list never runs into the 40 second limit on a save. */
+ACT.archiveready = () => {
+  if (!canEdit()) return;
+  const r = readyList(); if (!r.length) { toast('Nothing is ready to archive yet'); return; }
+  const m = openModal(`<h3>Archive ready projects</h3>
+    <div>Invoicing is sorted and every Out processing item is answered on each of these. Untick any you want to leave where they are. The rest leave the board and are filed under their financial year. You can restore any of them later.</div>
+    <div class="rdy-list">${r.map(p => `<label class="rdy-row"><input type="checkbox" class="toggle" data-id="${p.id}" checked><span><b>${esc(p.name)}</b>${p.client ? ` <span class="muted">${esc(p.client)}</span>` : ''}</span></label>`).join('')}</div>
+    <label class="row" style="gap:10px;align-items:flex-start"><input type="checkbox" class="toggle" id="arSure"><span>I am sure I want to archive the projects ticked</span></label>
+    <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="arGo" disabled>Archive</button></div>`);
+  const picked = () => $$('.rdy-row input', m).filter(x => x.checked).map(x => x.dataset.id);
+  const sync = () => { const n = picked().length, go = $('#arGo', m); go.textContent = n ? `Archive ${n} project${n === 1 ? '' : 's'}` : 'Nothing ticked'; go.disabled = !n || !$('#arSure', m).checked; };
+  m.addEventListener('change', sync); sync();
+  $('#arGo', m).onclick = async () => {
+    const go = $('#arGo', m); if (go.dataset.busy) return;
+    const ids = picked(); if (!ids.length) return; go.dataset.busy = '1';
+    const w = workStart(m, { text: `Archiving ${ids.length} project${ids.length === 1 ? '' : 's'}`, sub: 'Saving to the Archive. This can take a few seconds.', icon: 'ti-archive' });
+    flushAll();
+    const okIds = new Set(), skipped = []; let failed = false;
+    for (let i = 0; i < ids.length; i += 10) {
+      try {
+        const d = await write('project_archive_many', { ids: ids.slice(i, i + 10) });
+        (d.archived || []).forEach(x => okIds.add(x)); (d.skipped || []).forEach(x => skipped.push(x));
+      } catch (e) { failed = true; break; }   /* write() has already said why */
+      if (i + 10 < ids.length) $('.as', w.el).textContent = `${okIds.size} of ${ids.length} done. Saving to the Archive.`;
+    }
+    if (okIds.size) { S.projects = S.projects.filter(x => !okIds.has(x.id)); S.ar.loaded = false; S.ar.fys = []; }
+    if (failed && !okIds.size) { w.fail(); delete go.dataset.busy; return; }
+    await w.done(`${okIds.size} archived`, 900);
+    modalLock = false; closeModal(true);
+    if (S.drawer && okIds.has(S.drawer)) closeDrawer(true);
+    renderView();
+    if (okIds.size) { celebrate(FLOPPY); toast(`\u{1F4BE} ${okIds.size} project${okIds.size === 1 ? ' is' : 's are'} saved to the Archive`); }
+    if (failed || skipped.length) {
+      const why = skipped.map(x => `<li><b>${esc(x.name || 'A project')}</b>: ${esc(x.why)}</li>`).join('');
+      openModal(`<h3>${failed ? 'Some did not go' : 'Not archived'}</h3><div>${failed ? 'BOARD lost the connection part way through, so the rest were left where they were. Nothing was lost. Open Out processing and try again.' : 'These were not ready on the server, so they were left where they were:'}</div>${why ? `<ul>${why}</ul>` : ''}<div class="actions"><button class="btn btn-primary" data-act="closemodal">Close</button></div>`);
     }
   };
 };
