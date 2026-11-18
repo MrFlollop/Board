@@ -265,9 +265,9 @@ button.lab-cell:hover { filter: brightness(.94); }
 .tl-pill.none { background: var(--color-background-tertiary); color: var(--color-text-secondary); font-weight: 400; }
 .tl-pill.overdue, .tl-pill.overdue:hover { background: var(--color-text-danger); color: #fff; }
 .tl-pill.overdue:hover { filter: brightness(.92); }
-/* 1.2.2: orange on the day it is due, red (above) once that day has passed */
-.tl-pill.due, .tl-pill.due:hover { background: var(--color-text-warning); color: #fff; }
-.tl-pill.due:hover { filter: brightness(.92); }
+/* 1.3.0: no orange any more. Green when feedback is due tomorrow or today, red (above) when it is overdue */
+.tl-pill.soon, .tl-pill.soon:hover { background: var(--color-text-success); color: #fff; }
+.tl-pill.soon:hover { filter: brightness(.92); }
 
 /* stage banners */
 .stage-row td { padding: 0; border-bottom: 0; height: auto; overflow: visible; }
@@ -531,6 +531,11 @@ button.lab-cell:hover { filter: brightness(.94); }
 .row { display: flex; align-items: center; gap: 8px; }
 .row.wrap { flex-wrap: wrap; }
 .sp { flex: 1; }
+.cg-card { max-width: 640px; display: flex; flex-direction: column; gap: 14px; }
+.cg-ctx { display: flex; gap: 8px; align-items: center; background: var(--stp-alpha); color: var(--stp); border-radius: var(--r-md); padding: 9px 12px; font-size: 13px; font-weight: 600; }
+.cg-result { display: flex; flex-direction: column; gap: 12px; border-top: 0.5px solid var(--color-border-tertiary); padding-top: 14px; margin-top: 2px; }
+.cg-acts { flex-wrap: wrap; gap: 8px; }
+.cl-code { font-weight: 700; letter-spacing: .5px; }
 .codebox { font-size: 22px; font-weight: 800; letter-spacing: .3px; word-break: break-all; padding: 16px 18px; border-radius: var(--r-md); background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); }
 .tabs { display: flex; gap: 4px; flex-wrap: wrap; padding: 12px 20px 0; }
 .kv { display: grid; grid-template-columns: 150px 1fr; gap: 6px 14px; font-size: 12px; }
@@ -546,6 +551,8 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .sub-tbl th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--color-text-secondary); padding: 10px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); white-space: nowrap; }
 .sub-tbl td { padding: 8px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: middle; }
 .tbl-wrap { overflow-x: auto; }
+.sub-tbl.cl-tbl { min-width: 0; }   /* 1.3.0: the Clients list fits a phone (Live projects is hidden there) */
+@media (max-width: 720px) { .sub-tbl.cl-tbl td, .sub-tbl.cl-tbl th { padding-left: 8px; padding-right: 8px; } .sub-tbl.cl-tbl .btn-sm { padding-left: 10px; padding-right: 10px; } }
 .sort-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; background: var(--stp-alpha); color: var(--stp); border-radius: var(--r-pill); padding: 3px 4px 3px 10px; }
 .sort-chip button { border: 0; background: transparent; color: inherit; width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; padding: 0; }
 .note-bar { padding: 8px 20px; font-size: 12px; color: var(--color-text-secondary); background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); position: sticky; left: 0; }
@@ -557,21 +564,50 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .lock-note { display: flex; align-items: center; gap: 10px; padding: 9px 20px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 12px; position: sticky; left: 0; flex: none; flex-wrap: wrap; }
 .lock-note i.ti-lock { font-size: 16px; color: var(--color-text-secondary); } .lock-note .sp { flex: 1; }
 .content.fixed > .lock-note { position: static; }
-/* 1.2.3: the Update lock banner is built to be noticed. A slow pink sheen with glitter twinkling over it, only there to catch the eye while BOARD is read only. The glitter ignores clicks, and stops moving if the device asks for less motion. */
-.lockbar { position: relative; overflow: hidden; display: flex; align-items: center; gap: 10px; padding: 10px 20px; color: #fff; font-size: 12px; font-weight: 700; flex: none; flex-wrap: wrap; text-shadow: 0 1px 2px rgba(120,0,80,.35);
+/* 1.3.0: the Update lock banner is bigger and built to be noticed. A slow pink sheen, three layers of glitter twinkling at different speeds, and a soft light that
+   sweeps across now and then. It is only there to catch the eye while BOARD is read only (nothing festive). Glitter ignores clicks, and everything holds still if the device asks for less motion. */
+.lockbar { position: relative; overflow: hidden; display: flex; align-items: center; gap: 16px; padding: 18px 24px; color: #fff; font-size: 13px; font-weight: 600; flex: none; flex-wrap: wrap; text-shadow: 0 1px 2px rgba(120,0,80,.35);
   background: linear-gradient(100deg, #FF50BD 0%, #FF8AD4 26%, #FF50BD 48%, #D93EA6 76%, #FF50BD 100%) 0 0 / 900px 100% repeat-x; animation: lk-sheen 8s linear infinite; }
 .lockbar > * { position: relative; z-index: 1; }
-.lockbar::before, .lockbar::after { content: ''; position: absolute; inset: 0; pointer-events: none; background-repeat: repeat-x; }
-.lockbar::before { background-image: radial-gradient(circle, #fff 0 1.3px, transparent 2px), radial-gradient(circle, #fff 0 1px, transparent 1.6px), radial-gradient(circle, #fff 0 1.8px, transparent 2.5px);
-  background-size: 97px 40px, 61px 40px, 143px 40px; background-position: 12px 8px, 40px 26px, 90px 16px; animation: lk-tw 2.2s ease-in-out infinite; }
-.lockbar::after { background-image: radial-gradient(circle, #fff 0 1.5px, transparent 2.2px), radial-gradient(circle, #fff 0 1px, transparent 1.7px), radial-gradient(circle, #fff 0 1.2px, transparent 1.9px);
-  background-size: 113px 40px, 73px 40px, 131px 40px; background-position: 55px 22px, 8px 12px, 70px 30px; animation: lk-tw 2.9s ease-in-out -1.1s infinite; }
-.lockbar .ti-lock { font-size: 18px; }
-.lockbar .sp { flex: 1; } .lockbar .btn { background: rgba(255,255,255,.22); color: #fff; min-height: 28px; padding: 4px 12px; text-shadow: none; }
+.lockbar::before, .lockbar::after, .lockbar .lk-gl { content: ''; position: absolute; inset: 0; pointer-events: none; background-repeat: repeat-x; z-index: 0; }
+.lockbar::before { background-image: radial-gradient(circle, #fff 0 1.6px, transparent 2.4px), radial-gradient(circle, #fff 0 1.2px, transparent 2px), radial-gradient(circle, #fff 0 2.2px, transparent 3px), radial-gradient(circle, #fff 0 1.4px, transparent 2.2px);
+  background-size: 97px 84px, 61px 84px, 143px 84px, 83px 84px; background-position: 12px 10px, 40px 52px, 90px 30px, 20px 66px; animation: lk-tw 2.2s ease-in-out infinite; }
+.lockbar::after { background-image: radial-gradient(circle, #fff 0 1.8px, transparent 2.6px), radial-gradient(circle, #fff 0 1.2px, transparent 2px), radial-gradient(circle, #fff 0 1.5px, transparent 2.3px), radial-gradient(circle, #fff 0 1.1px, transparent 1.9px);
+  background-size: 113px 84px, 73px 84px, 131px 84px, 101px 84px; background-position: 55px 44px, 8px 24px, 70px 62px, 34px 8px; animation: lk-tw 2.9s ease-in-out -1.1s infinite; }
+.lockbar .lk-gl { background-image: radial-gradient(circle, #fff 0 2px, transparent 3px), radial-gradient(circle, #fff 0 1.3px, transparent 2.1px), radial-gradient(circle, #fff 0 1px, transparent 1.7px);
+  background-size: 167px 84px, 89px 84px, 53px 84px; background-position: 30px 20px, 66px 58px, 12px 40px; animation: lk-tw 3.6s ease-in-out -2s infinite; }
+.lockbar .lk-sw { position: absolute; top: 0; bottom: 0; left: -40%; width: 30%; pointer-events: none; z-index: 0; background: linear-gradient(100deg, transparent, rgba(255,255,255,.38), transparent); transform: skewX(-18deg); animation: lk-sweep 6s ease-in-out infinite; }
+.lockbar .lk-ico { flex: none; width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,.24); display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 0 0 6px rgba(255,255,255,.12); }
+.lockbar .lk-ico .ti { font-size: 24px; }
+.lockbar .lk-txt { flex: 1 1 300px; min-width: 0; }
+.lockbar .lk-h { font-size: 20px; font-weight: 800; letter-spacing: .2px; line-height: 1.15; }
+.lockbar .lk-s { margin-top: 3px; font-size: 13px; font-weight: 600; opacity: .96; line-height: 1.4; }
+.lockbar .sp { flex: 1; } .lockbar .btn { background: rgba(255,255,255,.22); color: #fff; min-height: 32px; padding: 5px 14px; text-shadow: none; }
 .lockbar .btn:hover { background: rgba(255,255,255,.34); }
 @keyframes lk-sheen { to { background-position: 900px 0; } }
-@keyframes lk-tw { 0%, 100% { opacity: .12; } 50% { opacity: .95; } }
-@media (prefers-reduced-motion: reduce) { .lockbar, .lockbar::before, .lockbar::after { animation: none; } .lockbar::before { opacity: .55; } .lockbar::after { opacity: .3; } }
+@keyframes lk-tw { 0%, 100% { opacity: .1; } 50% { opacity: 1; } }
+@keyframes lk-sweep { 0%, 55% { left: -40%; } 100% { left: 130%; } }
+@media (prefers-reduced-motion: reduce) { .lockbar, .lockbar::before, .lockbar::after, .lockbar .lk-gl, .lockbar .lk-sw { animation: none; } .lockbar::before { opacity: .6; } .lockbar::after { opacity: .35; } .lockbar .lk-gl { opacity: .45; } .lockbar .lk-sw { display: none; } }
+/* 1.3.0: the locking animation. A pink wash, a padlock that closes with a ring pushing out from it, a few specks of glitter, then the words. It plays when a lock starts (for everyone who has BOARD open) and goes by itself after a few seconds, or on any click or key. */
+.lk-anim { position: fixed; inset: 0; z-index: 400; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 24px; color: #fff; cursor: pointer;
+  background: radial-gradient(circle at 50% 42%, #FF8AD4 0%, #FF50BD 38%, #C2338F 100%); animation: lk-in .35s ease-out both; }
+.lk-anim.out { animation: lk-out .45s ease-in forwards; }
+.lk-anim .lk-pad { position: relative; width: 112px; height: 112px; border-radius: 50%; background: rgba(255,255,255,.22); display: flex; align-items: center; justify-content: center; animation: lk-pop .55s cubic-bezier(.2,1.4,.4,1) .55s both; }
+.lk-anim .lk-pad i { position: absolute; font-size: 56px; }
+.lk-anim .lk-pad .o { animation: lk-open .5s ease-in .45s forwards; } .lk-anim .lk-pad .c { opacity: 0; animation: lk-shut .01s linear .62s forwards; }
+.lk-anim .lk-pad::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 3px solid rgba(255,255,255,.85); opacity: 0; animation: lk-ring 1.1s ease-out .62s forwards; }
+.lk-anim .lk-h { font-size: clamp(26px, 5vw, 40px); font-weight: 800; letter-spacing: .2px; line-height: 1.1; opacity: 0; animation: lk-up .6s ease-out 1.05s forwards; text-shadow: 0 2px 6px rgba(120,0,80,.35); }
+.lk-anim .lk-s { max-width: 460px; font-size: 15px; font-weight: 600; line-height: 1.5; opacity: 0; animation: lk-up .6s ease-out 1.3s forwards; text-shadow: 0 1px 3px rgba(120,0,80,.35); }
+.lk-anim .lk-x { font-size: 12px; opacity: 0; animation: lk-up .6s ease-out 2s forwards; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+.lk-anim .lk-d { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #fff; opacity: 0; pointer-events: none; animation: lk-tw2 2.6s ease-in-out infinite; }
+@keyframes lk-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lk-out { to { opacity: 0; } }
+@keyframes lk-pop { 0% { transform: scale(1); } 45% { transform: scale(1.18); } 100% { transform: scale(1); } }
+@keyframes lk-open { to { opacity: 0; transform: translateY(-4px); } }
+@keyframes lk-shut { to { opacity: 1; } }
+@keyframes lk-ring { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(2.6); } }
+@keyframes lk-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes lk-tw2 { 0%, 100% { opacity: 0; transform: scale(.4); } 50% { opacity: 1; transform: scale(1.2); } }
 .lockbar.mine { background: #16A34A; }
 .lock-btn.on { background: var(--stp); color: #fff; border-color: var(--stp); }
 .lock-btn.on.mine { background: #16A34A; border-color: #16A34A; }
@@ -641,6 +677,11 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .rn-now { background: var(--stp-alpha); color: var(--stp); border-radius: var(--r-pill); padding: 1px 8px; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 /* 1.2.3: a fix release is one short paragraph in a quiet panel, and a thank-you is a small pink tag */
 .rn-by { display: inline-block; margin-left: 8px; background: var(--stp-alpha); color: var(--stp); border-radius: var(--r-pill); padding: 1px 9px; font-size: 11px; font-weight: 600; white-space: nowrap; vertical-align: 1px; }
+.rn-title { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--color-text-primary); margin: 4px 0 2px; }
+.rn-row { align-items: flex-start; gap: 10px; }
+.rn-row > i { color: var(--stp); margin-top: 1px; }
+.rn-fl { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.rn-fix > .rn-now { flex: none; margin-top: 1px; }
 .rn-fixes { background: var(--color-background-secondary); border-radius: var(--r-md); padding: 2px 12px; }
 .rn-fix { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 0.5px solid var(--color-border-tertiary); }
 .rn-fix:first-child { border-top: 0; }
@@ -657,7 +698,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
   .topbar .brand-logo { display: inline-flex; height: 34px; } .topbar .brand-logo img { height: 34px; }
   .topbar .brand-name { display: flex; height: 26px; font-size: 14px; padding-left: 8px; gap: 3px; letter-spacing: 1.2px; } .topbar .brand-main { gap: 5px; } .topbar .brand-dot { width: 8px; height: 8px; } .topbar .brand-beta { font-size: 7px; letter-spacing: 1.8px; padding-left: 13px; }
   .topbar .page-title { display: none; }
-  .lockbar { padding: 8px 14px; } .lock-note { padding: 9px 14px; } .lock-btn .t0 { display: none; }
+  .lockbar { padding: 14px; gap: 12px; } .lockbar .lk-ico { width: 38px; height: 38px; } .lockbar .lk-h { font-size: 17px; } .lockbar .lk-s { font-size: 12px; } .lock-note { padding: 9px 14px; } .lock-btn .t0 { display: none; }
   h1.page-title { font-size: 13px; }
   .toolbar { padding: 10px 14px; }
   .pad { padding: 12px 14px calc(90px + var(--safe-b)); }
@@ -744,8 +785,8 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .cell-pick.orphan .t { color: var(--color-text-warning); }
 .cell-pick .ph { color: var(--color-text-secondary); }
 /* dark mode: the few colours that were written out by hand */
-[data-theme="dark"] .tl-pill:not(.overdue):not(.due):not(.none) { background: #3A3A43; color: #F2F2F4; }
-[data-theme="dark"] .tl-pill:not(.overdue):not(.due):not(.none):hover { background: #4A4A55; }
+[data-theme="dark"] .tl-pill:not(.overdue):not(.soon):not(.none) { background: #3A3A43; color: #F2F2F4; }
+[data-theme="dark"] .tl-pill:not(.overdue):not(.soon):not(.none):hover { background: #4A4A55; }
 [data-theme="dark"] .tl-bh { background: repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 4px, rgba(255,255,255,.02) 4px 8px); }
 [data-theme="dark"] .tl-cell.d.hol { background: rgba(255,255,255,.07); }
 [data-theme="dark"] .legend i.hol { background: repeating-linear-gradient(135deg, rgba(255,255,255,.35) 0 2px, rgba(255,255,255,.1) 2px 4px); }
@@ -800,12 +841,12 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.2.3';
+const APP_VERSION = '1.3.0';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
-const NEED_VER = '1.2.3';   /* the backend must be at least this version */
-const MIN_SCHEMA = 14;   /* the backend must report at least this, or BOARD warns that changes may not save */
+const NEED_VER = '1.3.0';   /* the backend must be at least this version */
+const MIN_SCHEMA = 15;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
 const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
 /* Sunday Treat logo files, kept in the repo next to index.html. If a file will not load, BOARD tries once more, then shows a text wordmark. */
@@ -836,7 +877,7 @@ const S = {
   projects: [], version: 0, readonly: false, readonlyKey: '', adminKey: '', health0: null,
   view: 'pipeline',
   f: { q: '', person: '', status: '' },
-  ec: { days: 10, internal: false, person: '' },
+  ec: { days: 10, internal: false, person: '', noFreelance: false },
   co: { q: '', stage: '', incomplete: false, since: '' },   /* 1.2.3: since is how many days back to show on the Moved in date ('' = any time) */
   wt: { on: false, ids: [], i: 0 },
   fin: { q: '', inv: '' },
@@ -845,7 +886,7 @@ const S = {
   mine: { q: '' },
   bud: { year: '', q: '', rows: [], years: [], loaded: false, loading: false, refreshing: false, updated: '', err: '' },
   clockOff: 0,
-  clients: null, codes: { mode: 'existing', client: '', title: '', newName: '', newCode: '' },
+  clients: null, codes: { mode: 'existing', client: '', title: '', newName: '', newCode: '', tab: 'generate', q: '' },
   settingsTab: 'people', health: null,
   drawer: null, draft: null, dragging: false, stale: false, syncState: 'saved', lastSync: null,
   ui: Object.assign({ widths: {}, sort: {}, collapsed: {} }, jparse(store.get('board_ui'), {}))
@@ -1282,7 +1323,7 @@ function renderHealthBar() {
   const lostTxt = lost ? `Not saved: ${esc(uniq(notSaved).join(', '))}.` : '';
   const oddTxt = odd ? `${badRows.length} row${badRows.length === 1 ? '' : 's'} in the sheet ${badRows.length === 1 ? 'has' : 'have'} an id BOARD does not accept (${esc(uniq(badRows).join(', '))}), so ${badRows.length === 1 ? 'it is' : 'they are'} hidden. Ids can only use letters, numbers, - and _.` : '';
   const list = isAdmin() && h && h.problems.length ? `<ul>${h.problems.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
-  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo123().' : 'Oli has been emailed. Run upgradeTo123() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
+  const fix = bad || lost ? (isAdmin() ? (old ? 'Update Code.gs and run upgradeTo130().' : 'Oli has been emailed. Run upgradeTo130() in the script editor to fix it.') : 'Some changes may not save. Oli has been told.') : '';
   bar.innerHTML = `<i class="ti ${off && !bad && !lost && !odd && !stale ? 'ti-wifi-off' : stale && !bad ? 'ti-refresh' : 'ti-alert-triangle'}"></i><div><div>${offTxt} ${staleTxt} ${why} ${lostTxt} ${oddTxt} ${fix}</div>${list}</div><span class="sp"></span>${stale ? '<button class="btn btn-sm" data-act="reload">Reload</button>' : ''}${lost ? '<button class="btn btn-sm" data-act="healthok">Dismiss</button>' : ''}`;
 }
 let refreshing = false;
@@ -1410,11 +1451,37 @@ function renderLockUI() {
   const li = lockInfo(), bar = $('#lockbar');
   if (!bar) return;
   bar.hidden = !li;
-  if (li) bar.innerHTML = `<i class="ti ti-lock"></i><span><b>Update lock is on.</b> BOARD is being updated${li.by ? ' by ' + esc(li.by) : ''}. It is view only for everyone until ${hhmm(li.until)} (<span id="lockT2">${mmss(li.until - nowMs())}</span> left), so you can look around but nothing can be changed.</span><span class="sp"></span>${canUnlock() ? '<button class="btn btn-sm" data-act="updlock">Unlock now</button>' : ''}`;
+  if (li) bar.innerHTML = `<span class="lk-gl"></span><span class="lk-sw"></span><span class="lk-ico"><i class="ti ti-lock"></i></span>
+    <div class="lk-txt"><div class="lk-h">New things are coming</div>
+      <div class="lk-s">BOARD is locked while new features and bug fixes go in${li.by ? ', started by ' + esc(li.by) : ''}. It is view only for everyone until ${hhmm(li.until)} (<span id="lockT2">${mmss(li.until - nowMs())}</span> left), so you can look around but nothing can be changed.</div></div>
+    <span class="sp"></span>${canUnlock() ? '<button class="btn btn-sm" data-act="updlock">Unlock now</button>' : ''}`;
 }
-function lockChanged() {
+/* 1.3.0: the locking animation. Plays for whoever started the lock and for everyone else who has BOARD open when it starts.
+   Not on a page that loads while a lock is already on, and not at all if the device asks for less motion (the banner is enough then). */
+let lockAnimT = null;
+function lockAnimClose() {
+  const a = $('#lkAnim'); if (!a) return; clearTimeout(lockAnimT);
+  a.classList.add('out'); setTimeout(() => a.remove(), 460);
+}
+function lockAnim(li) {
+  if (!li || $('#lkAnim') || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const dots = Array.from({ length: 22 }, (_, i) => `<i class="lk-d" style="left:${(i * 37 + 11) % 97}%;top:${(i * 53 + 7) % 93}%;animation-delay:${((i * 0.29) % 2.4).toFixed(2)}s"></i>`).join('');
+  const a = document.createElement('div'); a.className = 'lk-anim'; a.id = 'lkAnim'; a.setAttribute('role', 'status');
+  a.innerHTML = `${dots}<div class="lk-pad"><i class="ti ti-lock-open o"></i><i class="ti ti-lock c"></i></div>
+    <div class="lk-h">New things are coming</div>
+    <div class="lk-s">BOARD is locked while new features and bug fixes go in. You can look around, but nothing can be changed until ${hhmm(li.until)}.</div>
+    <div class="lk-x">Click anywhere to carry on</div>`;
+  a.addEventListener('click', lockAnimClose);
+  document.body.appendChild(a);
+  lockAnimT = setTimeout(lockAnimClose, 4200);
+}
+addEventListener('keydown', e => { if ($('#lkAnim') && (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ')) lockAnimClose(); });
+function lockChanged(fresh) {
+  const was = lockWas;
   renderLockUI(); lockWas = lockKey(); closePop();
   if ($('#content')) { S.stale = false; renderView(); if (S.drawer && !S.draft) refreshDrawer(true); }
+  if (!lockInfo()) lockAnimClose();
+  else if (fresh || was === '') lockAnim(lockInfo());
 }
 setInterval(() => {
   if (!S.me) return;
@@ -1429,7 +1496,7 @@ async function setLock(minutes) {
     const r = await write('update_lock', { minutes });
     S.cfg = Object.assign(S.cfg, r.config);
   } catch (e) { /* write() shows why */ }
-  lockChanged();
+  lockChanged(minutes > 0);
 }
 function markNav() {
   $$('[data-nav]').forEach(b => b.classList.toggle('on', b.dataset.nav === S.view));
@@ -1452,7 +1519,7 @@ function route() {
 }
 addEventListener('hashchange', route);
 
-const FIXED = { pipeline: 1, mine: 1, timeline: 1, closeout: 1, archive: 1, settings: 1, board: 1, finance: 1, pods: 1, budgets: 1 };
+const FIXED = { codes: 1, pipeline: 1, mine: 1, timeline: 1, closeout: 1, archive: 1, settings: 1, board: 1, finance: 1, pods: 1, budgets: 1 };
 function renderView() {
   const c = $('#content'); if (!c) return;
   const old = $('#vb'), sx = old ? old.scrollLeft : c.scrollLeft, sy = old ? old.scrollTop : c.scrollTop, same = S._lastView === S.view; S._lastView = S.view;
@@ -1470,7 +1537,7 @@ function afterRender() {
   setVW();
   if (S.view === 'archive' && !S.ar.loaded && !S.ar.loading) loadArchive(true);
   if (S.view === 'budgets') budLoad();
-  if (S.view === 'codes') { if (!S.clients) loadClients(); else refreshClients(); updateCodeOut(); }
+  if (S.view === 'codes') { if (!S.clients) loadClients(); else refreshClients(); updateCodeOut(); if (S.codes.tab === 'clients' && isAdmin() && !S.ar.loaded && !S.ar.loading) loadArchive(true); }
   if (S.view === 'settings') settingsAfter();
   if ((S.view === 'pipeline' || S.view === 'mine') && seesMoney() && !S.clients && !S._clientsTried) { S._clientsTried = true; loadClients(); }
 }
@@ -1550,7 +1617,7 @@ async function showLogin(msg, kind) {
   if (!API) { $('#lgNote').innerHTML = '<b>No backend connected.</b> Paste your Apps Script web app URL into <code>API_URL</code> at the top of index.html.'; return; }
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=ping').then(x => x.json());
-    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo123().`;
+    if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo130().`;
     else if (r && vcmp(r.server_version, APP_VERSION) > 0 && !forceUpdate(r.server_version) && $('#lgNote')) $('#lgNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
   } catch (e) {}
 }
@@ -1616,14 +1683,29 @@ function forceUpdate(v, tries) {
   if (inflight && (tries || 0) < 20) return void setTimeout(() => forceUpdate(v, (tries || 0) + 1), 1000);
   showUpdateScreen(v);
 }
-/* 1.2.3: how the release notes are written.
-   A feature release (x.x.0) is [version, rows]. Each row is [icon, title, text, thanks]. It leads the pop-up.
-   A fix release (x.x.1 and up) is [version, one short paragraph, thanks]: one paragraph of three lines at most (FIX_MAX letters),
-   so a small fix can never bury a big feature.
-   thanks is a list of first names, for anyone other than Oli who asked for the change. Oli's own feedback is never credited. */
-const FIX_MAX = 260;
+/* 1.3.0: how the release notes are written.
+   A feature release (x.x.0) is [version, rows]. Each row is [icon, title, text, thanks]. It leads the page.
+   A fix release (x.x.1 and up) is [version, lines]. Each line is [text, thanks]: ONE change per line, so a credit only ever sits on the change that person raised.
+   (An old-style [version, 'text', thanks] still works and counts as one line.) Keep a line to one or two short sentences (FIX_MAX letters).
+   thanks is a list of first names for anyone other than Oli who asked for that change. Oli's own feedback is never credited.
+   The page only ever shows the CURRENT release line (APP_VERSION 1.4.x shows 1.4, and so on), so this list can keep growing without the page getting longer. */
+const FIX_MAX = 160;
 const WHATS_NEW = [
-  ['1.2.3', 'Meeting mode in Out processing is redesigned, with a progress ring and grouped questions. A Moved in column and filter show what arrived recently, the Update lock banner is easier to spot, and release notes are shorter.', ['Kurt']],
+  ['1.3.0', [
+    ['ti-calendar-due', 'Clear deadlines for feedback and edits', 'Set a project to Awaiting Client Feedback and BOARD asks when feedback is due. The Timeline then counts working days only: a green Due tomorrow and Due today, then a red count of days overdue. Edit uses the same words. Orange is gone.'],
+    ['ti-alert-triangle', 'Edit is red on the day it is due', 'If a project is still in Edit on its due day, the pill goes red with a warning sign instead of waiting until the day after.', ['Amy']],
+    ['ti-users', 'Edit capacity: internal editors only', 'A new button leaves freelancers off the timeline. Awaiting Client Feedback bars are green and turn red once feedback is overdue, and Edit bars stay purple.'],
+    ['ti-hash', 'A tidier Code generator', 'One card instead of two boxes. The new code, Copy, and the button that takes you back to your new project now sit together, so nothing feels random.'],
+    ['ti-building', 'Clients live in the Code generator', 'A new Clients tab shows every client and code. Admins can add and rename clients, everyone else can look. Settings, Clients has gone. Codes never change.'],
+    ['ti-lock', 'An Update lock you cannot miss', 'A bigger banner with a touch of sparkle, and a short animation when BOARD locks, so it is clear new features and bug fixes are on the way.'],
+    ['ti-notes', 'Release notes show this release only', 'The pop-up and the Release notes button now show the same thing: the current release, with the big features first and the fixes that follow underneath.']
+  ]],
+  ['1.2.3', [
+    ['Meeting mode in Out processing is redesigned, with a progress ring and grouped questions.'],
+    ['A Moved in column and filter show what arrived recently.', ['Kurt']],
+    ['The Update lock banner is easier to spot.'],
+    ['Release notes are shorter.']
+  ]],
   ['1.2.2', 'A super admin Update lock replaces the stand-up lock. People are listed A to Z in Internal, Freelance and Alumni, with a passcode generator for new people. New clients show straight away, plus safety fixes behind the scenes.'],
   ['1.2.1', 'Invoicing has a new order, from Estimate pending to Paid, and existing projects have moved across. Finance is rebuilt to match. Admins can now delete projects, and feedback emails are cleaner.'],
   ['1.2.0', [
@@ -1672,10 +1754,12 @@ const WHATS_NEW = [
     ['ti-circle-check', 'Paid asks first', 'Marking an invoice as Paid now asks you to confirm.']
   ]]
 ];
-/* The release line is the first two numbers of a version (1.2 for 1.2.3). A feature release is x.x.0 and carries rows, so it always leads.
-   Fix releases (x.x.1 and up) are a paragraph each, underneath, newest first. The pop-up and the Release notes button show the same thing. */
+/* The release line is the first two numbers of a version (1.3 for 1.3.2). A feature release is x.x.0 and carries rows, so it always leads.
+   Fix releases (x.x.1 and up) are one row per version, newest first, with one line per change. The pop-up and the Release notes button show the same thing. */
 const lineOf = v => String(v).split('-')[0].split('.').slice(0, 2).join('.');
-const isFix = g => typeof g[1] === 'string';
+const isFeature = g => /\.0$/.test(String(g[0]).split('-')[0]) && Array.isArray(g[1]) && Array.isArray(g[1][0]) && /^ti-/.test(String(g[1][0][0]));
+const isFix = g => !isFeature(g);
+const fixLines = g => typeof g[1] === 'string' ? [[g[1], g[2]]] : (g[1] || []).map(l => typeof l === 'string' ? [l] : l);
 const thanksText = by => {
   const n = (by || []).map(x => String(x).trim()).filter(x => x && !/^oli(ver)?(\s+clubb)?$/i.test(x));
   return n.length ? 'Thanks, ' + (n.length > 1 ? n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1] : n[0]) : '';
@@ -1683,30 +1767,34 @@ const thanksText = by => {
 const thanksTag = by => { const t = thanksText(by); return t ? `<span class="rn-by">${esc(t)}</span>` : ''; };
 function lineGroups(line) {
   const gs = WHATS_NEW.filter(g => lineOf(g[0]) === line);
-  const main = gs.filter(g => !isFix(g) && /\.0$/.test(g[0].split('-')[0])), fixes = gs.filter(isFix).sort((a, b) => vcmp(b[0], a[0]));
+  const main = gs.filter(isFeature), fixes = gs.filter(isFix).sort((a, b) => vcmp(b[0], a[0]));
   return { main, fixes };
 }
 function notesBlock(line, seen) {
   const { main, fixes } = lineGroups(line);
   const isNew = v => seen && vcmp(v, seen) > 0;
   const badges = g => `${g[0] === APP_VERSION ? '<span class="rn-now">Current</span>' : ''}${isNew(g[0]) ? '<span class="rn-now rn-new">New</span>' : ''}`;
-  const rows = g => g[1].map(w => `<div class="row" style="align-items:flex-start;gap:10px"><i class="ti ${w[0]}" style="color:var(--stp);margin-top:1px"></i><div><b>${esc(w[1])}</b>${thanksTag(w[3])}<div class="muted">${esc(w[2])}</div></div></div>`).join('');
+  const rows = g => g[1].map(w => `<div class="row rn-row"><i class="ti ${esc(w[0])}"></i><div><b>${esc(w[1])}</b>${thanksTag(w[3])}<div class="muted">${esc(w[2])}</div></div></div>`).join('');
   const label = g => `<div class="rn-ver lbl">${esc(g[0])} · new features${badges(g)}</div>`;
-  const fix = g => `<div class="rn-fix"><span class="rn-v">${esc(g[0])}</span><i class="ti ti-tool"></i><div class="muted">${esc(g[1])}${thanksTag(g[2])}${badges(g)}</div></div>`;
-  return main.map(g => label(g) + rows(g)).join('') +
+  const fix = g => `<div class="rn-fix"><span class="rn-v">${esc(g[0])}</span><i class="ti ti-tool"></i><div class="rn-fl">${fixLines(g).map(l => `<div class="muted">${esc(l[0])}${thanksTag(l[1])}</div>`).join('')}</div>${badges(g)}</div>`;
+  return `<div class="rn-title">BOARD ${esc(line)}</div>` + main.map(g => label(g) + rows(g)).join('') +
     (fixes.length ? `<div class="rn-ver lbl" style="margin-top:14px">Fixes and tweaks${main.length ? ' since ' + esc(main[0][0]) : ''}</div><div class="rn-fixes">${fixes.map(fix).join('')}</div>` : '');
 }
 /* shown once per new build on this browser: the whole of the current release line, with anything new since you last looked tagged New */
+function notesModal(seen, closeLabel) {
+  const line = lineOf(APP_VERSION);
+  if (!WHATS_NEW.some(g => lineOf(g[0]) === line)) return false;
+  openModal(`<h3>Release notes</h3><div class="muted">You are on ${esc(APP_VERSION)}. Big features first, then the fixes that followed.</div>
+    <div class="rn-list">${notesBlock(line, seen)}</div>
+    <div class="actions"><button class="btn btn-plain" data-act="feedback"><i class="ti ti-message-circle"></i>Send feedback</button><button class="btn btn-primary" data-act="closemodal">${closeLabel}</button></div>`, 'wide');
+  return true;
+}
 function whatsNew() {
   if (!S.me || S.readonly) return;
   const seen = store.get('board_seen') || sstore.get('board_seen');
   if (seen && vcmp(seen, APP_VERSION) >= 0) return;
   store.set('board_seen', APP_VERSION); sstore.set('board_seen', APP_VERSION);
-  const line = lineOf(APP_VERSION);
-  if (!WHATS_NEW.some(g => lineOf(g[0]) === line)) return;
-  openModal(`<h3>What is new in BOARD ${esc(line)}</h3><div class="muted">You are on ${esc(APP_VERSION)}. Here is everything in this update, big features first.</div>
-    <div class="rn-list">${notesBlock(line, seen)}</div>
-    <div class="actions"><button class="btn btn-plain" data-act="feedback"><i class="ti ti-message-circle"></i>Send feedback</button><button class="btn btn-primary" data-act="closemodal">Got it</button></div>`, 'wide');
+  notesModal(seen, 'Got it');
 }
 /* 1.0.0: the launch welcome. Shown once to each person the first time they sign in on WELCOME_VER (once per browser they use).
    It stands in for "What is new" that time, so nobody gets two pop-ups. */
@@ -1734,16 +1822,8 @@ function welcome() {
   celebrate(PARTY);
   return true;
 }
-/* 1.1.3: the Release notes button shows the whole current release line, then the one before it, so the big features never drop off. */
-ACT.releasenotes = () => {
-  closePop();
-  const lines = []; WHATS_NEW.forEach(g => { const l = lineOf(g[0]); if (!lines.includes(l)) lines.push(l); });
-  lines.sort((a, b) => vcmp(b + '.0', a + '.0'));
-  const show = lines.slice(0, 2);
-  openModal(`<h3>Release notes</h3><div class="muted">You are on ${esc(APP_VERSION)}. Big features first, then the fixes that followed.</div>
-    <div class="rn-list">${show.map((l, i) => `<div class="lbl" style="margin:${i ? '22px' : '4px'} 0 2px;font-size:13px;color:var(--color-text-primary)">BOARD ${esc(l)}</div>` + notesBlock(l)).join('')}</div>
-    <div class="actions"><button class="btn btn-plain" data-act="feedback"><i class="ti ti-message-circle"></i>Send feedback</button><button class="btn btn-primary" data-act="closemodal">Close</button></div>`, 'wide');
-};
+/* 1.3.0: the Release notes button shows the same page as the pop-up: the current release line only. */
+ACT.releasenotes = () => { closePop(); notesModal(null, 'Close'); };
 
 /* ---------------- boot ---------------- */
 async function boot() {
@@ -1945,17 +2025,40 @@ function leadCell(p, role, ed) {
   const inner = `<span class="lstack">${circ}${empty}</span>`;
   return ed ? `<button class="cell-btn" data-act="leadpick" data-id="${p.id}" data-role="${role}" title="${esc(label)}${names ? ': ' + esc(names) : ''}">${inner}</button>` : (list.length ? `<span title="${esc(names)}">${inner}</span>` : '');
 }
-/* 1.2.2: the timeline goes orange on its last day and red (with a warning) once that day has passed, unless the project is finished with */
+/* 1.3.0: the Timeline pill.
+   Awaiting Client Feedback: the timeline is the feedback window, from the day it went out to the day the client said they would reply.
+     The day before it ends: a green "Due tomorrow". The day it ends: a green "Due today" (feedback is still due by the end of the day).
+     Every working day after: a red "1 day overdue", "2 days overdue" and so on, counted from the client's own deadline.
+   Edit: the same words off the edit timeline, except that the day it is due is a red "Due today" with a warning sign, because it should be done by now.
+   Working days only (Monday to Friday). Bank holidays are deliberately not counted differently, so the count is always simple.
+   Any other status that has passed its end date keeps the red date range. Nothing is orange any more. */
 const TL_DONE = ['complete', 'cancelled project', 'failed pitch', 'awaiting handover'];
+const isWorkday = s => { const d = pd(s), w = d ? d.getUTCDay() : 0; return w > 0 && w < 6; };
+const dayAdd = (s, n) => ymd(new Date(pd(s).getTime() + n * MS_DAY));
+const prevWorkday = s => { let d = dayAdd(s, -1), g = 0; while (!isWorkday(d) && g++ < 10) d = dayAdd(d, -1); return d; };
+function workdaysOver(e, t) { let n = 0, d = e, g = 0; while (d < t && g++ < 4000) { d = dayAdd(d, 1); if (isWorkday(d)) n++; } return n; }
+const isFeedback = p => norm(p && p.status) === 'awaiting client feedback';
 function tlState(p) {
-  if (!p || closeoutStages().includes(p.stage) || TL_DONE.includes(norm(p.status))) return '';
-  const e = epOf(p).e, t = todayStr(); return !e ? '' : (e < t ? 'overdue' : (e === t ? 'due' : ''));
+  if (!p || closeoutStages().includes(p.stage) || TL_DONE.includes(norm(p.status))) return null;
+  const ep = epOf(p), e = ep.e, t = todayStr(), range = frange(ep.s, ep.e);
+  if (!e) return null;
+  const fb = isFeedback(p), ed = norm(p.status) === 'edit';
+  if (fb || ed) {
+    const what = fb ? 'Feedback' : 'The edit', win = ' Window ' + range + '.';
+    const n = e < t ? workdaysOver(e, t) : 0;
+    if (n >= 1) return { cls: 'overdue', text: '⚠️ ' + n + ' day' + (n === 1 ? '' : 's') + ' overdue', why: what + ' was due ' + fdate(e) + '.' + win };
+    if (e <= t) return fb ? { cls: 'soon', text: 'Due today', why: 'Feedback is due by the end of the day.' + win } : { cls: 'overdue', text: '⚠️ Due today', why: 'Due today and still in Edit.' + win };
+    if (t >= prevWorkday(e)) return { cls: 'soon', text: 'Due tomorrow', why: what + ' is due ' + fdate(e) + '.' + win };
+    return { cls: '', text: range, why: fb ? 'Feedback is expected by ' + fdate(e) + '.' : '' };
+  }
+  if (e < t) return { cls: 'overdue', text: '⚠️ ' + range, why: 'The deadline has passed.' };
+  return { cls: '', text: range, why: '' };
 }
 function timelineCell(p, ed) {
-  const ep = epOf(p), txt = ep.s || ep.e ? frange(ep.s, ep.e) : '', st = txt ? tlState(p) : '', warn = st === 'overdue' ? '⚠️ ' : '';
-  const why = st === 'overdue' ? 'The deadline has passed' : (st === 'due' ? 'The deadline is today' : '');
-  if (ed) return `<button class="tl-pill${txt ? '' : ' none'}${st ? ' ' + st : ''}" data-act="rpopen" data-id="${p.id}" title="${why ? why + '. ' : ''}Set the edit timeline">${txt ? warn + esc(txt) : 'Set dates'}</button>`;
-  return txt ? `<span class="tl-pill${st ? ' ' + st : ''}"${why ? ` title="${why}"` : ''}>${warn}${esc(txt)}</span>` : '';
+  const ep = epOf(p), range = ep.s || ep.e ? frange(ep.s, ep.e) : '', st = range ? tlState(p) : null;
+  const txt = st ? st.text : range, cls = st ? st.cls : '', why = st && st.why ? st.why : '';
+  if (ed) return `<button class="tl-pill${range ? '' : ' none'}${cls ? ' ' + cls : ''}" data-act="rpopen" data-id="${p.id}" title="${why ? esc(why) + ' ' : ''}${isFeedback(p) ? 'Set when feedback is due' : 'Set the edit timeline'}">${txt ? esc(txt) : 'Set dates'}</button>`;
+  return range ? `<span class="tl-pill${cls ? ' ' + cls : ''}"${why ? ` title="${esc(why)}"` : ''}>${esc(txt)}</span>` : '';
 }
 function marginCell(p, ed) {
   const m = marginOf(p);
@@ -2049,8 +2152,35 @@ function applyOutcome(p) {
   stampOut(p, was);
 }
 /* 0.6.1: marking a project Complete asks first (it moves to Out Processing), then celebrates */
+/* 1.3.0: setting Awaiting Client Feedback asks when the client said they would reply. The timeline then runs from today to that day. */
+function askFeedbackDue(p) {
+  const t = todayStr(), cur = epOf(p).e;
+  let start = cur && cur >= t && isWorkday(cur) ? cur : dayAdd(t, 3); while (!isWorkday(start)) start = dayAdd(start, 1);
+  return new Promise(res => {
+    const m = openModal(`<h3>When is feedback due?</h3><div><b>${esc(p.name)}</b> is going to Awaiting Client Feedback. Pick the day the client said they would get back to you. The timeline will run from today to that day, and BOARD counts the working days after it.</div>
+      <div class="field"><span class="lbl">Feedback due</span><input class="inp" type="date" id="fbDue" min="${t}" value="${start}"></div>
+      <div class="errline" id="fbErr"></div>
+      <div class="actions"><button class="btn btn-plain" data-r="0">Cancel</button><button class="btn btn-primary" data-r="1">Set status</button></div>`);
+    const input = $('#fbDue', m);
+    m.addEventListener('click', e => {
+      const b = e.target.closest('[data-r]'); if (!b) return;
+      if (b.dataset.r === '0') { closeModal(); res(null); return; }
+      const v = input.value;
+      if (!pd(v)) { $('#fbErr', m).textContent = 'Pick a date first.'; return; }
+      if (v < t) { $('#fbErr', m).textContent = 'That day has already gone. Pick today or later.'; return; }
+      if (!isWorkday(v)) { $('#fbErr', m).textContent = 'BOARD counts working days only, so pick a weekday.'; return; }
+      closeModal(); res(v);
+    });
+    $('#modalScrim').addEventListener('click', () => res(null));
+  });
+}
 async function setStatus(p, v, from) {
   if (from !== 'archive' && isPreStage(v) && !hasCode(p) && !await requireCode(p, { act: 'status', v })) return false;
+  let extra = null;
+  if (from !== 'archive' && norm(v) === 'awaiting client feedback' && !isFeedback(p)) {
+    const due = await askFeedbackDue(p); if (!due) return false;
+    extra = { edit_start: todayStr(), edit_end: due };
+  }
   const t = from === 'archive' ? null : stageForStatus(p, v);
   const done = norm(v) === 'complete' && !!t && isOutStage(t);
   if (done && !await confirmBox(`Mark "${p.name}" as complete? It will move off the Project board to Out Processing, where the closeout checklist is worked through before it is archived.`, 'Mark complete', false, 'Project complete')) return false;
@@ -2064,7 +2194,8 @@ async function setStatus(p, v, from) {
     celebrate(SAD, 'sad'); toast('\u{1F622} ' + p.name + ' is in Out Processing as ' + v + '.');
     return true;
   }
-  saveFields(p.id, { status: v }, from, true);
+  saveFields(p.id, Object.assign({ status: v }, extra || {}), from, true);
+  if (extra) toast('Feedback due ' + fdate(extra.edit_end));
   if (t) await moveProject(p.id, t);
   if (done) { celebrate(PARTY); toast('\u{1F389} ' + p.name + ' is complete. Nice work.'); }
   return true;
@@ -2265,7 +2396,7 @@ function openCodeGen(p, back) {
   c.title = p.name; c.codeEdited = false;
   if (known) { c.mode = 'existing'; c.client = known.name; }
   else { c.mode = 'new'; c.newName = p.client || ''; c.newCode = ''; if (p.client) suggestSoon(); }
-  closeDrawer(true); go('codes');
+  c.tab = 'generate'; closeDrawer(true); go('codes');
 }
 ACT.cbreturn = () => {
   const b = S.codeBack; if (!b) return;
@@ -2363,7 +2494,9 @@ function ecStages() {
   if (!S.ec.internal) { const ex = st.filter(s => !/internal/i.test(s)); if (ex.length) st = ex; }
   return st;
 }
-const ecPeople = () => S.people.filter(p => p.active !== false).filter(p => /post|freelanc/i.test((deptById(p.department) || {}).name || ''));
+/* 1.3.0: "Internal editors only" leaves out anyone in the Freelance department */
+const isFreelancer = p => /freelanc/i.test((deptById(p.department) || {}).name || '');
+const ecPeople = () => S.people.filter(p => p.active !== false).filter(p => /post|freelanc/i.test((deptById(p.department) || {}).name || '')).filter(p => !(S.ec.noFreelance && isFreelancer(p)));
 function ecDayW() {
   const cw = ($('#content') || {}).clientWidth || (innerWidth - 236);
   return Math.max(14, Math.floor((cw - tlLabelW() - 2) / (S.ec.days || 10)));
@@ -2374,6 +2507,7 @@ function viewEditCapacity() {
     ${roSeg('timeline')}
     <select class="sel sel-sm" data-chg="ec-person">${personOpts(S.ec.person, 'Everyone in post and freelancers', ppl)}</select>
     <select class="sel sel-sm" data-chg="ec-days" title="How many working days fit on screen">${DAY_OPTS.map(d => `<option value="${d}"${d === S.ec.days ? ' selected' : ''}>Next ${d} working days</option>`).join('')}</select>
+    <button class="btn btn-sm ${S.ec.noFreelance ? 'btn-primary' : 'btn-plain'}" data-act="ecint" title="Leave freelancers off the timeline" aria-pressed="${S.ec.noFreelance ? 'true' : 'false'}"><i class="ti ti-users"></i>Internal editors only</button>
     <button class="btn btn-plain btn-sm" data-act="tltoday">Today</button>
     ${hasInternal() ? `<label class="row muted" style="font-size:12px;gap:6px"><input type="checkbox" class="toggle" data-chg="ec-internal" ${S.ec.internal ? 'checked' : ''}> Include internal post production</label>` : ''}
   </div><div id="vb">${ecBody()}</div>`;
@@ -2404,7 +2538,7 @@ function ecBody() {
   const bar = p => {
     const sp = span_(p); if (!sp) return '';
     if (sp.e < 0 || sp.s >= totalDays) return '';
-    const cs = Math.max(0, sp.s), ce = Math.min(totalDays - 1, sp.e), x = cs * dayW, w = (ce - cs + 1) * dayW, col = statusColour(p.status) || NEUTRAL, left = x + w > W - 220;
+    const cs = Math.max(0, sp.s), ce = Math.min(totalDays - 1, sp.e), x = cs * dayW, w = (ce - cs + 1) * dayW, col = (isFeedback(p) && (tlState(p) || {}).cls === 'overdue') ? '#DC2626' : (statusColour(p.status) || NEUTRAL), left = x + w > W - 220;
     return `<div class="tl-bar${ed ? '' : ' ro'}" data-act="open" data-id="${p.id}" data-pid="${p.id}" data-i0="${sp.s}" data-i1="${sp.e}" style="left:${x}px;width:${w}px;background:${col};${sp.ep.custom ? '' : 'opacity:.5;'}" title="${esc(p.name)}: ${esc(frange(sp.ep.s, sp.ep.e))}${sp.ep.custom ? '' : ' (from the old project dates until you set a timeline)'}">${ed ? '<span class="tl-h l"></span><span class="tl-h r"></span>' : ''}</div>
       <div class="tl-bar-lbl" data-lbl="${p.id}" style="${left ? `right:${W - x}px;padding:0 5px 0 0` : `left:${x + w}px`}">${esc(p.name)}</div>`;
   };
@@ -2428,7 +2562,7 @@ function ecBody() {
   const tx = LW + todayIdx * dayW + dayW / 2, showToday = todayIdx >= 0 && todayIdx < totalDays;
   const used = uniq(projs.map(p => p.status).filter(Boolean));
   return `<div class="tl" style="width:${LW + W}px">${head}<div style="position:relative">${grid}${holCols}${showToday ? `<div class="tl-today" style="left:${tx}px"></div>` : ''}${rows}</div>
-    <div class="legend">${used.map(s => `<span><i style="background:${statusColour(s)}"></i>${esc(s)}</span>`).join('')}<span><i style="background:#D97706"></i>2 overlapping</span><span><i style="background:#DC2626"></i>3 or more overlapping</span><span><i class="hol"></i>UK bank holiday (England and Wales)</span><span class="muted">Drag a bar to move it, drag its ends to resize. The Timeline column on the Project board sets the same dates.</span></div></div>`;
+    <div class="legend">${used.map(s => `<span><i style="background:${statusColour(s)}"></i>${esc(s)}</span>`).join('')}<span><i style="background:#DC2626"></i>Feedback overdue</span><span><i style="background:#D97706"></i>2 overlapping</span><span><i style="background:#DC2626"></i>3 or more overlapping</span><span><i class="hol"></i>UK bank holiday (England and Wales)</span><span class="muted">Drag a bar to move it, drag its ends to resize. The Timeline column on the Project board sets the same dates.</span></div></div>`;
 }
 /* scrolls so today is the first day showing, with the next working days after it */
 function scrollTimelineToToday() {
@@ -2437,6 +2571,7 @@ function scrollTimelineToToday() {
   c.scrollLeft = Math.max(0, idx * dayW);
 }
 ACT.tltoday = () => scrollTimelineToToday();
+ACT.ecint = () => { S.ec.noFreelance = !S.ec.noFreelance; if (S.ec.person && !ecPeople().some(p => p.id === S.ec.person)) S.ec.person = ''; renderView(); scrollTimelineToToday(); };
 INP['ec-person'] = el => { S.ec.person = el.value; rerenderBody(); };
 INP['ec-internal'] = el => { S.ec.internal = el.checked; rerenderBody(); };
 INP['ec-days'] = el => { S.ec.days = Number(el.value) || 10; rerenderBody(); scrollTimelineToToday(); };
@@ -2979,8 +3114,8 @@ async function loadArchive(reset) {
     const d = await api('archive_list', { q: a.q, fy: a.fy, client: a.client, offset: reset ? 0 : a.rows.length, limit: 100 });
     const first = !a.fys.length, rows = cleanList(d.rows, 'archive record').map(cleanProject);
     a.rows = reset ? rows : a.rows.concat(rows); a.total = d.total; a.fys = d.fys; a.clients = d.clients; a.loaded = true;
-    a.loading = false; if (S.view === 'archive') { first ? renderView() : rerenderBody(); }
-  } catch (e) { a.loading = false; a.loaded = true; toast(e.message, 'err'); if (S.view === 'archive') rerenderBody(); }
+    a.loading = false; if (S.view === 'archive') { first ? renderView() : rerenderBody(); } else if (S.view === 'codes' && S.codes.tab === 'clients') rerenderBody();   /* 1.3.0: the Clients tab reads the archive's client names */
+  } catch (e) { a.loading = false; a.loaded = true; toast(e.message, 'err'); if (S.view === 'archive' || (S.view === 'codes' && S.codes.tab === 'clients')) rerenderBody(); }
 }
 const archiveSearch = debounce(() => loadArchive(true), 300);
 INP['ar-q'] = el => { S.ar.q = el.value; archiveSearch(); };
@@ -3016,7 +3151,7 @@ async function refreshClients(force) {
     const pop = $('#pop'), q = pop && $('#cpQ', pop);
     if (q) { const had = document.activeElement === q, st = pop.scrollTop; pop.innerHTML = cpHTML(); pop.scrollTop = st; const q2 = $('#cpQ', pop); if (had && q2) { q2.focus(); q2.setSelectionRange(q2.value.length, q2.value.length); } }
     if (S.drawer && !focusInDrawer()) refreshDrawer();
-    if (!typing() && !S.dragging) { if (S.view === 'codes' && S.codes.mode !== 'new') renderView(); else if (S.view === 'pipeline' || S.view === 'mine' || (S.view === 'settings' && S.settingsTab === 'clients')) rerenderBody(); }
+    if (!typing() && !S.dragging) { if (S.view === 'codes') { if (S.codes.tab === 'clients' || S.codes.mode !== 'new') rerenderBody(); updateCodeOut(); } else if (S.view === 'pipeline' || S.view === 'mine') rerenderBody(); }
     return true;
   } catch (e) { return false; } finally { S._clientsBusy = false; }
 }
@@ -3025,28 +3160,61 @@ async function loadClients() {
   try { const d = await api('clients'); S.clients = d.clients; S._clientsAt = Date.now(); } catch (e) { S.clients = []; toast(e.message, 'err'); }
   if (S.view === 'codes') renderView();
   else if (S.view === 'pipeline' && !typing()) rerenderBody();
-  else if (S.view === 'settings' && S.settingsTab === 'clients') rerenderBody();
 }
+/* 1.3.0: the Code generator has two tabs. Generate code is one card (the client, the title and the result together, with "use this code"
+   and "back to your project" sitting right next to the code instead of in a banner). Clients is the whole client list, moved here from Settings:
+   everyone can look, admins can add and rename. A client's code is never editable, because project codes built from it are already in QuickBooks. */
 function viewCodes() {
-  const c = S.codes, mode = c.mode;
+  const c = S.codes, tab = c.tab === 'clients' ? 'clients' : 'generate';
+  const tabs = `<div class="tabs"><div class="seg"><button data-act="cgtab" data-t="generate" class="${tab === 'generate' ? 'on' : ''}"><i class="ti ti-barcode"></i>Generate code</button><button data-act="cgtab" data-t="clients" class="${tab === 'clients' ? 'on' : ''}"><i class="ti ti-building"></i>Clients</button></div></div>`;
+  const bar = tab === 'clients' ? `<div class="toolbar"><div class="search"><i class="ti ti-search"></i><input class="inp" id="clQ" placeholder="Search clients or codes" value="${esc(c.q)}" data-inp="cl-q" autocomplete="off"></div><span class="spacer"></span>${isAdmin() ? `<button class="btn btn-primary btn-sm" data-act="rcadd" data-n="" ${canEdit() ? '' : 'disabled'}><i class="ti ti-plus"></i>Add client</button>` : ''}</div>` : '';
+  return tabs + bar + `<div id="vb">${codesBody()}</div>`;
+}
+function codesBody() { return S.codes.tab === 'clients' ? clientsBody() : generateBody(); }
+BODY.codes = codesBody;
+function generateBody() {
+  const c = S.codes, mode = c.mode, cb = S.codeBack, db = S.draft && S.draftBack;
   const list = (S.clients || []).map(x => `<option value="${esc(x.name)}">${esc(x.code)}</option>`).join('');
-  return `<div class="pad" style="max-width:980px">${S.codeBack ? `<div class="callout" style="position:static;width:auto;max-width:none;margin:0 0 16px"><i class="ti ti-arrow-back-up"></i><span class="tx"><b>${esc(S.codeBack.name)}</b> is waiting for a project code. Add the client here if it is new, check the code below, then press Use this code and the move carries on.</span><button class="btn btn-primary btn-sm" data-act="cbreturn">Use this code</button><button class="btn btn-plain btn-sm" data-act="cbcancel">Cancel</button></div>` : ''}${S.draft && S.draftBack ? `<div class="callout" style="position:static;width:auto;max-width:none;margin:0 0 16px"><i class="ti ti-arrow-back-up"></i><span class="tx"><b>You are adding a client for a new project.</b> Add it here and you will go straight back to the new project with the client filled in.</span><button class="btn btn-plain btn-sm" data-act="draftreturn">Back to new project</button></div>` : ''}<div class="grid2" style="gap:20px;align-items:start">
-    <div class="panel pad" style="display:flex;flex-direction:column;gap:14px">
-      <div class="seg" style="align-self:flex-start"><button data-act="cgmode" data-m="existing" class="${mode === 'existing' ? 'on' : ''}">Existing client</button><button data-act="cgmode" data-m="new" class="${mode === 'new' ? 'on' : ''}">New client</button></div>
-      ${!S.clients ? `<div class="muted">Loading clients</div>` : mode === 'existing' ? `
-        <div class="field"><span class="lbl">Client</span><input class="inp" id="cgClient" list="cgList" placeholder="Start typing a client or code" value="${esc(c.client)}" data-inp="cg-client" autocomplete="off"><datalist id="cgList">${list}</datalist></div>
-        <div id="cgHit" class="muted" style="font-size:12px"></div>` : `
-        <div class="field"><span class="lbl">Client name</span><input class="inp" id="cgNewName" value="${esc(c.newName)}" data-inp="cg-newname" placeholder="e.g. Acme Studios"></div>
-        <div class="field"><span class="lbl">Client code (exactly 5 letters or numbers)</span><input class="inp" id="cgNewCode" value="${esc(c.newCode)}" data-inp="cg-newcode" style="text-transform:uppercase" maxlength="5" autocapitalize="characters" autocomplete="off"></div>
-        <div class="muted" style="font-size:12px">Adds a new row to the Project Code Generator sheet, so the old sheet stays in step.</div>
-        <button class="btn btn-primary" style="align-self:flex-start" data-act="cgadd" ${canEdit() ? '' : 'disabled'}><i class="ti ti-plus"></i>Add client to code sheet</button>`}
-      <div class="field"><span class="lbl">Project title</span><input class="inp" id="cgTitle" value="${esc(c.title)}" data-inp="cg-title" placeholder="e.g. Tenderness & Rage"></div>
-    </div>
-    <div class="panel pad" style="display:flex;flex-direction:column;gap:12px">
-      <span class="lbl">Project code</span><div class="codebox" id="cgOut"></div>
-      <div class="row"><button class="btn btn-primary" data-act="cgcopy"><i class="ti ti-copy"></i>Copy</button></div>
-      <div class="muted" style="font-size:12px">Format is CLIENTCODE_TitleCaseTitle. Project codes are still entered into QuickBooks by hand.</div>
-    </div></div></div>`;
+  const ctx = cb ? `<div class="cg-ctx"><i class="ti ti-arrow-back-up"></i><span>Setting up the code for <b>${esc(cb.name)}</b></span></div>` : db ? `<div class="cg-ctx"><i class="ti ti-arrow-back-up"></i><span>Adding a client for your new project</span></div>` : '';
+  const acts = cb ? `<button class="btn btn-primary" data-act="cbreturn"><i class="ti ti-check"></i>Use this code for ${esc(cb.name)}</button><button class="btn btn-ghost" data-act="cgcopy"><i class="ti ti-copy"></i>Copy</button><button class="btn btn-plain" data-act="cbcancel">Cancel</button>`
+    : db ? `<button class="btn btn-ghost" data-act="cgcopy"><i class="ti ti-copy"></i>Copy</button><button class="btn btn-primary" data-act="draftreturn"><i class="ti ti-arrow-back-up"></i>Back to new project</button>`
+    : `<button class="btn btn-primary" data-act="cgcopy"><i class="ti ti-copy"></i>Copy</button>`;
+  return `<div class="pad"><div class="panel pad cg-card">${ctx}
+    <div class="seg" style="align-self:flex-start"><button data-act="cgmode" data-m="existing" class="${mode === 'existing' ? 'on' : ''}">Existing client</button><button data-act="cgmode" data-m="new" class="${mode === 'new' ? 'on' : ''}">New client</button></div>
+    ${!S.clients ? `<div class="muted">Loading clients</div>` : mode === 'existing' ? `
+      <div class="field"><span class="lbl">Client</span><input class="inp" id="cgClient" list="cgList" placeholder="Start typing a client or code" value="${esc(c.client)}" data-inp="cg-client" autocomplete="off"><datalist id="cgList">${list}</datalist></div>
+      <div id="cgHit" class="muted" style="font-size:12px"></div>` : `
+      <div class="field"><span class="lbl">Client name</span><input class="inp" id="cgNewName" value="${esc(c.newName)}" data-inp="cg-newname" placeholder="e.g. Acme Studios"></div>
+      <div class="field"><span class="lbl">Client code (exactly 5 letters or numbers)</span><input class="inp" id="cgNewCode" value="${esc(c.newCode)}" data-inp="cg-newcode" style="text-transform:uppercase" maxlength="5" autocapitalize="characters" autocomplete="off"></div>
+      <div class="muted" style="font-size:12px">Adds a new row to the Project Code Generator sheet, so the old sheet stays in step.</div>
+      <button class="btn btn-primary" style="align-self:flex-start" data-act="cgadd" ${canEdit() ? '' : 'disabled'}><i class="ti ti-plus"></i>Add client to code sheet</button>`}
+    <div class="field"><span class="lbl">Project title</span><input class="inp" id="cgTitle" value="${esc(c.title)}" data-inp="cg-title" placeholder="e.g. Tenderness & Rage"></div>
+    <div class="cg-result"><span class="lbl">Project code</span><div class="codebox" id="cgOut"></div>
+      <div class="row cg-acts">${acts}</div>
+      <div class="muted" style="font-size:12px">Format is CLIENTCODE_TitleCaseTitle. Project codes are still entered into QuickBooks by hand.</div></div>
+  </div></div>`;
+}
+/* the Clients tab: every client in the code sheet, with how many live projects use it */
+function clientsBody() {
+  if (!S.clients) return `<div class="pad"><div class="skeleton" style="height:200px">Loading clients</div></div>`;
+  const q = norm(S.codes.q), admin = isAdmin() && canEdit(), counts = {};
+  S.projects.forEach(p => { if (p.client) { const k = norm(p.client); counts[k] = (counts[k] || 0) + 1; } });
+  const list = S.clients.filter(c => !q || norm(c.name).includes(q) || norm(c.code).includes(q));
+  const rows = list.map(c => `<tr><td class="strong">${esc(c.name)}</td><td><span class="cl-code">${esc(c.code)}</span>${String(c.code).length !== 5 ? `<span class="rn-now" style="margin-left:8px" title="Older codes are not 5 characters long. They are left alone on purpose, because project codes built from them are already in QuickBooks.">Older code</span>` : ''}</td><td class="hide-m">${counts[norm(c.name)] || 0}</td>
+    <td style="text-align:right;white-space:nowrap"><button class="btn btn-ghost btn-sm" data-act="clientuse" data-n="${esc(c.name)}">Use in generator</button>${isAdmin() ? `<button class="btn btn-plain btn-sm" data-act="clientrename" data-n="${esc(c.name)}" title="Rename this client" ${admin ? '' : 'disabled'}><i class="ti ti-pencil"></i></button>` : ''}</td></tr>`).join('');
+  let recon = '';
+  if (isAdmin()) {
+    const known = new Set(S.clients.map(c => norm(c.name))), all = {};
+    S.projects.forEach(p => { if (p.client) all[p.client] = (all[p.client] || 0) + 1; });
+    (S.ar.clients || []).forEach(n => { if (!(n in all)) all[n] = 0; });
+    const missing = Object.keys(all).filter(n => !known.has(norm(n))).sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
+    recon = `<div class="lbl" style="margin:28px 0 6px">Used on projects but not in the sheet</div>
+      ${missing.length || !S.ar.loaded ? `<div class="muted" style="margin-bottom:10px;max-width:680px">These names appear on projects but have no code yet${S.ar.loaded ? '' : ' (checking the archive too)'}. Adding one gives it a code and clears it from this list.</div>` : ''}
+      ${missing.length ? `<div class="tbl-wrap"><table class="sub-tbl" style="min-width:420px;max-width:640px"><thead><tr><th>Client name</th><th>Live projects</th><th></th></tr></thead><tbody>${missing.map(n => `<tr><td class="strong">${esc(n)}</td><td>${all[n]}</td><td style="text-align:right"><button class="btn btn-ghost btn-sm" data-act="rcadd" data-n="${esc(n)}" ${canEdit() ? '' : 'disabled'}>Add to code sheet</button></td></tr>`).join('')}</tbody></table></div>`
+      : (S.ar.loaded ? `<div class="muted"><i class="ti ti-circle-check" style="color:var(--color-text-success)"></i> Every client on a project has a code.</div>` : `<div class="muted">Checking the archive...</div>`)}`;
+  }
+  return `<div class="pad"><div class="muted" style="margin-bottom:12px;max-width:680px">The Project Code Generator sheet holds <b>${S.clients.length} clients</b>. ${isAdmin() ? 'You can add and rename clients. A code never changes once it exists.' : 'Admins add and rename clients. Codes never change once they exist.'}</div>
+    ${list.length ? `<div class="tbl-wrap"><table class="sub-tbl cl-tbl" style="max-width:860px"><thead><tr><th>Client</th><th>Code</th><th class="hide-m">Live projects</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>` : `<div class="empty"><i class="ti ti-building"></i>${S.clients.length ? 'No clients match your search.' : 'No clients in the code sheet yet.'}</div>`}${recon}</div>`;
 }
 function cgCurrentCode() {
   const c = S.codes; return c.mode === 'existing' ? (findClient(c.client) || {}).code : String(c.newCode || '').toUpperCase();
@@ -3060,8 +3228,41 @@ function updateCodeOut() {
     hit.innerHTML = f ? `Client code <b>${esc(f.code)}</b>` : (S.codes.client ? 'Not in the code sheet. Switch to New client to add it.' : '');
   }
 }
-BODY.codes = null;
-ACT.cgmode = el => { S.codes.mode = el.dataset.m; renderView(); updateCodeOut(); };
+ACT.cgmode = el => { S.codes.mode = el.dataset.m; rerenderBody(); updateCodeOut(); };
+ACT.cgtab = el => { S.codes.tab = el.dataset.t === 'clients' ? 'clients' : 'generate'; renderView(); };
+INP['cl-q'] = el => { S.codes.q = el.value; rerenderBody(); };
+ACT.clientuse = el => {
+  const c = findClient(el.dataset.n); if (!c) return;
+  S.codes.tab = 'generate'; S.codes.mode = 'existing'; S.codes.client = c.name; S.codes.codeEdited = false;
+  renderView(); const t = $('#cgTitle'); if (t && !t.value) t.focus();
+};
+/* 1.3.0: admins can rename a client. The code stays exactly as it is. The server changes the name in the code sheet and on every live and archived project in one save. */
+ACT.clientrename = el => {
+  const old = el.dataset.n, cl = findClient(old); if (!cl || !isAdmin() || !canEdit()) return;
+  const m = openModal(`<h3>Rename client</h3><div>The code <b>${esc(cl.code)}</b> stays the same. The new name is also used on every project (live and archived) that has this client.</div>
+    <div class="field"><span class="lbl">Client name</span><input class="inp" id="clRen" maxlength="80" value="${esc(cl.name)}"></div>
+    <div class="errline" id="clErr"></div>
+    <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="clGo">Rename</button></div>`);
+  const inp = $('#clRen', m); inp.select();
+  const go = async () => {
+    const name = inp.value.replace(/\s+/g, ' ').trim();
+    if (!name) { $('#clErr', m).textContent = 'Please enter a name.'; return; }
+    if (name === cl.name) { closeModal(); return; }
+    if (S.clients.some(x => x !== cl && norm(x.name) === norm(name))) { $('#clErr', m).textContent = 'There is already a client with that name.'; return; }
+    const w = workStart(m, { text: 'Renaming ' + cl.name, sub: 'Updating the code sheet and every project that uses it.', icon: 'ti-building' });
+    try {
+      const d = await write('client_save', { old_name: cl.name, name });
+      S.clients = d.clients; S._clientsAt = Date.now();
+      S.projects.forEach(p => { if (norm(p.client) === norm(old)) p.client = d.client.name; });
+      ((S.ar && S.ar.rows) || []).forEach(p => { if (norm(p.client) === norm(old)) p.client = d.client.name; });
+      if (S.ar && Array.isArray(S.ar.clients)) S.ar.clients = uniq(S.ar.clients.map(n => norm(n) === norm(old) ? d.client.name : n));
+      if (S.codes.client && norm(S.codes.client) === norm(old)) S.codes.client = d.client.name;
+      await w.done('Renamed to ' + d.client.name); closeModal(true); rerenderBody(); toast(`${old} is now ${d.client.name}`);
+    } catch (e) { w.fail(); $('#clErr', m).textContent = e.message || 'That did not save. Please try again.'; }
+  };
+  $('#clGo', m).onclick = go;
+  m.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target === inp) go(); });
+};
 INP['cg-client'] = el => { S.codes.client = el.value; updateCodeOut(); };
 INP['cg-title'] = el => { S.codes.title = el.value; updateCodeOut(); };
 const suggestSoon = debounce(async () => {
@@ -3407,7 +3608,7 @@ ACT.clientnew = () => {
   const draft = !!S.draft && S.drawer === DRAFT;
   if (draft) S.draftHold = true;
   closeDrawer(true); S.draftHold = false; S.draftBack = draft;
-  S.codes.mode = 'new'; S.codes.codeEdited = false; go('codes');
+  S.codes.mode = 'new'; S.codes.tab = 'generate'; S.codes.codeEdited = false; go('codes');
 };
 ACT.draftreturn = () => { if (!S.draft) return; go('pipeline'); setTimeout(() => openDrawer(DRAFT), 60); };
 INP['pf-client'] = el => {
@@ -3449,18 +3650,17 @@ ACT.feedback = () => {
 /* ================================================================
    Settings (admin and superadmin accounts)
    ================================================================ */
-const SET_TABS = [['people', 'People'], ['departments', 'Departments'], ['workflow', 'Workflow'], ['closeout', 'Out processing options'], ['clients', 'Clients'], ['system', 'System']];
+const SET_TABS = [['people', 'People'], ['departments', 'Departments'], ['workflow', 'Workflow'], ['closeout', 'Out processing options'], ['system', 'System']];
 function viewSettings() {
   return `<div class="tabs"><div class="seg" style="flex-wrap:wrap">${SET_TABS.map(([k, l]) => `<button data-act="settab" data-t="${k}" class="${S.settingsTab === k ? 'on' : ''}">${l}</button>`).join('')}</div></div><div id="vb">${settingsBody()}</div>`;
 }
 BODY.settings = settingsBody;
 function settingsBody() {
-  return `<div class="pad">${({ people: setPeople, departments: setDepts, workflow: setWorkflow, closeout: setCloseout, clients: setClients, system: setSystem }[S.settingsTab] || setPeople)()}</div>`;
+  return `<div class="pad">${({ people: setPeople, departments: setDepts, workflow: setWorkflow, closeout: setCloseout, system: setSystem }[S.settingsTab] || setPeople)()}</div>`;
 }
 ACT.settab = el => { S.settingsTab = el.dataset.t; renderView(); };
 function settingsAfter() {
   if (S.settingsTab === 'system' && !S.health) loadHealth();
-  if (S.settingsTab === 'clients') { if (!S.clients) loadClients(); else refreshClients(); if (!S.ar.loaded && !S.ar.loading) loadArchive(true); }
 }
 async function loadHealth() { try { S.health = await api('health'); } catch (e) { S.health = { error: e.message }; } if (S.view === 'settings' && S.settingsTab === 'system') rerenderBody(); }
 
@@ -3643,24 +3843,11 @@ function setCloseout() {
 }
 INP['co-opt'] = el => { const next = Object.assign({}, S.cfg.closeout_options); next[el.dataset.k] = el.value.split('\n').map(s => s.trim()).filter(Boolean); S.cfg.closeout_options = next; saveCfg('closeout_options', next).then(() => toast('Options saved')).catch(() => {}); };
 
-/* ---- clients to reconcile ---- */
-function setClients() {
-  if (!S.clients) return `<div class="skeleton" style="height:200px">Loading clients</div>`;
-  const known = new Set(S.clients.map(c => norm(c.name))), counts = {};
-  S.projects.forEach(p => { if (p.client) counts[p.client] = (counts[p.client] || 0) + 1; });
-  (S.ar.clients || []).forEach(n => { if (!(n in counts)) counts[n] = 0; });
-  const missing = Object.keys(counts).filter(n => !known.has(norm(n))).sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
-  const odd = S.clients.filter(c => String(c.code || '').length !== 5);
-  return `<div class="muted" style="margin-bottom:12px;max-width:680px">The Project Code Generator sheet holds <b>${S.clients.length} clients</b>, and that is as it should be. Only the names below need a look: they are used on projects but are not in the sheet yet, so they have no code${S.ar.loaded ? '' : ' (archive still loading)'}. Adding one here gives it a code and clears it from this list.</div>
-  ${missing.length ? `<div class="tbl-wrap"><table class="sub-tbl" style="min-width:420px;max-width:640px"><thead><tr><th>Client name</th><th>Live projects</th><th></th></tr></thead><tbody>${missing.map(n => `<tr><td class="strong">${esc(n)}</td><td>${counts[n]}</td><td><button class="btn btn-ghost btn-sm" data-act="rcadd" data-n="${esc(n)}">Add to code sheet</button></td></tr>`).join('')}</tbody></table></div>`
-    : `<div class="empty"><i class="ti ti-circle-check"></i>Every client has a code.</div>`}
-  ${odd.length ? `<div class="lbl" style="margin:26px 0 6px">Codes that are not 5 characters</div><div class="muted" style="margin-bottom:10px;max-width:680px">New client codes have to be exactly 5 letters or numbers. These older ones are left alone on purpose, because project codes built from them are already in QuickBooks.</div>
-  <div class="tbl-wrap"><table class="sub-tbl" style="min-width:320px;max-width:480px"><thead><tr><th>Client</th><th>Code</th></tr></thead><tbody>${odd.map(c => `<tr><td class="strong">${esc(c.name)}</td><td>${esc(c.code)}</td></tr>`).join('')}</tbody></table></div>` : ''}`;
-}
+/* 1.3.0: the clients list and the reconcile list moved to the Code generator, under its Clients tab (clientsBody). */
 ACT.rcadd = async el => {
-  const name = el.dataset.n; let code = '';
-  try { code = (await api('client_suggest', { name })).code; } catch (e) {}
-  const m = openModal(`<h3>Add client to code sheet</h3><div class="field"><span class="lbl">Client name</span><input class="inp" id="rcName" maxlength="80" value="${esc(name)}"></div>
+  const name = el.dataset.n || ''; let code = '';
+  if (name) { try { code = (await api('client_suggest', { name })).code; } catch (e) {} }
+  const m = openModal(`<h3>Add client to code sheet</h3><div class="field"><span class="lbl">Client name</span><input class="inp" id="rcName" maxlength="80" value="${esc(name)}" placeholder="e.g. Acme Studios"></div>
     <div class="field"><span class="lbl">Code (exactly 5 letters or numbers)</span><input class="inp" id="rcCode" value="${esc(code)}" maxlength="5" style="text-transform:uppercase" autocomplete="off"></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="rcGo">Add</button></div>`);
   $('#rcGo', m).onclick = async () => {
@@ -3675,8 +3862,8 @@ ACT.rcadd = async el => {
 function setSystem() {
   const h = S.health, link = S.adminKey ? `${location.origin}${location.pathname}?view=live&k=${S.adminKey}` : '';
   const tabs = h && h.tabs ? Object.keys(h.tabs).map(k => `${k}: ${h.tabs[k]}`).join('  |  ') : '';
-  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo123() once') : '';
-  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo123() once';
+  const sch = h && h.schema, chk = h ? (h.daily_check ? 'On, emails you at 07:00 if anything is wrong' : 'Not installed. Run upgradeTo130() once') : '';
+  const bk = !h ? 'Checking' : h.backup_error ? `<b class="pct-low">Failed: ${esc(h.backup_error)}</b>` : h.backup_on ? `Nightly at 02:00 into the "BOARD backups" folder next to the sheet, last 30 kept. Last backup: ${esc(h.last_backup || 'not yet')}` : 'Not installed. Run upgradeTo130() once';
   const li = lockInfo();
   const lockPanel = S.me.rank >= 3 ? `<div class="panel pad"><div class="lbl" style="margin-bottom:6px">Update lock</div>
       <div class="muted" style="margin-bottom:10px">Makes BOARD view only for everyone, you included, for ${LOCK_MIN} minutes, so nothing changes while a new version goes in. Everyone sees a banner with the time left. It ends by itself, or a super admin can unlock it early. Only super admins see this.</div>
