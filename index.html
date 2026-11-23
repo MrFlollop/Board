@@ -620,8 +620,9 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .tv tr.prow:hover .pc-copy, .pc-copy:focus-visible, .pc-copy.ok { opacity: 1; }
 .pc-copy.ok, .btn.ok { color: var(--color-text-success); }
 @media (hover: none) { .pc-copy { opacity: .7; } }
-.tv tr.prow.proxy td { background-image: repeating-linear-gradient(135deg, rgba(120,110,170,.07) 0 8px, transparent 8px 16px); }
-.tv tr.prow.proxy .nm-inp, .tv tr.prow.proxy .proxy-code { color: var(--color-text-secondary); }
+/* 1.4.1: only the project code cell carries the pattern (the invoicing cell has the Proxy label), so the rest of the row stays at full strength */
+.tv tr.prow.proxy td.pcode { background-image: repeating-linear-gradient(135deg, #9B8EC4 0 7px, #8678B8 7px 14px); }
+.tv tr.prow.proxy td.pcode .proxy-code { color: #fff; }
 .proxy-code { font-weight: 700; letter-spacing: .6px; font-size: 12px; }
 .proxy-pop { max-width: 270px; padding: 10px 12px; font-size: 12.5px; line-height: 1.45; display: grid; gap: 6px; }
 .proxy-banner { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 10px; background: rgba(155,142,196,.14); border: 0.5px solid rgba(134,120,184,.45); font-size: 12.5px; line-height: 1.45; }
@@ -868,7 +869,7 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.4.0';
+const APP_VERSION = '1.4.1';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
@@ -1731,8 +1732,11 @@ function forceUpdate(v, tries) {
    The page only ever shows the CURRENT release line (APP_VERSION 1.4.x shows 1.4, and so on), so this list can keep growing without the page getting longer. */
 const FIX_MAX = 160;
 const WHATS_NEW = [
+  ['1.4.1', [
+    ['A proxy line no longer greys out the whole row on the board. The pattern now sits on the project code and invoicing only.', ['Amy']]
+  ]],
   ['1.4.0', [
-    ['ti-stack-2', 'Proxy lines', 'A proxy is a stand-in line. Press Make proxy beside the project code and both codes become PROXY, budget, target PM and invoicing lock, and the row greys out on the board. It still goes through Out processing, with the invoicing gate waived.', ['Oli']],
+    ['ti-stack-2', 'Proxy lines', 'A proxy is a stand-in line. Press Make proxy beside the project code and both codes become PROXY, budget, target PM and invoicing lock, and the project code and invoicing show the proxy pattern on the board. It still goes through Out processing, with the invoicing gate waived.', ['Oli']],
     ['ti-copy', 'Copy a project code', 'Hover a row on the board, or use Copy in the project panel. A green tick shows once it has copied.', ['Gully']],
     ['ti-eye', 'New things are coming needs a click', 'The notice now stays up until you press View only, so the message gets seen.', ['Oli']],
     ['ti-palette', 'Pink is now #FF50BE', 'The brand pink matches everywhere it appears.', ['Gully']]
@@ -2140,7 +2144,7 @@ function pipeRow(p, g, cols) {
     switch (c.k) {
       case 'name': return td(c, g, ed ? `<div class="nm-wrap"><button class="icon-btn nm-mv" data-act="movemenu" data-id="${p.id}" title="Move to a different stage by hand"><i class="ti ti-dots-vertical"></i></button><input class="cell-inp nm-inp" readonly data-act="open" data-chg="cell" data-id="${p.id}" data-f="name" value="${esc(p.name)}" placeholder="Project name" title="Click to open. Use the pencil to rename."><button class="icon-btn nm-ed" data-act="rename" data-id="${p.id}" title="Rename"><i class="ti ti-pencil"></i></button></div>` : `<span class="cell-txt nm-txt" data-act="open" data-id="${p.id}" style="cursor:pointer">${esc(p.name)}</span>`);
       case 'client': return td(c, g, ed ? clientBtn(p) : `<span class="cell-txt">${esc(p.client)}</span>`);
-      case 'project_code': return td(c, g, isProxy(p) ? `<span class="cell-txt proxy-code">${PROXY}</span>` : `<div class="pc-wrap">${ed ? `<input class="cell-inp" data-chg="cell" data-id="${p.id}" data-f="project_code" value="${esc(p.project_code)}" placeholder="Add code">` : `<span class="cell-txt">${esc(p.project_code)}</span>`}${copyBtn(p.project_code)}</div>`);
+      case 'project_code': return td(c, g, isProxy(p) ? `<span class="cell-txt proxy-code">${PROXY}</span>` : `<div class="pc-wrap">${ed ? `<input class="cell-inp" data-chg="cell" data-id="${p.id}" data-f="project_code" value="${esc(p.project_code)}" placeholder="Add code">` : `<span class="cell-txt">${esc(p.project_code)}</span>`}${copyBtn(p.project_code)}</div>`, 'pcode');
       case 'status': return td(c, g, labCell(p.status, statusColour(p.status), `data-act="labpick" data-kind="status" data-id="${p.id}"`, ed), 'zp');
       case 'lead': case 'creative': case 'production': case 'edit': return td(c, g, leadCell(p, c.k, ed), 'cc');
       case 'timeline': return td(c, g, timelineCell(p, ed), 'cc');
