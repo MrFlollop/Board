@@ -26,7 +26,7 @@
 /* BOARD 1.1.0. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light by default, with a dark mode that each person can switch on. */
 :root {
   color-scheme: light;
-  --stp: #FF50BD; --stp-hover: #D93EA6; --stp-light: #FFE8F7; --stp-alpha: rgba(255,80,189,0.12);
+  --stp: #FF50BE; --stp-hover: #D93EA6; --stp-light: #FFE8F7; --stp-alpha: rgba(255,80,190,0.12);
   --black: #111111;
   --color-background-primary: #FFFFFF;
   --color-background-secondary: #F6F6F7;
@@ -42,7 +42,7 @@
 /* 1.1.0: dark mode. Everything reads these variables, so only the few hard-coded colours are overridden further down. */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --stp-hover: #FF73CB; --stp-light: rgba(255,80,189,0.16); --stp-alpha: rgba(255,80,189,0.2);
+  --stp-hover: #FF73CB; --stp-light: rgba(255,80,190,0.16); --stp-alpha: rgba(255,80,190,0.2);
   --black: #2E2E35;
   --color-background-primary: #151518;
   --color-background-secondary: #1D1D21;
@@ -519,9 +519,9 @@ button.lab-cell:hover { filter: brightness(.94); }
 #updGate { position: fixed; inset: 0; z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 16px; background: color-mix(in srgb, var(--black, #151518) 82%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 #updGate .upd-card { width: 100%; max-width: 440px; background: var(--color-background-primary, #fff); color: var(--color-text-primary); border-radius: 16px; padding: 28px 26px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
 #updGate .brand-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 18px; }
-#updGate .upd-dot { width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #FF50BD; color: #fff; font-size: 26px; }
+#updGate .upd-dot { width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #FF50BE; color: #fff; font-size: 26px; }
 #updGate h2 { margin: 0 0 8px; font-size: 22px; } #updGate p { margin: 0 0 18px; font-size: 14px; line-height: 1.55; color: var(--color-text-secondary); } #updGate .btn { width: 100%; justify-content: center; }
-.rn-new { background: #FF50BD !important; color: #fff !important; margin-left: 6px; }
+.rn-new { background: #FF50BE !important; color: #fff !important; margin-left: 6px; }
 .lg-notice { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; margin: 0 0 14px; border-radius: 10px; border: 1px solid var(--color-text-danger); background: color-mix(in srgb, var(--color-text-danger) 9%, transparent); color: var(--color-text-primary); font-size: 13.5px; line-height: 1.5; } .lg-notice .ti { font-size: 20px; color: var(--color-text-danger); flex: 0 0 auto; margin-top: 1px; }
 .lg-msg { font-size: 12.5px; min-height: 18px; color: var(--color-text-secondary); } .lg-msg.err { color: var(--color-text-danger); font-weight: 600; }
 .lg-form .btn-primary { height: 48px; font-size: 14px; border-radius: 10px; }
@@ -576,7 +576,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 /* 1.3.0: the Update lock banner is bigger and built to be noticed. A slow pink sheen, three layers of glitter twinkling at different speeds, and a soft light that
    sweeps across now and then. It is only there to catch the eye while BOARD is read only (nothing festive). Glitter ignores clicks, and everything holds still if the device asks for less motion. */
 .lockbar { position: relative; overflow: hidden; display: flex; align-items: center; gap: 16px; padding: 18px 24px; color: #fff; font-size: 13px; font-weight: 600; flex: none; flex-wrap: wrap; text-shadow: 0 1px 2px rgba(120,0,80,.35);
-  background: linear-gradient(100deg, #FF50BD 0%, #FF8AD4 26%, #FF50BD 48%, #D93EA6 76%, #FF50BD 100%) 0 0 / 900px 100% repeat-x; animation: lk-sheen 8s linear infinite; }
+  background: linear-gradient(100deg, #FF50BE 0%, #FF8AD4 26%, #FF50BE 48%, #D93EA6 76%, #FF50BE 100%) 0 0 / 900px 100% repeat-x; animation: lk-sheen 8s linear infinite; }
 .lockbar > * { position: relative; z-index: 1; }
 .lockbar::before, .lockbar::after, .lockbar .lk-gl { content: ''; position: absolute; inset: 0; pointer-events: none; background-repeat: repeat-x; z-index: 0; }
 .lockbar::before { background-image: radial-gradient(circle, #fff 0 1.6px, transparent 2.4px), radial-gradient(circle, #fff 0 1.2px, transparent 2px), radial-gradient(circle, #fff 0 2.2px, transparent 3px), radial-gradient(circle, #fff 0 1.4px, transparent 2.2px);
@@ -598,8 +598,8 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 @keyframes lk-sweep { 0%, 55% { left: -40%; } 100% { left: 130%; } }
 @media (prefers-reduced-motion: reduce) { .lockbar, .lockbar::before, .lockbar::after, .lockbar .lk-gl, .lockbar .lk-sw { animation: none; } .lockbar::before { opacity: .6; } .lockbar::after { opacity: .35; } .lockbar .lk-gl { opacity: .45; } .lockbar .lk-sw { display: none; } }
 /* 1.3.0: the locking animation. A pink wash, a padlock that closes with a ring pushing out from it, a few specks of glitter, then the words. It plays when a lock starts (for everyone who has BOARD open) and goes by itself after a few seconds, or on any click or key. */
-.lk-anim { position: fixed; inset: 0; z-index: 400; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 24px; color: #fff; cursor: pointer;
-  background: radial-gradient(circle at 50% 42%, #FF8AD4 0%, #FF50BD 38%, #C2338F 100%); animation: lk-in .35s ease-out both; }
+.lk-anim { position: fixed; inset: 0; z-index: 400; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 24px; color: #fff;
+  background: radial-gradient(circle at 50% 42%, #FF8AD4 0%, #FF50BE 38%, #C2338F 100%); animation: lk-in .35s ease-out both; }
 .lk-anim.out { animation: lk-out .45s ease-in forwards; }
 .lk-anim .lk-pad { position: relative; width: 112px; height: 112px; border-radius: 50%; background: rgba(255,255,255,.22); display: flex; align-items: center; justify-content: center; animation: lk-pop .55s cubic-bezier(.2,1.4,.4,1) .55s both; }
 .lk-anim .lk-pad i { position: absolute; font-size: 56px; }
@@ -607,8 +607,26 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .lk-anim .lk-pad::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 3px solid rgba(255,255,255,.85); opacity: 0; animation: lk-ring 1.1s ease-out .62s forwards; }
 .lk-anim .lk-h { font-size: clamp(26px, 5vw, 40px); font-weight: 800; letter-spacing: .2px; line-height: 1.1; opacity: 0; animation: lk-up .6s ease-out 1.05s forwards; text-shadow: 0 2px 6px rgba(120,0,80,.35); }
 .lk-anim .lk-s { max-width: 460px; font-size: 15px; font-weight: 600; line-height: 1.5; opacity: 0; animation: lk-up .6s ease-out 1.3s forwards; text-shadow: 0 1px 3px rgba(120,0,80,.35); }
-.lk-anim .lk-x { font-size: 12px; opacity: 0; animation: lk-up .6s ease-out 2s forwards; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+.lk-anim .lk-x { font-size: 12px; opacity: 0; animation: lk-up .6s ease-out 2.1s forwards; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+/* 1.4.0: the notice stays until someone presses View only, so the message is read and not skipped */
+.lk-anim .lk-go { position: relative; z-index: 1; margin-top: 10px; min-height: 48px; padding: 0 30px; border: 0; border-radius: var(--r-pill); background: #fff; color: #C2338F; font: inherit; font-size: 15px; font-weight: 800; letter-spacing: .3px; cursor: pointer; opacity: 0; animation: lk-up .6s ease-out 1.8s forwards; box-shadow: 0 6px 18px rgba(120,0,80,.35); display: inline-flex; align-items: center; gap: 8px; }
+.lk-anim .lk-go:hover { transform: translateY(-1px); } .lk-anim .lk-go:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 .lk-anim .lk-d { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #fff; opacity: 0; pointer-events: none; animation: lk-tw2 2.6s ease-in-out infinite; }
+/* 1.4.0: proxy lines and the Copy button */
+.pc-wrap { display: flex; align-items: center; gap: 2px; }
+.pc-wrap .cell-inp { flex: 1 1 auto; min-width: 0; }
+.pc-copy { flex: none; width: 26px; height: 26px; opacity: 0; transition: opacity .12s; }
+.pc-copy .ti { font-size: 15px; }
+.tv tr.prow:hover .pc-copy, .pc-copy:focus-visible, .pc-copy.ok { opacity: 1; }
+.pc-copy.ok, .btn.ok { color: var(--color-text-success); }
+@media (hover: none) { .pc-copy { opacity: .7; } }
+.tv tr.prow.proxy td { background-image: repeating-linear-gradient(135deg, rgba(120,110,170,.07) 0 8px, transparent 8px 16px); }
+.tv tr.prow.proxy .nm-inp, .tv tr.prow.proxy .proxy-code { color: var(--color-text-secondary); }
+.proxy-code { font-weight: 700; letter-spacing: .6px; font-size: 12px; }
+.proxy-pop { max-width: 270px; padding: 10px 12px; font-size: 12.5px; line-height: 1.45; display: grid; gap: 6px; }
+.proxy-banner { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 10px; background: rgba(155,142,196,.14); border: 0.5px solid rgba(134,120,184,.45); font-size: 12.5px; line-height: 1.45; }
+.proxy-banner > .ti { font-size: 18px; color: #7C6BB5; margin-top: 1px; }
+.lab-cell.lab-lock { border-radius: 8px; gap: 6px; cursor: default; }
 @keyframes lk-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes lk-out { to { opacity: 0; } }
 @keyframes lk-pop { 0% { transform: scale(1); } 45% { transform: scale(1.18); } 100% { transform: scale(1); } }
@@ -660,7 +678,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .wl-hero > * { position: relative; }
 .wl-hero .brand-row { display: flex; align-items: center; gap: 14px; }
 .wl-hero .brand-name { color: #fff; border-left-color: rgba(255,255,255,.25); }
-.wl-hero .wl-glow { position: absolute; top: -40%; right: -20%; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,80,189,.55), rgba(255,80,189,0)); animation: wl-glow 6s ease-in-out infinite alternate; pointer-events: none; }
+.wl-hero .wl-glow { position: absolute; top: -40%; right: -20%; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,80,190,.55), rgba(255,80,190,0)); animation: wl-glow 6s ease-in-out infinite alternate; pointer-events: none; }
 .wl-ver { margin-top: 14px; font-size: 11px; font-weight: 700; letter-spacing: 2.2px; text-transform: uppercase; color: rgba(255,255,255,.55); }
 .wl-hi { font-size: clamp(30px, 6vw, 44px); font-weight: 900; line-height: 1.05; letter-spacing: -.5px; }
 .wl-hi em { font-style: italic; font-weight: 800; color: var(--stp); }
@@ -783,7 +801,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .adding .av i { font-size: 36px; }
 .adding.done .av { animation: bpop .35s ease-out; }
 .adding .at { font-size: 15px; font-weight: 800; } .adding .as { font-size: 12px; color: var(--color-text-secondary); min-height: 16px; }
-@keyframes bpulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,80,189,.45); } 50% { transform: scale(1.07); box-shadow: 0 0 0 14px rgba(255,80,189,0); } }
+@keyframes bpulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,80,190,.45); } 50% { transform: scale(1.07); box-shadow: 0 0 0 14px rgba(255,80,190,0); } }
 @keyframes bpop { 0% { transform: scale(.8); } 60% { transform: scale(1.14); } 100% { transform: scale(1); } }
 .sub-tbl tr.row-new td { animation: bflash 2.4s ease-out; }
 @keyframes bflash { 0%, 55% { background: var(--stp-alpha); } 100% { background: transparent; } }
@@ -828,7 +846,7 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 .pass-row { display: flex; gap: 8px; align-items: center; } .pass-row .inp { flex: 1; min-width: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .5px; }
 .inp.gen { color: var(--stp); border-color: var(--stp); }
 .inp.gen-done { animation: passpop .7s ease-out; }
-@keyframes passpop { 0% { box-shadow: 0 0 0 0 rgba(255,80,189,.55); } 100% { box-shadow: 0 0 0 12px rgba(255,80,189,0); } }
+@keyframes passpop { 0% { box-shadow: 0 0 0 0 rgba(255,80,190,.55); } 100% { box-shadow: 0 0 0 12px rgba(255,80,190,0); } }
 .pass-out { display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; }
 .pass-out code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 16px; font-weight: 700; letter-spacing: 1px; padding: 8px 14px; border-radius: 10px; background: var(--color-background-tertiary); user-select: all; }
 /* iPhone: Safari zooms the page when a field with small text is tapped. 16px stops that. */
@@ -850,12 +868,12 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.3.2';
+const APP_VERSION = '1.4.0';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
-const NEED_VER = '1.3.1';   /* the backend must be at least this version */
-const MIN_SCHEMA = 15;   /* the backend must report at least this, or BOARD warns that changes may not save */
+const NEED_VER = '1.4.0';   /* the backend must be at least this version */
+const MIN_SCHEMA = 16;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
 const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
 /* Sunday Treat logo files, kept in the repo next to index.html. If a file will not load, BOARD tries once more, then shows a text wordmark. */
@@ -1014,7 +1032,7 @@ const fixDept = c => legible(OLD_DEPT[String(c || '').toLowerCase()] || c || NEU
 function stageColour(stage) {
   if (/archive/i.test(stage || '')) return '#5F6672';
   if (/out[\s-]?proc|closeout|handover/i.test(stage || '')) return '#D03F4B';
-  if (/internal/i.test(stage || '')) return '#FF50BD';
+  if (/internal/i.test(stage || '')) return '#FF50BE';
   const k = squash(stage);
   const d = S.depts.find(x => { const n = squash(x.name); return n && (n === k || n.startsWith(k) || k.startsWith(n)); });
   if (d && d.colour) return fixDept(d.colour);
@@ -1069,22 +1087,28 @@ function statusColour(s) {
   const i = statusList().indexOf(s); return legible(LABEL_FALLBACK[(i < 0 ? 0 : i) % LABEL_FALLBACK.length], 2);
 }
 /* 1.2.1: invoicing runs in this order. N/A stays as an extra choice for work that needs no invoice (and is what a failed or cancelled project gets). */
-let INV_LABELS = ['Estimate pending', 'Estimate approved', 'Invoicing started', 'Invoicing complete', 'Paid', 'N/A'];
+let INV_LABELS = ['Estimate pending', 'Estimate approved', 'Invoicing started', 'Invoicing complete', 'Paid', 'N/A', 'Proxy'];
 /* older labels (from earlier builds and the Monday import) are mapped to their nearest new one */
 let INV_LEGACY = {
   'not invoiced': 'Estimate pending', 'no estimate': 'Estimate pending', 'estimate pending': 'Estimate pending',
   'estimate accepted': 'Estimate approved', 'estimate approved': 'Estimate approved',
   'partially invoiced': 'Invoicing started', 'invoicing started': 'Invoicing started',
   'sent but not portal uploaded': 'Invoicing complete', 'invoiced': 'Invoicing complete', 'invoicing complete': 'Invoicing complete',
-  'paid': 'Paid', 'n/a': 'N/A', 'na': 'N/A'
+  'paid': 'Paid', 'n/a': 'N/A', 'na': 'N/A', 'proxy': 'Proxy'
 };
 const normInv = v => INV_LEGACY[norm(v)] || (v ? String(v) : '');
 const invOf = p => normInv(fget(p, 'invoicing'));
-const INV_COL = { 'Estimate pending': '#F4BF73', 'Estimate approved': '#F08A62', 'Invoicing started': '#549DCA', 'Invoicing complete': '#87D4CC', 'Paid': '#69D196', 'N/A': '#999999' };
+const INV_COL = { 'Estimate pending': '#F4BF73', 'Estimate approved': '#F08A62', 'Invoicing started': '#549DCA', 'Invoicing complete': '#87D4CC', 'Paid': '#69D196', 'N/A': '#999999', 'Proxy': '#9B8EC4' };
 const invColour = v => (v ? legible(INV_COL[v] || '#797E91', 2) : '#9AA0AB');
 /* a project is "invoiced enough" for out processing once invoicing is complete, paid or N/A */
-let INV_DONE = ['Invoicing complete', 'Paid', 'N/A'];
+let INV_DONE = ['Invoicing complete', 'Paid', 'N/A', 'Proxy'];
 const invOk = p => INV_DONE.includes(invOf(p));
+/* 1.4.0: a proxy line is a stand-in row. Its project code and client code are both PROXY, and invoicing is the locked label Proxy.
+   It is closed out like any other project, but the invoicing gate is waived. Nothing extra is stored: the Proxy label is the flag. */
+const PROXY = 'PROXY';
+const isProxy = p => !!p && invOf(p) === 'Proxy';
+const invPick = () => INV_LABELS.filter(l => l !== 'Proxy');
+const PROXY_BG = 'repeating-linear-gradient(135deg, #9B8EC4 0 7px, #8678B8 7px 14px)';
 /* 1.2.2: take the status and invoicing lists from the backend, so the page and Code.gs can never disagree */
 function applyLabels(c) {
   if (!c) return;
@@ -1097,9 +1121,10 @@ function applyLabels(c) {
 }
 function labCell(label, col, attrs, ed, blank) {
   if (!label) return ed ? `<button class="lab-cell" style="background:var(--color-background-tertiary);color:var(--color-text-secondary);text-shadow:none" ${attrs}><span>${esc(blank || '-')}</span></button>` : '';
+  if (label === 'Proxy') col = PROXY_BG;
   return ed ? `<button class="lab-cell" style="background:${col}" ${attrs}><span>${esc(label)}</span></button>` : `<div class="lab-cell" style="background:${col}"><span>${esc(label)}</span></div>`;
 }
-const lchip = (label, col) => (label ? `<span class="lchip" style="background:${col}">${esc(label)}</span>` : '');
+const lchip = (label, col) => (label ? `<span class="lchip" style="background:${label === 'Proxy' ? PROXY_BG : col}">${esc(label)}</span>` : '');
 
 const canEdit = () => !S.readonly && S.me && S.me.rank >= 1 && lockAllowsMe();
 const canEditBase = () => !S.readonly && S.me && S.me.rank >= 1;
@@ -1473,18 +1498,18 @@ function lockAnimClose() {
   a.classList.add('out'); setTimeout(() => a.remove(), 460);
 }
 function lockAnim(li) {
-  if (!li || $('#lkAnim') || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!li || $('#lkAnim')) return;
   const dots = Array.from({ length: 22 }, (_, i) => `<i class="lk-d" style="left:${(i * 37 + 11) % 97}%;top:${(i * 53 + 7) % 93}%;animation-delay:${((i * 0.29) % 2.4).toFixed(2)}s"></i>`).join('');
   const a = document.createElement('div'); a.className = 'lk-anim'; a.id = 'lkAnim'; a.setAttribute('role', 'status');
   a.innerHTML = `${dots}<div class="lk-pad"><i class="ti ti-lock-open o"></i><i class="ti ti-lock c"></i></div>
     <div class="lk-h">New things are coming</div>
     <div class="lk-s">BOARD is locked while new features and bug fixes go in. You can look around, but nothing can be changed until ${hhmm(li.until)}.</div>
-    <div class="lk-x">Click anywhere to carry on</div>`;
-  a.addEventListener('click', lockAnimClose);
+    <button class="lk-go" id="lkGo" type="button"><i class="ti ti-eye"></i>View only</button>
+    <div class="lk-x">Press View only to carry on</div>`;
+  $('#lkGo', a).addEventListener('click', lockAnimClose);
   document.body.appendChild(a);
-  lockAnimT = setTimeout(lockAnimClose, 4200);
+  setTimeout(() => { const b = $('#lkGo'); if (b) b.focus({ preventScroll: true }); }, 1900);
 }
-addEventListener('keydown', e => { if ($('#lkAnim') && (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ')) lockAnimClose(); });
 function lockChanged(fresh) {
   const was = lockWas;
   renderLockUI(); lockWas = lockKey(); closePop();
@@ -1706,6 +1731,12 @@ function forceUpdate(v, tries) {
    The page only ever shows the CURRENT release line (APP_VERSION 1.4.x shows 1.4, and so on), so this list can keep growing without the page getting longer. */
 const FIX_MAX = 160;
 const WHATS_NEW = [
+  ['1.4.0', [
+    ['Copy a project code from the board (hover the row) or from the project panel. A green tick shows once it has copied.', ['Gully']],
+    ['The pink is now #FF50BE everywhere it appears.', ['Gully']],
+    ['New things are coming now stays up until you press View only, so the message gets seen.', ['Oli']],
+    ['ti-stack-2', 'Proxy lines', 'A proxy is a stand-in line. Press Make proxy beside the project code and both codes become PROXY, budget, target PM and invoicing lock, and the row greys out on the board. It still goes through Out processing, with the invoicing gate waived.', ['Oli']]
+  ]],
   ['1.3.2', [
     ['Awaiting Client Feedback now has a No feedback date choice for when no reply is due. It sets the status and leaves the timeline empty.', ['Oli']]
   ]],
@@ -2093,24 +2124,34 @@ function clientBtn(p) {
   const orphan = !!p.client && !!S.clients && !findClient(p.client);
   return `<button class="cell-btn cell-pick${orphan ? ' orphan' : ''}" data-act="clientpick" data-id="${p.id}" title="${orphan ? 'Not in the code sheet. ' : ''}Choose the client"><span class="t">${p.client ? esc(p.client) : '<span class="ph">Client</span>'}</span><i class="ti ti-chevron-down"></i></button>`;
 }
+/* 1.4.0: copy a project code. The icon shows on row hover in the board's code column, and as a Copy button in the project panel. A green tick shows for two seconds. */
+const copyBtn = code => String(code || '').trim() ? `<button class="icon-btn pc-copy" type="button" data-act="copycode" data-code="${esc(String(code).trim())}" title="Copy project code"><i class="ti ti-copy"></i></button>` : '';
+ACT.copycode = async el => {
+  const code = el.dataset.code; if (!code) return;
+  if (!await copyText(code, 'Copied ' + code)) return;
+  const ic = $('i', el), txt = el.dataset.label;
+  el.classList.add('ok'); if (ic) { ic.className = 'ti ti-check'; }
+  if (txt !== undefined) el.lastChild.nodeValue = 'Copied';
+  setTimeout(() => { el.classList.remove('ok'); if (ic) ic.className = 'ti ti-copy'; if (txt !== undefined) el.lastChild.nodeValue = txt; }, 2000);
+};
 function pipeRow(p, g, cols) {
   const ed = canEdit();
   const cell = c => {
     switch (c.k) {
       case 'name': return td(c, g, ed ? `<div class="nm-wrap"><button class="icon-btn nm-mv" data-act="movemenu" data-id="${p.id}" title="Move to a different stage by hand"><i class="ti ti-dots-vertical"></i></button><input class="cell-inp nm-inp" readonly data-act="open" data-chg="cell" data-id="${p.id}" data-f="name" value="${esc(p.name)}" placeholder="Project name" title="Click to open. Use the pencil to rename."><button class="icon-btn nm-ed" data-act="rename" data-id="${p.id}" title="Rename"><i class="ti ti-pencil"></i></button></div>` : `<span class="cell-txt nm-txt" data-act="open" data-id="${p.id}" style="cursor:pointer">${esc(p.name)}</span>`);
       case 'client': return td(c, g, ed ? clientBtn(p) : `<span class="cell-txt">${esc(p.client)}</span>`);
-      case 'project_code': return td(c, g, ed ? `<input class="cell-inp" data-chg="cell" data-id="${p.id}" data-f="project_code" value="${esc(p.project_code)}" placeholder="Add code">` : `<span class="cell-txt">${esc(p.project_code)}</span>`);
+      case 'project_code': return td(c, g, isProxy(p) ? `<span class="cell-txt proxy-code">${PROXY}</span>` : `<div class="pc-wrap">${ed ? `<input class="cell-inp" data-chg="cell" data-id="${p.id}" data-f="project_code" value="${esc(p.project_code)}" placeholder="Add code">` : `<span class="cell-txt">${esc(p.project_code)}</span>`}${copyBtn(p.project_code)}</div>`);
       case 'status': return td(c, g, labCell(p.status, statusColour(p.status), `data-act="labpick" data-kind="status" data-id="${p.id}"`, ed), 'zp');
       case 'lead': case 'creative': case 'production': case 'edit': return td(c, g, leadCell(p, c.k, ed), 'cc');
       case 'timeline': return td(c, g, timelineCell(p, ed), 'cc');
-      case 'budget': return td(c, g, ed ? `<input type="text" inputmode="decimal" class="cell-inp num gbp-inp" data-chg="cell" data-id="${p.id}" data-f="budget" value="${esc(fmoney(numOf(p.budget)))}" placeholder="£0">` : `<span class="cell-txt num">${esc(fmoney(p.budget))}</span>`);
-      case 'margin': return td(c, g, marginCell(p, ed));
+      case 'budget': if (isProxy(p)) return td(c, g, '<span class="cell-txt num muted">-</span>'); return td(c, g, ed ? `<input type="text" inputmode="decimal" class="cell-inp num gbp-inp" data-chg="cell" data-id="${p.id}" data-f="budget" value="${esc(fmoney(numOf(p.budget)))}" placeholder="£0">` : `<span class="cell-txt num">${esc(fmoney(p.budget))}</span>`);
+      case 'margin': return td(c, g, isProxy(p) ? '<span class="cell-txt num muted">-</span>' : marginCell(p, ed));
       case 'invoicing': { const v = invOf(p); return td(c, g, labCell(v, invColour(v), `data-act="labpick" data-kind="invoicing" data-id="${p.id}"`, ed), 'zp'); }
       case 'act': return td(c, g, `<button class="icon-btn" data-act="open" data-id="${p.id}" title="Open details"><i class="ti ti-layout-sidebar-right"></i></button>`, 'act');
       default: return td(c, g, '');
     }
   };
-  return `<tr class="prow" data-id="${p.id}" data-stage="${esc(p.stage)}">${cols.map(cell).join('')}</tr>`;
+  return `<tr class="prow${isProxy(p) ? ' proxy' : ''}" data-id="${p.id}" data-stage="${esc(p.stage)}">${cols.map(cell).join('')}</tr>`;
 }
 
 /* 1.2.0: clicking a project's name opens it. The pencil next to it renames it on the spot. */
@@ -2132,7 +2173,7 @@ INP.cell = el => {
   if (f === 'name') { v = v.trim(); if (!v) { el.value = p.name; toast('A project needs a name', 'err'); return; } }
   if (f === 'project_code') v = v.trim();
   const fields = { [f]: v };
-  if (f === 'client') { v = v.trim(); fields.client = v; const c = findClient(v); if (c && norm(c.name) === norm(v)) { fields.client = c.name; fields.client_code = c.code; } }
+  if (f === 'client') { v = v.trim(); fields.client = v; const c = findClient(v); if (c && norm(c.name) === norm(v)) { fields.client = c.name; fields.client_code = isProxy(p) ? PROXY : c.code; } }
   if (p[f] === fields[f] && !fields.client_code) return;
   saveFields(id, fields, null, true);
 };
@@ -2150,7 +2191,8 @@ INP.fin = el => {
 ACT.labpick = el => {
   if (!canEdit()) return;
   const kind = el.dataset.kind, id = el.dataset.id, p = projectById(id); if (!p) return;
-  const list = kind === 'status' ? statusList() : INV_LABELS;
+  if (kind === 'invoicing' && isProxy(p)) { ACT.proxyinfo(el); return; }
+  const list = kind === 'status' ? statusList() : invPick();
   const cur = kind === 'status' ? p.status : invOf(p);
   const colOf = kind === 'status' ? statusColour : invColour;
   openPop(el, `<div class="lab-grid">${list.map(l => `<button class="lab-opt${l === cur ? ' cur' : ''}" style="background:${colOf(l)}" data-act="labset" data-kind="${kind}" data-id="${id}" data-v="${esc(l)}">${esc(l)}</button>`).join('')}</div>` +
@@ -2225,10 +2267,15 @@ async function setStatus(p, v, from) {
   if (done) { celebrate(PARTY); toast('\u{1F389} ' + p.name + ' is complete. Nice work.'); }
   return true;
 }
+ACT.proxyinfo = el => {
+  if (!el) return;
+  openPop(el, `<div class="proxy-pop"><b>Proxy line</b><div>Nothing needs invoicing first, so the invoicing gate is waived. It still goes through Out processing and the Archive like any other project.</div><div class="muted">To change it, open the project and choose Make standard project.</div></div>`);
+};
 ACT.labset = async el => {
   closePop();
   const kind = el.dataset.kind, id = el.dataset.id, v = el.dataset.v, p = projectById(id); if (!p || !canEdit()) return;
   if (kind === 'status') await setStatus(p, v, null);
+  else if (v === 'Proxy') return;   /* 1.4.0: Proxy is only set from the project panel */
   else await setInvoicing(id, v);
   if (S.view === 'finance' || S.view === 'closeout') rerenderBody();
 };
@@ -2257,8 +2304,9 @@ INP['cp-q'] = el => {
 ACT.cpset = el => {
   const p = projectById(CP.id), c = (S.clients || []).find(x => x.name === el.dataset.name); closePop();
   if (!p || !c || !canEdit()) return;
-  if (norm(p.client) === norm(c.name) && p.client_code === c.code) return;
-  saveFields(p.id, { client: c.name, client_code: c.code }, null, true);
+  const cc = isProxy(p) ? PROXY : c.code;
+  if (norm(p.client) === norm(c.name) && p.client_code === cc) return;
+  saveFields(p.id, { client: c.name, client_code: cc }, null, true);
 };
 ACT.cpnew = () => { closePop(); ACT.clientnew(); };
 document.addEventListener('keydown', e => {
@@ -2822,7 +2870,7 @@ function wtCore() {
   const rowHTML = (label, isDone, hint, inner) => `<div class="wt-row ${isDone ? 'done' : 'todo'}"><div class="wt-rh"><span class="wt-st">${isDone ? '<i class="ti ti-check"></i>' : ''}</span><span class="wt-rn">${esc(label)}</span></div>${hint ? `<div class="wt-hint">${hint}</div>` : ''}${inner}</div>`;
   const invKind = o => o === 'N/A' ? 'na' : o === 'Estimate pending' ? 'bad' : (o === 'Estimate approved' || o === 'Invoicing started') ? 'warn' : 'ok';
   const invRow = rowHTML('Invoicing', invOk(p), locked ? 'Do this first. The finishing options unlock once invoicing is complete, paid or n/a.' : '',
-    `<div class="wt-opts">${INV_LABELS.map(o => `<button class="wt-opt${inv === o ? ' on ' + invKind(o) : ''}${ed ? '' : ' ro'}" data-act="wtinv" data-id="${p.id}" data-v="${esc(o)}" ${ed ? '' : 'disabled'}>${inv === o && invKind(o) === 'ok' ? '<i class="ti ti-check" style="font-size:14px"></i>' : ''}${esc(o)}</button>`).join('')}</div>`);
+    inv === 'Proxy' ? `<div class="wt-opts"><span class="wt-opt on ok" style="cursor:default"><i class="ti ti-check" style="font-size:14px"></i>Proxy line, nothing to invoice</span></div>` : `<div class="wt-opts">${invPick().map(o => `<button class="wt-opt${inv === o ? ' on ' + invKind(o) : ''}${ed ? '' : ' ro'}" data-act="wtinv" data-id="${p.id}" data-v="${esc(o)}" ${ed ? '' : 'disabled'}>${inv === o && invKind(o) === 'ok' ? '<i class="ti ti-check" style="font-size:14px"></i>' : ''}${esc(o)}</button>`).join('')}</div>`);
   const fieldRow = ([k, l]) => {
     const isDone = coDone(p[k]);
     if (k === 'lead_source') {
@@ -2888,7 +2936,7 @@ function finBody() {
   const cnt = l => all.filter(p => inv(p) === l).length;
   const tile = (l, t1, t3) => `<button class="fin-tile click${S.fin.inv === l ? ' sel' : ''}" style="background:${invColour(l)}" data-act="fintile" data-g="${esc(l)}"><span class="t1">${t1}</span><span class="t2">${cnt(l)}</span><span class="t3">${t3}</span></button>`;
   const callout = `<div class="callout"><i class="ti ti-info-circle"></i><span class="tx"><b>Only projects in Live projects or Out processing appear here.</b> Can’t find what you’re looking for? Check the archive instead.</span><button class="btn btn-secondary btn-sm" data-act="go" data-v="archive"><i class="ti ti-archive"></i>Open the Archive</button></div>`;
-  const tiles = `<div class="fin-tiles">${INV_LABELS.filter(l => norm(l) !== 'n/a').map(l => tile(l, esc(l), FIN_TILE[l] || '')).join('')}</div>`;
+  const tiles = `<div class="fin-tiles">${INV_LABELS.filter(l => !['n/a', 'proxy'].includes(norm(l))).map(l => tile(l, esc(l), FIN_TILE[l] || '')).join('')}</div>`;
   const q = norm(S.fin.q), f = S.fin.inv;
   const show = l => !f || (f === '__none' ? l === '' : f === l);
   const val = (p, k) => k === 'stage' ? S.cfg.stages.indexOf(p.stage) : k === 'lead' ? norm((personById(leadOf(p, 'lead')) || {}).name) : k === 'invoicing' ? INV_LABELS.indexOf(inv(p)) + 1 : norm(p[k]);
@@ -3413,7 +3461,7 @@ function drawerHTML(p, arch) {
   const updBy = personById(p.updated_by), ep = epOf(p);
   const stList = statusList().concat(p.status && !statusList().includes(p.status) ? [p.status] : []);
   const archBtn = canArchive(p) ? '' : ' is-locked';
-  const m = marginOf(p), invV = invOf(p);
+  const m = marginOf(p), invV = invOf(p), prox = isProxy(p), canProxy = !arch && !pub && !ro;
   return `
   ${locked ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>View only here. Edit it on the Project board.</span><span class="sp"></span>${canEditBase() ? `<button class="btn btn-ghost btn-sm" data-act="editonboard" data-id="${p.id}">Edit on Project board</button>` : ''}</div>` : (archLocked ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>This project is in the Archive and is locked, so nothing changes by accident.</span><span class="sp"></span>${canEditBase() ? `<button class="btn btn-ghost btn-sm" data-act="arunlock" data-id="${p.id}"><i class="ti ti-lock-open"></i>Unlock to edit</button>` : ''}</div>` : (sl ? `<div class="drawer-lock"><i class="ti ti-lock"></i><span>BOARD is locked for an update until ${hhmm(li.until)}. View only for now.</span></div>` : ''))}
   <div class="drawer-head"><div><div class="lbl">${arch ? 'Archived project' : (isDraft ? 'New project' : 'Project')}</div></div><span class="sp"></span><span class="muted" style="font-size:11px;font-weight:600" id="dsync"></span>
@@ -3422,9 +3470,10 @@ function drawerHTML(p, arch) {
     <input class="inp name-inp" data-inp="pf" data-f="name" value="${esc(p.name)}" ${dis} placeholder="Project name">
     <div class="grid2">
       <div class="field"><span class="lbl">Client${isDraft ? ' <span class="req">*</span>' : ''}</span>${clientSelect(p, dis)}</div>
-      <div class="field"><span class="lbl">Client code</span><input class="inp" value="${esc(p.client_code)}" disabled placeholder="Fills in from the client"></div>
+      <div class="field"><span class="lbl">Client code</span><input class="inp" value="${esc(prox ? PROXY : p.client_code)}" disabled placeholder="Fills in from the client"></div>
     </div>
-    ${basic ? '' : `<div class="field"><span class="lbl">Project code${isDraft ? ' <span class="req">*</span>' : ''}</span><div class="row"><input class="inp" data-inp="pf" data-f="project_code" value="${esc(p.project_code)}" ${dis} placeholder="CLIENT_ProjectTitle">${ro ? '' : `<button class="btn btn-ghost btn-sm" data-act="genpc" title="Build from client code and name">Generate</button>`}</div></div>`}
+    ${basic ? '' : `<div class="field"><span class="lbl">Project code${isDraft ? ' <span class="req">*</span>' : ''}</span><div class="row"><input class="inp" data-inp="pf" data-f="project_code" value="${esc(prox ? PROXY : p.project_code)}" ${prox ? 'disabled' : dis} placeholder="CLIENT_ProjectTitle">${ro || prox ? '' : `<button class="btn btn-ghost btn-sm" data-act="genpc" title="Build from client code and name">Generate</button>`}${!prox && String(p.project_code || '').trim() ? `<button class="btn btn-ghost btn-sm" type="button" data-act="copycode" data-code="${esc(String(p.project_code).trim())}" data-label="Copy"><i class="ti ti-copy"></i>Copy</button>` : ''}${canProxy && !prox ? `<button class="btn btn-ghost btn-sm" data-act="mkproxy" title="A stand-in line with no invoicing">Make proxy</button>` : ''}${canProxy && prox ? `<button class="btn btn-ghost btn-sm" data-act="unproxy">Undo proxy</button>` : ''}</div></div>
+    ${prox ? `<div class="proxy-banner"><i class="ti ti-stack-2"></i><div><b>Proxy line.</b> Codes are PROXY, and budget, target PM and invoicing are locked. Out processing works as normal, and the invoicing gate is waived.${canProxy ? ` <button class="btn btn-ghost btn-sm" data-act="unproxy" style="margin-top:6px">Make standard project</button>` : ''}</div></div>` : ''}`}
     <div class="grid2">
       ${arch ? `<div class="field"><span class="lbl">Year</span><input class="inp" value="${esc(p.fy)}" disabled></div>` : `<div class="field"><span class="lbl">Stage</span><select class="sel" data-chg="pf-stage" ${dis}>${optList(S.cfg.stages, p.stage)}</select></div>`}
       <div class="field"><span class="lbl">Status</span><select class="sel" data-chg="pf" data-f="status" ${dis}>${optList(stList, p.status, '-')}</select></div>
@@ -3440,9 +3489,9 @@ function drawerHTML(p, arch) {
       <div class="field"><span class="lbl">To</span><input type="date" class="inp" data-chg="pf-ep" data-w="e" value="${esc(ep.e)}" ${dis}></div></div>
       <div class="muted" style="font-size:11px">${ep.custom ? 'This is the edit period shown on Edit capacity.' : (ep.s ? 'Using the old project dates until you set a timeline.' : 'Not set yet.')}</div>`}
     ${basic ? '' : `<div class="sec-title"><span class="lbl">Finance</span></div>
-    <div class="grid2"><div class="field"><span class="lbl">Budget (£)</span><input type="text" inputmode="decimal" class="inp gbp-inp" data-inp="pf" data-f="budget" value="${esc(fmoney(numOf(p.budget)))}" placeholder="£0" ${dis}></div>
-      ${arch ? '' : `<div class="field"><span class="lbl">Target PM (%)</span><input type="number" step="any" class="inp" data-chg="pf-fin" data-k="profit_margin" value="${esc(pm0(m))}" ${dis}></div>`}</div>
-    <div class="field"><span class="lbl">Invoicing</span><select class="sel" data-chg="pf-fin" data-k="invoicing" ${dis}>${optList(INV_LABELS, invV, '-')}</select></div>
+    <div class="grid2"><div class="field"><span class="lbl">Budget (£)</span>${prox ? `<input class="inp" value="-" disabled>` : `<input type="text" inputmode="decimal" class="inp gbp-inp" data-inp="pf" data-f="budget" value="${esc(fmoney(numOf(p.budget)))}" placeholder="£0" ${dis}>`}</div>
+      ${arch ? '' : `<div class="field"><span class="lbl">Target PM (%)</span>${prox ? `<input class="inp" value="-" disabled>` : `<input type="number" step="any" class="inp" data-chg="pf-fin" data-k="profit_margin" value="${esc(pm0(m))}" ${dis}>`}</div>`}</div>
+    <div class="field"><span class="lbl">Invoicing</span>${prox ? `<div class="lab-cell lab-lock" style="background:${PROXY_BG}"><i class="ti ti-lock"></i><span>Proxy</span></div>` : `<select class="sel" data-chg="pf-fin" data-k="invoicing" ${dis}>${optList(invPick(), invV, '-')}</select>`}</div>
     <div class="field"><span class="lbl">Notes</span><textarea class="txt" data-inp="pf" data-f="notes" maxlength="5000" ${dis}>${esc(p.notes)}</textarea></div>
     ${isDraft ? '' : `<div class="sec-title"><span class="lbl">Out processing</span></div>
     <div class="grid2">${F.filter(([k]) => k !== 'lead_source').map(([k, l]) => { const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]); return `<div class="field"><span class="lbl">${esc(l)}</span><select class="sel ${coClass(p[k])}" data-chg="pf" data-f="${esc(k)}" ${dis}>${coOptions(list, p[k], !arch && !invOk(p))}</select></div>`; }).join('')}</div>
@@ -3527,6 +3576,20 @@ ACT['pf-rm'] = el => {
 ACT['pf-lead'] = el => {
   const role = el.dataset.role, pid = el.dataset.pid, p = recordFor(S.drawer, S.drawerFrom);
   setRoleIds(S.drawer, role, [pid].concat(roleIds(p, role).filter(x => x !== pid)), S.drawerFrom); refreshDrawer(true);
+};
+ACT.mkproxy = async () => {
+  const p = recordFor(S.drawer, S.drawerFrom); if (!p || !canEdit() || S.drawerFrom === 'archive' || isProxy(p)) return;
+  const hasMoney = (p.budget !== '' && p.budget != null) || (p.profit_margin !== '' && p.profit_margin != null);
+  if (hasMoney && !await confirmBox('Make this a proxy line? Its budget and target PM will be cleared, and the codes become PROXY.', 'Make proxy', false, 'Make proxy')) return;
+  saveFields(S.drawer, { project_code: PROXY, client_code: PROXY, invoicing: 'Proxy', budget: '', profit_margin: '' }, S.drawerFrom, true);
+  refreshDrawer(true); bgRefresh();
+};
+ACT.unproxy = async () => {
+  const p = recordFor(S.drawer, S.drawerFrom); if (!p || !canEdit() || !isProxy(p)) return;
+  if (!await confirmBox('Make this a standard project again? The project code and invoicing are cleared so you can set them.', 'Make standard project', false, 'Undo proxy')) return;
+  const c = findClient(p.client);
+  saveFields(S.drawer, { project_code: '', client_code: c ? c.code : '', invoicing: '' }, S.drawerFrom, true);
+  refreshDrawer(true); bgRefresh();
 };
 ACT.genpc = () => {
   const p = recordFor(S.drawer, S.drawerFrom), code = genCode(p.client_code, p.name);
@@ -3651,7 +3714,7 @@ function draftUpdate() {
 function draftFoot() {
   const miss = draftMissing(S.draft);
   return `<div class="drawer-foot"><span class="draft-help" id="draftHelp">${miss.length ? 'Still needed: ' + esc(joinList(miss)) + '.' : ''}</span>
-    <button class="btn btn-plain" data-act="closedrawer">Cancel</button><button class="btn btn-primary" id="draftAdd" data-act="draftadd" ${miss.length ? 'disabled' : ''}><i class="ti ti-plus"></i>Add to board</button></div>`;
+    <button class="btn btn-plain" data-act="closedrawer">Cancel</button><button class="btn btn-primary" id="draftAdd" data-act="draftadd" ${miss.length ? 'disabled' : ''}><i class="ti ti-plus"></i>${isProxy(S.draft) ? 'Add proxy to board' : 'Add to board'}</button></div>`;
 }
 ACT.newproject = () => {
   if (!canEdit()) return;
@@ -3690,7 +3753,7 @@ INP['pf-client'] = el => {
   const p = recordFor(id, S.drawerFrom); if (!p) return;
   if (el.value === '__new') { el.value = p.client || ''; ACT.clientnew(); return; }
   const c = findClient(el.value);
-  saveFields(id, { client: c ? c.name : el.value, client_code: c ? c.code : '' }, S.drawerFrom, true);
+  saveFields(id, { client: c ? c.name : el.value, client_code: isProxy(p) ? PROXY : (c ? c.code : '') }, S.drawerFrom, true);
   refreshDrawer(true);
 };
 function clientSelect(p, dis) {
