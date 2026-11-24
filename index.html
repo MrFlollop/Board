@@ -716,6 +716,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 .rn-ver:first-child { margin-top: 0; }
 .rn-now { background: var(--stp-alpha); color: var(--stp); border-radius: var(--r-pill); padding: 1px 8px; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 /* 1.2.3: a fix release is one short paragraph in a quiet panel, and a thank-you is a small pink tag */
+.rn-vpill { display: inline-block; margin-left: 10px; background: var(--stp); color: #fff; border-radius: var(--r-pill); padding: 2px 10px; font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; vertical-align: 2px; }
 .rn-by { display: inline-block; margin-left: 8px; background: var(--stp-alpha); color: var(--stp); border-radius: var(--r-pill); padding: 1px 9px; font-size: 11px; font-weight: 600; white-space: nowrap; vertical-align: 1px; }
 .rn-title { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--color-text-primary); margin: 4px 0 2px; }
 .rn-row { align-items: flex-start; gap: 10px; }
@@ -881,7 +882,7 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.5.1';
+const APP_VERSION = '1.5.2';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
@@ -1315,7 +1316,7 @@ function hyperspace(host, opts) {
 function warpScrim() {
   const sc = $('#modalScrim'); if (!sc) return;
   sc.classList.add('hs'); hyperspace(sc, { jump: true });
-  const hint = document.createElement('div'); hint.className = 'hs-hint'; hint.textContent = 'Click anywhere outside the box to close'; sc.appendChild(hint);
+  /* 1.5.2: no instruction text any more. Clicking outside the box still closes it. */
 }
 
 /* ---------------- API ---------------- */
@@ -1793,6 +1794,9 @@ function forceUpdate(v, tries) {
    The page only ever shows the CURRENT release line (APP_VERSION 1.4.x shows 1.4, and so on), so this list can keep growing without the page getting longer. */
 const FIX_MAX = 160;
 const WHATS_NEW = [
+  ['1.5.2', [
+    ['The release notes pop-up is simpler: the version sits in the title, with no Current or New badges and no extra instructions.', ['Oli']]
+  ]],
   ['1.5.1', [
     ['Due today is now red with a warning sign on Awaiting Client Feedback too, the same as Edit, so every deadline day looks the same.', ['Oli']],
     ['Creative Development now has the same feedback counter as Awaiting Client Feedback: pick the day, then Due tomorrow, Due today and days overdue.', ['Oli']],
@@ -1801,7 +1805,7 @@ const WHATS_NEW = [
   ]],
   ['1.5.0', [
     ['ti-bulb', 'Creative Development', 'A new section sits between Tendering and Pre-Production, in the creative blue. Set a project to the new Creative Development status and it moves there by itself. Pre Production still moves it on to its own section.', ['Oli', 'Amy']],
-    ['ti-rocket', 'Hyperspace updates', 'When BOARD asks you to reload, and when there are release notes to read, a pink hyperspace jump now makes sure you notice. Click anywhere outside the notes to close them.', ['Gully', 'Oli']],
+    ['ti-rocket', 'Hyperspace updates', 'When BOARD asks you to reload, and when there are release notes to read, a pink hyperspace jump now makes sure you notice.', ['Gully', 'Oli']],
     ['ti-list-details', 'Release notes, newest fixes first', 'Fixes and tweaks now come first, newest at the top, with the big features of the release underneath. Every fix in the line stays in the list, and it scrolls.', ['Oli']],
     ['ti-lock-open', 'Out processing without the invoicing lock', 'Fill in every Out processing item whenever you like, even before a project is invoiced. Archiving still waits for invoicing, so nothing can be archived early.', ['Monika']]
   ]],
@@ -1904,13 +1908,13 @@ function lineGroups(line) {
 function notesBlock(line, seen) {
   const { main, fixes } = lineGroups(line);
   const isNew = v => seen && vcmp(v, seen) > 0;
-  const badges = g => `${g[0] === APP_VERSION ? '<span class="rn-now">Current</span>' : ''}${isNew(g[0]) ? '<span class="rn-now rn-new">New</span>' : ''}`;
+  /* 1.5.2: no Current or New badges. The version in the title and newest-first order already say what is latest. */
+  const badges = g => '';
   const rows = g => g[1].map(w => `<div class="row rn-row"><i class="ti ${esc(w[0])}"></i><div><b>${esc(w[1])}</b>${thanksTag(w[3])}<div class="muted">${esc(w[2])}</div></div></div>`).join('');
-  const label = (g, gap) => `<div class="rn-ver lbl"${gap ? ' style="margin-top:14px"' : ''}>${esc(g[0])} · new features${badges(g)}</div>`;
+  const label = (g, gap) => `<div class="rn-ver lbl"${gap ? ' style="margin-top:14px"' : ''}>Headline features in ${esc(line)}</div>`;
   const fix = g => `<div class="rn-fix"><span class="rn-v">${esc(g[0])}</span><i class="ti ti-tool"></i><div class="rn-fl">${fixLines(g).map(l => `<div class="muted">${esc(l[0])}${thanksTag(l[1])}</div>`).join('')}</div>${badges(g)}</div>`;
   /* 1.5.0: fixes and tweaks lead, newest version first, and the big features of the line sit underneath */
-  return `<div class="rn-title">BOARD ${esc(line)}</div>` +
-    (fixes.length ? `<div class="rn-ver lbl">Fixes and tweaks${main.length ? ' since ' + esc(main[0][0]) : ''}, newest first</div><div class="rn-fixes">${fixes.map(fix).join('')}</div>` : '') +
+  return (fixes.length ? `<div class="rn-ver lbl">Fixes and tweaks</div><div class="rn-fixes">${fixes.map(fix).join('')}</div>` : '') +
     main.map(g => label(g, fixes.length) + rows(g)).join('');
 }
 /* shown once per new build on this browser: the whole of the current release line, with anything new since you last looked tagged New */
@@ -1918,7 +1922,7 @@ function notesModal(seen, closeLabel, warp) {
   const line = lineOf(APP_VERSION);
   if (!WHATS_NEW.some(g => lineOf(g[0]) === line)) return false;
   const hasFixes = lineGroups(line).fixes.length > 0;
-  openModal(`<h3>Release notes</h3><div class="muted">You are on ${esc(APP_VERSION)}. ${hasFixes ? 'Fixes and tweaks first, newest at the top, then the big features of this release.' : 'The big features in this release.'}</div>
+  openModal(`<h3>What's new in BOARD<span class="rn-vpill">v${esc(APP_VERSION)}</span></h3>
     <div class="rn-list">${notesBlock(line, seen)}</div>
     <div class="actions"><button class="btn btn-plain" data-act="feedback"><i class="ti ti-message-circle"></i>Send feedback</button><button class="btn btn-primary" data-act="closemodal">${closeLabel}</button></div>`, warp ? 'wide hs-in' : 'wide');
   if (warp) warpScrim();   /* 1.5.0: the pink hyperspace jump behind the pop-up. Clicking anywhere outside the box closes it. */
