@@ -522,6 +522,18 @@ button.lab-cell:hover { filter: brightness(.94); }
 #updGate .upd-dot { width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #FF50BE; color: #fff; font-size: 26px; }
 #updGate h2 { margin: 0 0 8px; font-size: 22px; } #updGate p { margin: 0 0 18px; font-size: 14px; line-height: 1.55; color: var(--color-text-secondary); } #updGate .btn { width: 100%; justify-content: center; }
 .rn-new { background: #FF50BE !important; color: #fff !important; margin-left: 6px; }
+/* ---------- 1.5.0: pink hyperspace behind the reload screen and the release notes ---------- */
+.hs-cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+#updGate { background: #1A0A16; backdrop-filter: none; -webkit-backdrop-filter: none; overflow: hidden; }
+#updGate .upd-card { position: relative; z-index: 1; box-shadow: 0 0 0 1px rgba(255,80,190,.35), 0 0 60px rgba(255,80,190,.35), 0 20px 60px rgba(0,0,0,.45); animation: hs-rise .7s cubic-bezier(.2,.9,.3,1.1) .9s both; }
+#updGate .upd-dot { animation: bpulse 2s ease-in-out infinite; }
+.scrim.m.hs { background: #1A0A16; overflow: hidden; }
+.modal.hs-in { box-shadow: 0 0 0 1px rgba(255,80,190,.35), 0 0 60px rgba(255,80,190,.3), 0 20px 60px rgba(0,0,0,.45); animation: hs-modal .7s cubic-bezier(.2,.9,.3,1.1) 1s both; }
+.hs-hint { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; color: #FF8AD4; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: 0; animation: lk-up .6s ease-out 1.9s forwards; pointer-events: none; }
+@keyframes hs-rise { from { opacity: 0; transform: translateY(14px) scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes hs-modal { from { opacity: 0; transform: translate(-50%, -46%) scale(.92); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@media (prefers-reduced-motion: reduce) { #updGate .upd-card, #updGate .upd-dot, .modal.hs-in, .hs-hint { animation: none; opacity: 1; } }
+
 .lg-notice { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; margin: 0 0 14px; border-radius: 10px; border: 1px solid var(--color-text-danger); background: color-mix(in srgb, var(--color-text-danger) 9%, transparent); color: var(--color-text-primary); font-size: 13.5px; line-height: 1.5; } .lg-notice .ti { font-size: 20px; color: var(--color-text-danger); flex: 0 0 auto; margin-top: 1px; }
 .lg-msg { font-size: 12.5px; min-height: 18px; color: var(--color-text-secondary); } .lg-msg.err { color: var(--color-text-danger); font-weight: 600; }
 .lg-form .btn-primary { height: 48px; font-size: 14px; border-radius: 10px; }
@@ -698,7 +710,7 @@ input[type=color] { width: 40px; height: 32px; padding: 2px; border: 0.5px solid
 @media (max-width: 860px) { .wl-hero { padding: 22px 20px 20px; } .wl-body { padding: 18px 20px 22px; } }
 
 /* ---------- release notes (0.9.1) ---------- */
-.rn-list { display: flex; flex-direction: column; gap: 10px; }
+.rn-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: min(58vh, 540px); padding-right: 4px; }   /* 1.5.0: the whole line scrolls, the title and buttons stay put */
 .rn-ver { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
 .rn-ver::after { content: ''; flex: 1; height: 0.5px; background: var(--color-border-tertiary); }
 .rn-ver:first-child { margin-top: 0; }
@@ -869,12 +881,12 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.4.1';
+const APP_VERSION = '1.5.0';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
-const NEED_VER = '1.4.0';   /* the backend must be at least this version */
-const MIN_SCHEMA = 16;   /* the backend must report at least this, or BOARD warns that changes may not save */
+const NEED_VER = '1.5.0';   /* the backend must be at least this version */
+const MIN_SCHEMA = 17;   /* the backend must report at least this, or BOARD warns that changes may not save */
 const LOVE = 'Built with love by Mr Flollop for the Sunday Treat team \u{1F9E1}';
 const SLOGAN = 'If it’s not on the board, it doesn’t exist.';
 /* Sunday Treat logo files, kept in the repo next to index.html. If a file will not load, BOARD tries once more, then shows a text wordmark. */
@@ -1034,6 +1046,7 @@ function stageColour(stage) {
   if (/archive/i.test(stage || '')) return '#5F6672';
   if (/out[\s-]?proc|closeout|handover/i.test(stage || '')) return '#D03F4B';
   if (/internal/i.test(stage || '')) return '#FF50BE';
+  if (/creative[\s-]?dev/i.test(stage || '')) return '#3074B6';   /* 1.5.0: the blue behind Oli on the Sunday Treat site, taken from the photo */
   const k = squash(stage);
   const d = S.depts.find(x => { const n = squash(x.name); return n && (n === k || n.startsWith(k) || k.startsWith(n)); });
   if (d && d.colour) return fixDept(d.colour);
@@ -1041,6 +1054,7 @@ function stageColour(stage) {
   const i = S.cfg.stages.indexOf(stage); return STAGE_PALETTE[(i < 0 ? 0 : i) % STAGE_PALETTE.length];
 }
 const isPreStage = s => /pre[\s-]?prod/i.test(s || '');
+const isCreativeStage = s => /creative[\s-]?dev/i.test(s || '');
 const isPostStage = s => /post/i.test(s || '');
 
 /* ---------------- people / departments ---------------- */
@@ -1071,7 +1085,7 @@ const leadOf = (p, role) => (role === 'lead' ? (p.lead || '') : ((p[role] || [])
 /* ---------------- status + invoicing labels (Monday colours) ---------------- */
 /* 1.2.0: this order is also the A to Z sort order for Status.
    1.2.2: these lists are only the starting point. The backend sends the real ones when BOARD loads (applyLabels), so a label only has to change in Code.gs. */
-let STATUSES = ['Tendering', 'Awaiting Handover', 'Awaiting Kickoff', 'Pre Production', 'Edit', 'Awaiting Client Feedback', 'Complete', 'Failed Pitch', 'Cancelled Project'];
+let STATUSES = ['Tendering', 'Creative Development', 'Awaiting Handover', 'Awaiting Kickoff', 'Pre Production', 'Edit', 'Awaiting Client Feedback', 'Complete', 'Failed Pitch', 'Cancelled Project'];
 /* 1.2.0: Failed Pitch and Cancelled Project mean the work has ended. Setting either moves the project to Out Processing. */
 let OUTCOMES = ['failed pitch', 'cancelled project'];
 const isOutcome = v => OUTCOMES.includes(norm(v));
@@ -1079,7 +1093,7 @@ const statusList = () => STATUSES.slice();
 const STATUS_COL = {
   'complete': '#BADB66', 'awaiting client feedback': '#70CE92', 'writing pitch': '#F1B7F1', 'tendering': '#99D4FC', 'failed pitch': '#D9707F',
   'awaiting ko': '#EB559F', 'awaiting kickoff': '#EB559F', 'pre production': '#F8D756', 'cancelled project': '#F09695', 'edit': '#6146A3',
-  'awaiting handover': '#E8873A'
+  'awaiting handover': '#E8873A', 'creative development': '#3074B6'
 };
 const LABEL_FALLBACK = ['#549DCA', '#87D4CC', '#F4BF73', '#9B7FD4', '#69D196'];
 function statusColour(s) {
@@ -1256,6 +1270,52 @@ function celebrate(set = PARTY, mood) {
   }
   box.innerHTML = html; document.body.appendChild(box);
   setTimeout(() => box.remove(), 6000);
+}
+
+/* 1.5.0: a pink hyperspace jump. Stars streak out from the middle of the screen on a canvas that sits behind whatever it is given to,
+   and it stops by itself once that box has been removed. It starts slow, punches to hyperspace in about a second, then cruises.
+   With reduced motion switched on it draws one still frame instead. */
+function hyperspace(host, opts) {
+  const jump = !opts || opts.jump !== false;
+  const cv = document.createElement('canvas'); cv.className = 'hs-cv'; cv.setAttribute('aria-hidden', 'true');
+  host.insertBefore(cv, host.firstChild);
+  const ctx = cv.getContext && cv.getContext('2d'); if (!ctx) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5), COLS = ['255,80,190', '255,138,212', '255,255,255', '217,62,166'], BG = '26,10,22';
+  let w = 0, h = 0, maxR = 0;
+  const size = () => { w = host.clientWidth || innerWidth; h = host.clientHeight || innerHeight; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.fillStyle = 'rgb(' + BG + ')'; ctx.fillRect(0, 0, w, h); maxR = Math.hypot(w, h) / 2 + 24; };
+  size();
+  const stars = Array.from({ length: innerWidth < 600 ? 80 : 160 }, () => ({ a: Math.random() * 6.2832, r: Math.random() * maxR, v: .5 + Math.random() * 1.1, c: COLS[(Math.random() * COLS.length) | 0] }));
+  const draw = (f, dt, still) => {
+    ctx.fillStyle = still ? 'rgb(' + BG + ')' : 'rgba(' + BG + ',.3)'; ctx.fillRect(0, 0, w, h);
+    const cx = w / 2, cy = h * .46; ctx.lineCap = 'round';
+    for (const s of stars) {
+      const r0 = s.r, k = r0 / maxR;
+      s.r += s.v * f * dt * (.5 + k * 3.2);
+      if (s.r > maxR) { s.r = Math.random() * 14; s.a = Math.random() * 6.2832; continue; }
+      const r1 = still ? r0 + 8 + k * 30 : s.r, cos = Math.cos(s.a), sin = Math.sin(s.a);
+      ctx.strokeStyle = 'rgba(' + s.c + ',' + (.35 + k * .65).toFixed(2) + ')'; ctx.lineWidth = .6 + k * 2.2;
+      ctx.beginPath(); ctx.moveTo(cx + cos * r0, cy + sin * r0); ctx.lineTo(cx + cos * r1, cy + sin * r1); ctx.stroke();
+    }
+  };
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { draw(0, 0, true); return; }
+  const t0 = performance.now(); let last = t0;
+  const onResize = () => { if (cv.isConnected) size(); else removeEventListener('resize', onResize); };
+  addEventListener('resize', onResize);
+  const frame = now => {
+    if (!cv.isConnected) { removeEventListener('resize', onResize); return; }
+    const dt = Math.min((now - last) / 16.7, 3); last = now;
+    const el = (now - t0) / 1000;
+    const f = jump ? (el < 1.1 ? 1 + 7 * (el / 1.1) * (el / 1.1) : Math.max(3.5, 8 - (el - 1.1) * 4.5)) : 3;
+    draw(f, dt, false);
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+}
+/* 1.5.0: turns the dark backdrop behind a pop-up into the hyperspace jump. The backdrop already closes the pop-up when clicked, so that is the click-away. */
+function warpScrim() {
+  const sc = $('#modalScrim'); if (!sc) return;
+  sc.classList.add('hs'); hyperspace(sc, { jump: true });
+  const hint = document.createElement('div'); hint.className = 'hs-hint'; hint.textContent = 'Click anywhere outside the box to close'; sc.appendChild(hint);
 }
 
 /* ---------------- API ---------------- */
@@ -1689,6 +1749,7 @@ function showUpdateScreen(newV) {
   const el = document.createElement('div'); el.id = 'updGate';
   el.innerHTML = `<div class="upd-card">${brandRow()}<div class="upd-dot"><i class="ti ti-refresh"></i></div><h2>BOARD has been updated${v}</h2><p>You are on an older copy (${esc(APP_VERSION)}). Reload to carry on. Your saved changes are safe, and you stay signed in.</p><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD now</button><div class="muted" style="font-size:12.5px;margin-top:10px">Reloading by itself in <span id="updCount">30</span> seconds.</div></div>`;
   document.body.appendChild(el);
+  hyperspace(el, { jump: true });   /* 1.5.0 */
   /* 1.1.4: if BOARD has already reloaded itself twice in the last 10 minutes and is still being told to update, it stops and explains, instead of looping */
   let hist = []; try { hist = JSON.parse(store.get('board_upd_reloads') || '[]').filter(t => Date.now() - t < 600000); } catch (e) { hist = []; }
   if (hist.length >= 2) {
@@ -1732,6 +1793,12 @@ function forceUpdate(v, tries) {
    The page only ever shows the CURRENT release line (APP_VERSION 1.4.x shows 1.4, and so on), so this list can keep growing without the page getting longer. */
 const FIX_MAX = 160;
 const WHATS_NEW = [
+  ['1.5.0', [
+    ['ti-bulb', 'Creative Development', 'A new section sits between Tendering and Pre-Production, in the creative blue. Set a project to the new Creative Development status and it moves there by itself. Pre Production still moves it on to its own section.', ['Oli', 'Amy']],
+    ['ti-rocket', 'Hyperspace updates', 'When BOARD asks you to reload, and when there are release notes to read, a pink hyperspace jump now makes sure you notice. Click anywhere outside the notes to close them.', ['Gully', 'Oli']],
+    ['ti-list-details', 'Release notes, newest fixes first', 'Fixes and tweaks now come first, newest at the top, with the big features of the release underneath. Every fix in the line stays in the list, and it scrolls.', ['Oli']],
+    ['ti-lock-open', 'Out processing without the invoicing lock', 'Fill in every Out processing item whenever you like, even before a project is invoiced. Archiving still waits for invoicing, so nothing can be archived early.', ['Monika']]
+  ]],
   ['1.4.1', [
     ['A proxy line no longer greys out the whole row on the board. The pattern now sits on the project code and invoicing only.', ['Amy']]
   ]],
@@ -1833,18 +1900,22 @@ function notesBlock(line, seen) {
   const isNew = v => seen && vcmp(v, seen) > 0;
   const badges = g => `${g[0] === APP_VERSION ? '<span class="rn-now">Current</span>' : ''}${isNew(g[0]) ? '<span class="rn-now rn-new">New</span>' : ''}`;
   const rows = g => g[1].map(w => `<div class="row rn-row"><i class="ti ${esc(w[0])}"></i><div><b>${esc(w[1])}</b>${thanksTag(w[3])}<div class="muted">${esc(w[2])}</div></div></div>`).join('');
-  const label = g => `<div class="rn-ver lbl">${esc(g[0])} · new features${badges(g)}</div>`;
+  const label = (g, gap) => `<div class="rn-ver lbl"${gap ? ' style="margin-top:14px"' : ''}>${esc(g[0])} · new features${badges(g)}</div>`;
   const fix = g => `<div class="rn-fix"><span class="rn-v">${esc(g[0])}</span><i class="ti ti-tool"></i><div class="rn-fl">${fixLines(g).map(l => `<div class="muted">${esc(l[0])}${thanksTag(l[1])}</div>`).join('')}</div>${badges(g)}</div>`;
-  return `<div class="rn-title">BOARD ${esc(line)}</div>` + main.map(g => label(g) + rows(g)).join('') +
-    (fixes.length ? `<div class="rn-ver lbl" style="margin-top:14px">Fixes and tweaks${main.length ? ' since ' + esc(main[0][0]) : ''}</div><div class="rn-fixes">${fixes.map(fix).join('')}</div>` : '');
+  /* 1.5.0: fixes and tweaks lead, newest version first, and the big features of the line sit underneath */
+  return `<div class="rn-title">BOARD ${esc(line)}</div>` +
+    (fixes.length ? `<div class="rn-ver lbl">Fixes and tweaks${main.length ? ' since ' + esc(main[0][0]) : ''}, newest first</div><div class="rn-fixes">${fixes.map(fix).join('')}</div>` : '') +
+    main.map(g => label(g, fixes.length) + rows(g)).join('');
 }
 /* shown once per new build on this browser: the whole of the current release line, with anything new since you last looked tagged New */
-function notesModal(seen, closeLabel) {
+function notesModal(seen, closeLabel, warp) {
   const line = lineOf(APP_VERSION);
   if (!WHATS_NEW.some(g => lineOf(g[0]) === line)) return false;
-  openModal(`<h3>Release notes</h3><div class="muted">You are on ${esc(APP_VERSION)}. Big features first, then the fixes that followed.</div>
+  const hasFixes = lineGroups(line).fixes.length > 0;
+  openModal(`<h3>Release notes</h3><div class="muted">You are on ${esc(APP_VERSION)}. ${hasFixes ? 'Fixes and tweaks first, newest at the top, then the big features of this release.' : 'The big features in this release.'}</div>
     <div class="rn-list">${notesBlock(line, seen)}</div>
-    <div class="actions"><button class="btn btn-plain" data-act="feedback"><i class="ti ti-message-circle"></i>Send feedback</button><button class="btn btn-primary" data-act="closemodal">${closeLabel}</button></div>`, 'wide');
+    <div class="actions"><button class="btn btn-plain" data-act="feedback"><i class="ti ti-message-circle"></i>Send feedback</button><button class="btn btn-primary" data-act="closemodal">${closeLabel}</button></div>`, warp ? 'wide hs-in' : 'wide');
+  if (warp) warpScrim();   /* 1.5.0: the pink hyperspace jump behind the pop-up. Clicking anywhere outside the box closes it. */
   return true;
 }
 function whatsNew() {
@@ -1852,7 +1923,7 @@ function whatsNew() {
   const seen = store.get('board_seen') || sstore.get('board_seen');
   if (seen && vcmp(seen, APP_VERSION) >= 0) return;
   store.set('board_seen', APP_VERSION); sstore.set('board_seen', APP_VERSION);
-  notesModal(seen, 'Got it');
+  notesModal(seen, 'Got it', true);
 }
 /* 1.0.0: the launch welcome. Shown once to each person the first time they sign in on WELCOME_VER (once per browser they use).
    It stands in for "What is new" that time, so nobody gets two pop-ups. */
@@ -2202,13 +2273,14 @@ ACT.labpick = el => {
   openPop(el, `<div class="lab-grid">${list.map(l => `<button class="lab-opt${l === cur ? ' cur' : ''}" style="background:${colOf(l)}" data-act="labset" data-kind="${kind}" data-id="${id}" data-v="${esc(l)}">${esc(l)}</button>`).join('')}</div>` +
     (cur ? `<div class="sep"></div><button data-act="labset" data-kind="${kind}" data-id="${id}" data-v=""><i class="ti ti-eraser"></i>Clear</button>` : ''));
 };
-/* Two statuses move a project for you: Complete sends it to Out Processing, Pre Production sends it to the Pre-Production section.
+/* Three statuses move a project for you: Complete sends it to Out Processing, Creative Development sends it to the Creative Development section (1.5.0), Pre Production sends it to the Pre-Production section.
    Every other status leaves it where it is. Archived records are never moved. */
 function stageForStatus(p, status) {
   if (!status) return null;
   const x = norm(status);
   if (x === 'complete') { const co = closeoutStages()[0]; return co && p.stage !== co ? co : null; }
   if (isPreStage(status)) { const pre = S.cfg.stages.find(isPreStage); return pre && p.stage !== pre ? pre : null; }
+  if (isCreativeStage(status)) { const cd = S.cfg.stages.find(isCreativeStage); return cd && p.stage !== cd ? cd : null; }
   return null;
 }
 /* 1.2.0: what the server does for a failed or cancelled project, done on the page straight away (the server's answer replaces it) */
@@ -2703,9 +2775,7 @@ const coTotal = () => coFields().length + 1;
 const coDoneCount = p => coFields().filter(([k]) => coDone(p[k])).length + (invOk(p) ? 1 : 0);
 const coStagesShown = () => closeoutStages();
 const coPct = p => Math.round(coDoneCount(p) / coTotal() * 100);
-/* a done answer is only allowed once the project is invoiced (clearing it or saying in progress is always fine) */
-/* 1.2.0: lead source is known from the start, so it is the one item that does not wait for invoicing */
-const coBlocked = (p, k, v) => k !== 'lead_source' && !invOk(p) && coFields().some(([f]) => f === k) && coDone(v) && coDone(p[k]) === false;
+/* 1.5.0: no lock. Any Out processing item can be answered at any time, invoiced or not. Only the Archive waits for invoicing (canArchive). */
 const coTip = p => (canArchive(p) ? 'Send to the Archive' : 'Still to finish: ' + coOutstanding(p).join(', '));
 const leadOpts = p => { const l = ((S.cfg.closeout_options || {}).lead_source || []).slice(); if (p && p.lead_source && !l.includes(p.lead_source)) l.push(p.lead_source); return l; };
 const leadSourceField = (p, dis) => `<div class="field"><span class="lbl">Lead source</span><select class="sel" data-chg="pf" data-f="lead_source" ${dis}>${optList(leadOpts(p), p.lead_source, '-')}</select></div>`;
@@ -2716,8 +2786,7 @@ function coFlagsInner(p, ed) {
   if (ed && !hasCode(p)) out.push(`<button class="flag-pill flag-btn" data-act="cogen" data-id="${p.id}" title="Build the code from the client code and project name">Generate code</button>`);
   return out.join('');
 }
-const coLockMsg = 'Invoice this project first. The items unlock once Invoicing is Invoicing complete, Paid or N/A.';
-const coOptions = (list, v, locked) => `<option value="">-</option>` + list.map(o => `<option value="${esc(o)}"${o === v ? ' selected' : ''}${locked && coDone(o) && o !== v ? ' disabled' : ''}>${esc(o)}</option>`).join('');
+const coOptions = (list, v) => `<option value="">-</option>` + list.map(o => `<option value="${esc(o)}"${o === v ? ' selected' : ''}>${esc(o)}</option>`).join('');
 
 /* every invoicing change goes through here, so Paid always asks first */
 async function setInvoicing(id, v, from) {
@@ -2760,7 +2829,7 @@ function coTableHTML() {
   });
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('closeout');
   return tableHTML('closeout', cols, groups, (p, g, cs) => {
-    const done = coDoneCount(p), locked = !invOk(p);
+    const done = coDoneCount(p);
     return `<tr class="prow" data-id="${p.id}">${cs.map(c => {
       if (c.k === 'name') return td(c, g, `<div class="nm co-name" style="cursor:pointer;overflow:hidden;text-overflow:ellipsis" data-act="open" data-id="${p.id}">${esc(p.name)}</div><div class="nm-sub">${esc(p.client)}</div><div class="co-flags">${coFlagsInner(p, ed)}</div>`);
       if (c.k === 'out_at') return td(c, g, p.out_at ? `<span title="${esc(p.out_at)}">${esc(fdate(p.out_at))}</span>` : '<span class="muted">-</span>');
@@ -2769,7 +2838,7 @@ function coTableHTML() {
       if (c.k === 'size_location') return td(c, g, `<input class="cell-inp" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="-">`);
       if (c.k === 'act') return td(c, g, ed ? `<button class="btn btn-ghost btn-sm co-arch${canArchive(p) ? '' : ' is-locked'}" data-act="archive" data-id="${p.id}" title="${esc(coTip(p))}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Archive</button>` : '');
       const v = p[c.k] || '', list = (opts[c.k] || []).slice(); if (v && !list.includes(v)) list.push(v);
-      return td(c, g, `<select class="sel co-sel ${coClass(v)}" data-chg="co" data-id="${p.id}" data-k="${c.k}" ${ed ? '' : 'disabled'}${locked ? ` style="opacity:.7" title="${esc(coLockMsg)}"` : ''}>${coOptions(list, v, locked)}</select>`);
+      return td(c, g, `<select class="sel co-sel ${coClass(v)}" data-chg="co" data-id="${p.id}" data-k="${c.k}" ${ed ? '' : 'disabled'}>${coOptions(list, v)}</select>`);
     }).join('')}</tr>`;
   }) + `<div class="page-end"></div>`;
 }
@@ -2789,7 +2858,6 @@ function coAfterChange(id) {
 }
 INP.co = el => {
   const id = el.dataset.id, k = el.dataset.k, p = projectById(id); if (!p) return;
-  if (coBlocked(p, k, el.value)) { el.value = p[k] || ''; toast(coLockMsg, 'err'); return; }
   saveFields(id, { [k]: el.value }, null, true);
   if (el.tagName === 'SELECT') el.className = 'sel co-sel ' + coClass(el.value);
   coAfterChange(id);
@@ -2825,7 +2893,6 @@ ACT.wtjump = el => { S.wt.i = Number(el.dataset.i); wtRefresh(); };
 ACT.wtpick = async el => {
   const id = el.dataset.id, k = el.dataset.k, v = el.dataset.v, p = projectById(id); if (!p || !canEdit()) return;
   const next = p[k] === v ? '' : v;
-  if (coBlocked(p, k, next)) { toast(coLockMsg, 'err'); return; }
   saveFields(id, { [k]: next }, null, true); wtRefresh();
 };
 ACT.wtinv = async el => {
@@ -2870,10 +2937,9 @@ function wtCore() {
       <button class="btn btn-primary" data-act="wtexit">Back to the full list</button></div></div>`;
   }
   const p = q[S.wt.i], done = coDoneCount(p), total = coTotal(), ok = canArchive(p), locked = !invOk(p), inv = invOf(p), left = coOutstanding(p).length;
-  const lockIc = '<i class="ti ti-lock" style="font-size:13px"></i>';
   const rowHTML = (label, isDone, hint, inner) => `<div class="wt-row ${isDone ? 'done' : 'todo'}"><div class="wt-rh"><span class="wt-st">${isDone ? '<i class="ti ti-check"></i>' : ''}</span><span class="wt-rn">${esc(label)}</span></div>${hint ? `<div class="wt-hint">${hint}</div>` : ''}${inner}</div>`;
   const invKind = o => o === 'N/A' ? 'na' : o === 'Estimate pending' ? 'bad' : (o === 'Estimate approved' || o === 'Invoicing started') ? 'warn' : 'ok';
-  const invRow = rowHTML('Invoicing', invOk(p), locked ? 'Do this first. The finishing options unlock once invoicing is complete, paid or n/a.' : '',
+  const invRow = rowHTML('Invoicing', invOk(p), locked ? 'Still needed before this can go to the Archive. Everything else can be filled in now.' : '',
     inv === 'Proxy' ? `<div class="wt-opts"><span class="wt-opt on ok" style="cursor:default"><i class="ti ti-check" style="font-size:14px"></i>Proxy line, nothing to invoice</span></div>` : `<div class="wt-opts">${invPick().map(o => `<button class="wt-opt${inv === o ? ' on ' + invKind(o) : ''}${ed ? '' : ' ro'}" data-act="wtinv" data-id="${p.id}" data-v="${esc(o)}" ${ed ? '' : 'disabled'}>${inv === o && invKind(o) === 'ok' ? '<i class="ti ti-check" style="font-size:14px"></i>' : ''}${esc(o)}</button>`).join('')}</div>`);
   const fieldRow = ([k, l]) => {
     const isDone = coDone(p[k]);
@@ -2882,8 +2948,8 @@ function wtCore() {
     }
     const list = (opts[k] || []).slice(); if (p[k] && !list.includes(p[k])) list.push(p[k]);
     return rowHTML(l, isDone, '', `<div class="wt-opts">${list.map(o => {
-      const c = coClass(o).replace('co-', ''), sel = p[k] === o, lk = locked && coDone(o) && !sel;
-      return `<button class="wt-opt${sel ? ' on ' + (c || 'ok') : ''}${lk ? ' lk' : ''}${!ed ? ' ro' : ''}" data-act="wtpick" data-id="${p.id}" data-k="${k}" data-v="${esc(o)}" ${(!ed || lk) ? 'disabled' : ''}>${lk ? lockIc : (sel && c === 'ok' ? '<i class="ti ti-check" style="font-size:14px"></i>' : '')}${esc(o)}</button>`;
+      const c = coClass(o).replace('co-', ''), sel = p[k] === o;
+      return `<button class="wt-opt${sel ? ' on ' + (c || 'ok') : ''}${!ed ? ' ro' : ''}" data-act="wtpick" data-id="${p.id}" data-k="${k}" data-v="${esc(o)}" ${!ed ? 'disabled' : ''}>${sel && c === 'ok' ? '<i class="ti ti-check" style="font-size:14px"></i>' : ''}${esc(o)}</button>`;
     }).join('')}</div>`);
   };
   const byKey = {}; F.forEach(f => { byKey[f[0]] = f; });
@@ -2904,7 +2970,7 @@ function wtCore() {
   const ring = `<div class="wt-ring" aria-label="${done} of ${total} done"><svg viewBox="0 0 112 112" aria-hidden="true"><circle cx="56" cy="56" r="${R}" fill="none" stroke="var(--color-background-tertiary)" stroke-width="10"/><circle cx="56" cy="56" r="${R}" fill="none" stroke="var(--stp)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 56 56)"/></svg><div class="rt"><span class="rn">${done}<small>/${total}</small></span><span class="rl">done</span></div></div>`;
   const hero = `<div class="wt-hero"><div class="wt-hl"><div class="wt-chips"><span class="wt-chip">${esc(p.stage)}</span>${p.client ? `<span class="wt-chip">${esc(p.client)}</span>` : ''}</div>
     <h2 class="wt-title">${esc(p.name)}</h2><div class="wt-hs">${ok ? 'Everything is done. This can go to the archive.' : `${left} still to do before this can go to the archive.`}</div>
-    ${locked ? `<div class="wt-lockline"><i class="ti ti-lock" style="font-size:16px"></i>Invoicing comes first. Done options stay locked until it is complete, paid or n/a.</div>` : ''}</div>${ring}</div>`;
+    ${locked ? `<div class="wt-lockline"><i class="ti ti-info-circle" style="font-size:16px"></i>Invoicing is not finished yet, so this cannot go to the Archive. Everything else can be filled in now.</div>` : ''}</div>${ring}</div>`;
   const foot = `<div class="wt-foot">${ok ? `<div class="wt-fl ready"><b><i class="ti ti-circle-check"></i>Everything is done</b></div>${ed ? `<button class="btn btn-primary wt-arch" data-act="archive" data-id="${p.id}"><i class="ti ti-archive"></i>Send to Archive</button>` : ''}`
     : `<div class="wt-fl"><b>${left} still to do</b><span>The left and right arrow keys also move between projects.</span></div>${ed ? `<button class="btn wt-arch" disabled title="${esc(coTip(p))}"><i class="ti ti-lock"></i>Send to Archive</button>` : ''}`}</div>`;
   return `<div class="wt">${top}${hero}<div class="wt-body"><div class="wt-col">${cards[0]}${cards[1]}${other}</div><div class="wt-col">${cards[2]}${details}</div></div>${foot}</div>`;
@@ -3548,7 +3614,6 @@ INP.pf = async el => {
     const prev = p.status || ''; el.value = prev;
     if (!await setStatus(p, v, from)) return; refreshDrawer(true); if (S.view === 'closeout') coAfterChange(id); return;
   }
-  if (p && p !== S.draft && coBlocked(p, f, v)) { el.value = p[f] || ''; toast(coLockMsg, 'err'); return; }
   const fields = { [f]: v };
   const textual = (el.tagName === 'INPUT' && el.type !== 'date') || el.tagName === 'TEXTAREA';
   saveFields(id, fields, from, !textual);
@@ -3956,13 +4021,13 @@ function listEditor(key, label, items, used, note) {
 /* 0.7.0: statuses are fixed in BOARD's code, so Settings shows them but cannot change them */
 function statusPanel() {
   return `<div class="panel pad" style="margin-bottom:16px"><div class="lbl" style="margin-bottom:10px">Statuses</div>
-    <div class="muted" style="font-size:12px;margin-bottom:12px">Statuses are built into BOARD, so they are the same for everyone and cannot be changed here. Complete moves a project to Out Processing and Pre Production moves it to the Pre-Production section. Archiving is not a status: it is done from Out Processing once every item is answered.</div>
+    <div class="muted" style="font-size:12px;margin-bottom:12px">Statuses are built into BOARD, so they are the same for everyone and cannot be changed here. Complete moves a project to Out Processing, Creative Development moves it to the Creative Development section and Pre Production moves it to the Pre-Production section. Archiving is not a status: it is done from Out Processing once every item is answered.</div>
     <div class="status-chips">${STATUSES.map(s => lchip(s, statusColour(s))).join('')}</div></div>`;
 }
 function setWorkflow() {
   const c = S.cfg;
   return `<div style="max-width:620px">
-    ${listEditor('stages', 'Stages (project board groups, in order)', c.stages, s => S.projects.filter(p => p.stage === s).length, 'The Out Processing stage is kept off the Project board and shown on its own page. Setting a project to Complete moves it there, and Pre Production moves it to the Pre-Production section. From Out Processing, projects go to the Archive. Those two stages are locked (they can be moved up and down, but not renamed or removed) because the automations depend on them.')}
+    ${listEditor('stages', 'Stages (project board groups, in order)', c.stages, s => S.projects.filter(p => p.stage === s).length, 'The Out Processing stage is kept off the Project board and shown on its own page. Setting a project to Complete moves it there, Creative Development moves it to the Creative Development section and Pre Production moves it to the Pre-Production section. From Out Processing, projects go to the Archive. Those two stages are locked (they can be moved up and down, but not renamed or removed) because the automations depend on them.')}
     ${statusPanel()}
     <div class="panel pad" style="margin-bottom:16px"><div class="lbl" style="margin-bottom:10px">Shown on the read-only live link</div>
       ${c.stages.map(s => `<label class="row" style="margin-bottom:6px"><input type="checkbox" class="toggle" data-chg="wf-pub" data-s="${esc(s)}" ${c.public_stages.includes(s) ? 'checked' : ''}> ${esc(s)}</label>`).join('')}</div>
