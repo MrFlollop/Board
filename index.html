@@ -265,7 +265,7 @@ button.lab-cell:hover { filter: brightness(.94); }
 .tl-pill.none { background: var(--color-background-tertiary); color: var(--color-text-secondary); font-weight: 400; }
 .tl-pill.overdue, .tl-pill.overdue:hover { background: var(--color-text-danger); color: #fff; }
 .tl-pill.overdue:hover { filter: brightness(.92); }
-/* 1.3.0: no orange any more. Green when feedback is due tomorrow or today, red (above) when it is overdue */
+/* 1.3.0: no orange any more. Green when something is due tomorrow, red (above) on the day it is due and when it is overdue (1.5.1) */
 .tl-pill.soon, .tl-pill.soon:hover { background: var(--color-text-success); color: #fff; }
 .tl-pill.soon:hover { filter: brightness(.92); }
 
@@ -881,7 +881,7 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.5.0';
+const APP_VERSION = '1.5.1';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
@@ -1793,6 +1793,12 @@ function forceUpdate(v, tries) {
    The page only ever shows the CURRENT release line (APP_VERSION 1.4.x shows 1.4, and so on), so this list can keep growing without the page getting longer. */
 const FIX_MAX = 160;
 const WHATS_NEW = [
+  ['1.5.1', [
+    ['Due today is now red with a warning sign on Awaiting Client Feedback too, the same as Edit, so every deadline day looks the same.', ['Oli']],
+    ['Creative Development now has the same feedback counter as Awaiting Client Feedback: pick the day, then Due tomorrow, Due today and days overdue.', ['Oli']],
+    ['The Edit timeline column is now simply called Timeline, since it serves every status that has a deadline.', ['Oli']],
+    ['The feedback box no longer asks for a type. Just write your message and send it.', ['Oli']]
+  ]],
   ['1.5.0', [
     ['ti-bulb', 'Creative Development', 'A new section sits between Tendering and Pre-Production, in the creative blue. Set a project to the new Creative Development status and it moves there by itself. Pre Production still moves it on to its own section.', ['Oli', 'Amy']],
     ['ti-rocket', 'Hyperspace updates', 'When BOARD asks you to reload, and when there are release notes to read, a pink hyperspace jump now makes sure you notice. Click anywhere outside the notes to close them.', ['Gully', 'Oli']],
@@ -2099,7 +2105,7 @@ const PIPE_COLS = [
   { k: 'creative', l: 'Creative', tip: 'Creative lead', w: 100, min: 64, cc: 1 },
   { k: 'production', l: 'Production', tip: 'Production lead', w: 108, min: 72, cc: 1 },
   { k: 'edit', l: 'Edit', tip: 'Edit lead', w: 100, min: 60, cc: 1 },
-  { k: 'timeline', l: 'Edit timeline', tip: 'Edit timeline', w: 200, date: 1, cc: 1 },
+  { k: 'timeline', l: 'Timeline', tip: 'Timeline', w: 200, date: 1, cc: 1 },
   { k: 'budget', l: 'Budget', w: 120, num: 1, priv: 1 },
   { k: 'margin', l: 'Target PM', tip: 'Target profit margin', w: 120, num: 1, priv: 1 },
   { k: 'invoicing', l: 'Invoicing', w: 190, priv: 1 },
@@ -2156,9 +2162,9 @@ function leadCell(p, role, ed) {
 }
 /* 1.3.0: the Timeline pill.
    Awaiting Client Feedback: the timeline is the feedback window, from the day it went out to the day the client said they would reply.
-     The day before it ends: a green "Due tomorrow". The day it ends: a green "Due today" (feedback is still due by the end of the day).
+     The day before it ends: a green "Due tomorrow". The day it ends: a red "Due today" with a warning sign (1.5.1, the same as Edit).
      Every working day after: a red "1 day overdue", "2 days overdue" and so on, counted from the client's own deadline.
-   Edit: the same words off the edit timeline, except that the day it is due is a red "Due today" with a warning sign, because it should be done by now.
+   Edit: the same words off the edit timeline, and the same red "Due today" with a warning sign on the day it is due.
    Working days only (Monday to Friday). Bank holidays are deliberately not counted differently, so the count is always simple.
    Any other status that has passed its end date keeps the red date range. Nothing is orange any more. */
 const TL_DONE = ['complete', 'cancelled project', 'failed pitch', 'awaiting handover'];
@@ -2166,7 +2172,9 @@ const isWorkday = s => { const d = pd(s), w = d ? d.getUTCDay() : 0; return w > 
 const dayAdd = (s, n) => ymd(new Date(pd(s).getTime() + n * MS_DAY));
 const prevWorkday = s => { let d = dayAdd(s, -1), g = 0; while (!isWorkday(d) && g++ < 10) d = dayAdd(d, -1); return d; };
 function workdaysOver(e, t) { let n = 0, d = e, g = 0; while (d < t && g++ < 4000) { d = dayAdd(d, 1); if (isWorkday(d)) n++; } return n; }
-const isFeedback = p => norm(p && p.status) === 'awaiting client feedback';
+/* 1.5.1: Creative Development is also a waiting-for-feedback status, so it gets the same counter as Awaiting Client Feedback */
+const isWaitStatus = v => { const n = norm(v); return n === 'awaiting client feedback' || n === 'creative development'; };
+const isFeedback = p => isWaitStatus(p && p.status);
 function tlState(p) {
   if (!p || closeoutStages().includes(p.stage) || TL_DONE.includes(norm(p.status))) return null;
   const ep = epOf(p), e = ep.e, t = todayStr(), range = frange(ep.s, ep.e);
@@ -2176,7 +2184,7 @@ function tlState(p) {
     const what = fb ? 'Feedback' : 'The edit', win = ' Window ' + range + '.';
     const n = e < t ? workdaysOver(e, t) : 0;
     if (n >= 1) return { cls: 'overdue', text: '⚠️ ' + n + ' day' + (n === 1 ? '' : 's') + ' overdue', why: what + ' was due ' + fdate(e) + '.' + win };
-    if (e <= t) return fb ? { cls: 'soon', text: 'Due today', why: 'Feedback is due by the end of the day.' + win } : { cls: 'overdue', text: '⚠️ Due today', why: 'Due today and still in Edit.' + win };
+    if (e <= t) return { cls: 'overdue', text: '⚠️ Due today', why: (fb ? 'Feedback is due today.' : 'Due today and still in Edit.') + win };   /* 1.5.1: red with a warning sign on the due day for Edit and Awaiting Client Feedback alike */
     if (t >= prevWorkday(e)) return { cls: 'soon', text: 'Due tomorrow', why: what + ' is due ' + fdate(e) + '.' + win };
     return { cls: '', text: range, why: fb ? 'Feedback is expected by ' + fdate(e) + '.' : '' };
   }
@@ -2186,7 +2194,7 @@ function tlState(p) {
 function timelineCell(p, ed) {
   const ep = epOf(p), range = ep.s || ep.e ? frange(ep.s, ep.e) : '', st = range ? tlState(p) : null;
   const txt = st ? st.text : range, cls = st ? st.cls : '', why = st && st.why ? st.why : '';
-  if (ed) return `<button class="tl-pill${range ? '' : ' none'}${cls ? ' ' + cls : ''}" data-act="rpopen" data-id="${p.id}" title="${why ? esc(why) + ' ' : ''}${isFeedback(p) ? 'Set when feedback is due' : 'Set the edit timeline'}">${txt ? esc(txt) : 'Set dates'}</button>`;
+  if (ed) return `<button class="tl-pill${range ? '' : ' none'}${cls ? ' ' + cls : ''}" data-act="rpopen" data-id="${p.id}" title="${why ? esc(why) + ' ' : ''}${isFeedback(p) ? 'Set when feedback is due' : 'Set the timeline'}">${txt ? esc(txt) : 'Set dates'}</button>`;
   return range ? `<span class="tl-pill${cls ? ' ' + cls : ''}"${why ? ` title="${esc(why)}"` : ''}>${esc(txt)}</span>` : '';
 }
 function marginCell(p, ed) {
@@ -2295,11 +2303,11 @@ function applyOutcome(p) {
 /* 0.6.1: marking a project Complete asks first (it moves to Out Processing), then celebrates */
 /* 1.3.0: setting Awaiting Client Feedback asks when the client said they would reply. The timeline then runs from today to that day.
    1.3.2: the box also has No feedback date, for when no reply is expected. It answers { none: true }, a date answers { due }, Cancel answers null. */
-function askFeedbackDue(p) {
+function askFeedbackDue(p, v) {
   const t = todayStr(), cur = epOf(p).e;
   let start = cur && cur >= t && isWorkday(cur) ? cur : dayAdd(t, 3); while (!isWorkday(start)) start = dayAdd(start, 1);
   return new Promise(res => {
-    const m = openModal(`<h3>When is feedback due?</h3><div><b>${esc(p.name)}</b> is going to Awaiting Client Feedback. Pick the day the client said they would get back to you. The timeline will run from today to that day, and BOARD counts the working days after it. Not expecting a reply on a set day? Choose No feedback date and the timeline stays empty.</div>
+    const m = openModal(`<h3>When is feedback due?</h3><div><b>${esc(p.name)}</b> is going to ${esc(v || 'Awaiting Client Feedback')}. Pick the day feedback is expected back. The timeline will run from today to that day, and BOARD counts the working days after it. Not expecting a reply on a set day? Choose No feedback date and the timeline stays empty.</div>
       <div class="field"><span class="lbl">Feedback due</span><input class="inp" type="date" id="fbDue" min="${t}" value="${start}"></div>
       <div class="errline" id="fbErr"></div>
       <div class="actions"><button class="btn btn-plain" data-r="0">Cancel</button><button class="btn btn-ghost" data-r="2">No feedback date</button><button class="btn btn-primary" data-r="1">Set status</button></div>`);
@@ -2320,8 +2328,8 @@ function askFeedbackDue(p) {
 async function setStatus(p, v, from) {
   if (from !== 'archive' && isPreStage(v) && !hasCode(p) && !await requireCode(p, { act: 'status', v })) return false;
   let extra = null;
-  if (from !== 'archive' && norm(v) === 'awaiting client feedback' && !isFeedback(p)) {
-    const ans = await askFeedbackDue(p); if (!ans) return false;
+  if (from !== 'archive' && isWaitStatus(v) && norm(p.status) !== norm(v)) {
+    const ans = await askFeedbackDue(p, v); if (!ans) return false;
     extra = ans.none ? Object.assign({ edit_start: '', edit_end: '' }, (p.start || p.end) ? { start: '', end: '' } : {}) : { edit_start: todayStr(), edit_end: ans.due };
   }
   const t = from === 'archive' ? null : stageForStatus(p, v);
@@ -2338,7 +2346,7 @@ async function setStatus(p, v, from) {
     return true;
   }
   saveFields(p.id, Object.assign({ status: v }, extra || {}), from, true);
-  if (extra) toast(extra.edit_end ? 'Feedback due ' + fdate(extra.edit_end) : 'Awaiting Client Feedback, with no feedback date.');
+  if (extra) toast(extra.edit_end ? 'Feedback due ' + fdate(extra.edit_end) : v + ', with no feedback date.');
   if (t) await moveProject(p.id, t);
   if (done) { celebrate(PARTY); toast('\u{1F389} ' + p.name + ' is complete. Nice work.'); }
   return true;
@@ -2474,7 +2482,7 @@ function rpHTML() {
     rows += '</tr>';
   }
   const yr = new Date().getFullYear(), hint = RP.step === 'e' ? 'Now pick the last day' : (RP.saved ? 'Saved. Click a day to start again' : 'Pick the first day');
-  return `<div class="rp"><div class="rp-h">Edit timeline<span>${hint}</span></div>
+  return `<div class="rp"><div class="rp-h">Timeline<span>${hint}</span></div>
     <div class="rp-in"><input class="inp${RP.step === 's' ? ' act' : ''}" data-chg="rp-in" data-w="s" value="${rpFmt(RP.s)}" placeholder="dd/mm/yyyy"><input class="inp${RP.step === 'e' ? ' act' : ''}" data-chg="rp-in" data-w="e" value="${rpFmt(RP.e)}" placeholder="dd/mm/yyyy"></div>
     <div class="rp-nav"><button class="icon-btn" data-act="rpnav" data-d="-1"><i class="ti ti-chevron-left"></i></button>
       <select class="sel" data-chg="rp-m">${MONTHS.map((m, i) => `<option value="${i}"${i === RP.m ? ' selected' : ''}>${m}</option>`).join('')}</select>
@@ -2589,7 +2597,7 @@ async function moveProject(id, stage, beforeId) {
    ================================================================ */
 const MINE_COLS = [
   { k: 'name', l: 'Project', w: 300, min: 140, sticky: 1 }, { k: 'client', l: 'Client', w: 180 }, { k: 'role', l: 'My role', w: 200 },
-  { k: 'status', l: 'Status', w: 200 }, { k: 'timeline', l: 'Edit timeline', w: 200, date: 1 }, { k: 'team', l: 'Pod', w: 150 }
+  { k: 'status', l: 'Status', w: 200 }, { k: 'timeline', l: 'Timeline', w: 200, date: 1 }, { k: 'team', l: 'Pod', w: 150 }
 ];
 function rolesOf(p, id) {
   const out = [];
@@ -3553,7 +3561,7 @@ function drawerHTML(p, arch) {
     ${acctBlock(p, ro, arch)}
     ${ROLE_BLOCKS.map(([r, l]) => roleBlock(r, l, p[r] || [], ro)).join('')}
     <div class="muted" style="font-size:11px">Everyone listed shows in that column on the board. The first person is at the front. Use the star to change who is first.</div>
-    ${arch || pub ? '' : `<div class="sec-title"><span class="lbl">Edit timeline</span></div>
+    ${arch || pub ? '' : `<div class="sec-title"><span class="lbl">Timeline</span></div>
     <div class="grid2">
       <div class="field"><span class="lbl">From</span><input type="date" class="inp" data-chg="pf-ep" data-w="s" value="${esc(ep.s)}" ${dis}></div>
       <div class="field"><span class="lbl">To</span><input type="date" class="inp" data-chg="pf-ep" data-w="e" value="${esc(ep.e)}" ${dis}></div></div>
@@ -3840,14 +3848,13 @@ ACT.feedback = () => {
   closePop();
   const m = openModal(`<h3>Send feedback</h3>
     <div class="muted">BOARD is new, so your feedback shapes what it becomes. Tell Oli what is confusing, broken, annoying or missing. It is emailed to Oli straight away, along with which page you were on and the build number.</div>
-    <div class="field"><span class="lbl">Type</span><select class="sel" id="fbKind"><option>Feedback</option><option>Bug</option><option>Idea</option></select></div>
     <div class="field"><span class="lbl">Message</span><textarea class="txt" id="fbMsg" maxlength="5000" placeholder="What happened, or what would help?"></textarea></div>
     <div class="actions"><button class="btn btn-plain" data-act="closemodal">Cancel</button><button class="btn btn-primary" id="fbGo">Send</button></div>`);
   $('#fbGo', m).onclick = async () => {
     const message = $('#fbMsg', m).value.trim(); if (!message) { $('#fbMsg', m).focus(); return; }
     const w = workStart(m, { text: 'Sending your feedback', sub: 'It goes straight to Oli.', icon: 'ti-send' });
     try {
-      await api('feedback', { message, kind: $('#fbKind', m).value, view: S.view, client_version: APP_VERSION, ua: navigator.userAgent });
+      await api('feedback', { message, kind: 'Feedback', view: S.view, client_version: APP_VERSION, ua: navigator.userAgent });
       await w.done('Thanks, feedback sent'); closeModal(true); toast('Thanks, feedback sent');
     } catch (e) { w.fail(); toast(e.message, 'err'); }
   };
