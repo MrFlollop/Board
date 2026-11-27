@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>🟢 BOARD</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com https://cdn.jsdelivr.net data:; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com https://cdn.jsdelivr.net data:; img-src 'self' data:; media-src 'self'; connect-src 'self' https://script.google.com https://script.googleusercontent.com; manifest-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="color-scheme" content="light dark">
@@ -18,12 +18,12 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,800;1,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <link rel="preload" as="image" href="logo-dark.png">
 <link rel="preload" as="image" href="logo-light.png">
 <style>
-/* BOARD 1.1.0. Sunday Treat Hub design language: Montserrat, ST Pink only accent, flat 0.5px cards, pill buttons. Light by default, with a dark mode that each person can switch on. */
+/* BOARD 1.1.0. Sunday Treat Hub design language: Poppins and Nunito (1.6.0, was Montserrat), ST Pink only accent, flat 0.5px cards, pill buttons. Light by default, with a dark mode that each person can switch on. */
 :root {
   color-scheme: light;
   --stp: #FF50BE; --stp-hover: #D93EA6; --stp-light: #FFE8F7; --stp-alpha: rgba(255,80,190,0.12);
@@ -56,7 +56,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
 body {
-  font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 13px; line-height: 1.45; font-weight: 400;
+  font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 13px; line-height: 1.45; font-weight: 400;
   background: var(--color-background-primary); color: var(--color-text-primary); -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%; overscroll-behavior: none;
 }
@@ -867,6 +867,123 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 @media (max-width: 860px) { input:not([type=checkbox]):not([type=color]):not([readonly]), select, textarea { font-size: 16px !important; } }
 @media (prefers-reduced-motion: reduce) { .inp.gen-done { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .adding .av { animation: none; } .adding.work:not(.done) .av::after { animation-duration: 2.4s; } .confetti.sad::before { animation: none; display: none; } .spin { animation-duration: 1.8s; } }
+
+/* ================================================================
+   1.6.0
+   Fonts: Poppins for headings, buttons and labels, Nunito for everything else.
+   Search boxes get a clear button. Out processing: one small tick per checklist item, a compact Meeting mode and slimmer strips.
+   ================================================================ */
+:root { --font-head: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+h1, h2, h3, h4, .btn, .lbl, .big, .stage-title, .page-title, .brand-name, .brand-beta, .wt-title, .wt-rn, .wt-ch h3, .rdy-b, .nm, .nm-inp, .wl-hi, .t2, .wt-music { font-family: var(--font-head); }
+
+.search .search-x { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: var(--color-background-tertiary); color: var(--color-text-primary); display: none; align-items: center; justify-content: center; cursor: pointer; }
+.search .search-x:hover { background: var(--stp-alpha); }
+.search .search-x i { position: static; transform: none; font-size: 12px; color: inherit; pointer-events: none; }
+.search.has-val .search-x { display: inline-flex; }
+.search.has-val .inp { padding-right: 34px; }
+
+/* Out processing: the ticks */
+.ck { position: relative; width: 28px; height: 28px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; cursor: pointer; box-sizing: border-box; flex: none; }
+.ck i { font-size: 15px; pointer-events: none; }
+.ck-sel { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; margin: 0; -webkit-appearance: none; appearance: none; background: transparent; }
+.ck:focus-within { outline: 2px solid var(--stp); outline-offset: 1px; }
+.ck:has(.ck-sel:disabled) { cursor: default; }
+.ck-d { background: var(--ok-bg); color: var(--color-text-success); }
+.ck-n { background: var(--color-background-tertiary); color: var(--color-text-secondary); }
+.ck-p { background: var(--warn-bg); color: var(--color-text-warning); }
+.ck-s { background: var(--bad-bg); color: var(--color-text-danger); }
+.ck-b { border: 1.5px dashed var(--color-border-secondary, var(--color-border-tertiary)); }
+.ck.sm { width: 16px; height: 16px; border-radius: 5px; cursor: default; }
+.ck-key { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 16px; padding: 10px 20px 0; font-size: 11px; color: var(--color-text-secondary); }
+.ck-key span { display: inline-flex; align-items: center; gap: 6px; }
+.tv td.ckc { padding: 3px 0; text-align: center; }
+/* the Out processing headers are short and sentence-case so they fit the narrow columns */
+#tv-closeout th .th-l { text-transform: none; letter-spacing: 0; font-size: 11px; font-weight: 700; }
+#tv-closeout th .th-in { padding: 0 8px; }
+#tv-closeout th.ckc .th-l { font-size: 10px; }
+.tv th.ckc .th-in { padding: 0 2px; height: 40px; }
+.tv th.ckc .th-l { white-space: normal; text-transform: none; letter-spacing: 0; font-size: 10px; font-weight: 700; line-height: 1.15; text-align: center; overflow: visible; }
+
+/* slimmer strips */
+.rdy { margin: 12px 20px 0; padding: 8px 14px; gap: 12px; border-radius: 14px; min-height: 46px; flex-wrap: nowrap; }
+.rdy-i { width: 28px; height: 28px; border-radius: 9px; font-size: 16px; }
+.rdy-t { display: flex; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; min-width: 0; }
+.rdy-b { font-size: 13px; font-weight: 700; }
+.rdy-n { font-size: 12px; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.wt.wt-slim { margin: 8px 20px; border: 0; border-radius: 14px; background: var(--stp-light); }
+.wt-slim .wt-idle { padding: 8px 14px; gap: 12px; min-height: 46px; }
+.wt-idl { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; }
+.wt-idl .lbl { color: var(--wt-pt); letter-spacing: 1.4px; }
+.wt-it { font-size: 13px; font-weight: 600; }
+.wt-note { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--color-text-secondary); }
+.wt-note i { font-size: 14px; }
+.wt-music { gap: 6px; }
+.wt-music.on { border-color: var(--wt-pt); color: var(--wt-pt); background: var(--stp-light); }
+
+/* compact Meeting mode */
+.wt { margin: 12px 20px 8px; border-radius: 18px; }
+.wt-top { padding: 10px 16px; gap: 12px; }
+.wt-top .btn { min-height: 34px; }
+.wt-hero { padding: 16px 24px; gap: 20px; }
+.wt-chips { margin-bottom: 8px; gap: 6px; }
+.wt-chip { font-size: 11px; padding: 3px 10px; }
+.wt-title { font-size: 24px; }
+.wt-hs { margin-top: 6px; font-size: 13px; }
+.wt-lockline { margin-top: 10px; padding: 6px 12px; font-size: 12px; }
+.wt-ring { width: 64px; height: 64px; }
+.wt-ring .rn { font-size: 17px; } .wt-ring .rn small { font-size: 11px; } .wt-ring .rl { display: none; }
+.wt-body { gap: 16px; padding: 16px 24px; }
+.wt-col { gap: 12px; }
+.wt-card { padding: 0 18px; border-radius: 16px; }
+.wt-card.det { padding: 0 18px 16px; gap: 10px; }
+.wt-ch { position: relative; min-height: 50px; gap: 10px; margin: 0; }
+.wt-ch h3 { font-size: 14px; }
+.wt-ci { width: 28px; height: 28px; border-radius: 9px; font-size: 16px; }
+.wt-cn { font-size: 11px; padding: 3px 9px; }
+.wt-ov { position: absolute; left: -18px; right: -18px; top: 0; bottom: 0; border: 0; background: transparent; cursor: pointer; border-radius: 16px; padding: 0; }
+.wt-ov:focus-visible { outline: 2px solid var(--stp); }
+.wt-chev { font-size: 16px; color: var(--color-text-secondary); transition: transform .12s; pointer-events: none; }
+.wt-card.shut .wt-chev { transform: rotate(-90deg); }
+.wt-card.shut > :not(.wt-ch) { display: none; }
+.wt-card.det .wt-ch .wt-chev, .wt-card.det .wt-ov { display: none; }
+.wt-card.done { background: var(--color-background-secondary); border-style: dashed; }
+.wt-card.done .wt-ci { background: var(--color-background-tertiary); color: var(--color-text-secondary); }
+.wt-card.done h3 { color: var(--color-text-secondary); }
+.wt-card:not(.shut) { padding-bottom: 6px; }
+.wt-card.det:not(.shut) { padding-bottom: 16px; }
+.wt-row { display: grid; grid-template-columns: 160px minmax(0, 1fr); align-items: center; gap: 10px; padding: 8px 0; }
+.wt-rh { gap: 9px; }
+.wt-st { width: 18px; height: 18px; border-width: 1.5px; font-size: 11px; }
+.wt-rn { font-size: 13px; }
+.wt-rh { grid-column: 1; grid-row: 1; }
+.wt-row > .wt-opts, .wt-row > .sel.wt-pick { grid-column: 2; grid-row: 1; }
+.wt-hint { grid-column: 1 / -1; grid-row: 2; margin: 0 0 0 27px; }
+.wt-opts { padding-left: 0; gap: 6px; }
+.wt-opt { min-height: 30px; padding: 0 11px; font-size: 12px; }
+.wt-row .sel.wt-pick { margin-left: 0; min-height: 32px; min-width: 200px; font-size: 12px; }
+.wt-lab .inp { min-height: 34px; border-radius: 10px; font-size: 13px; }
+.wt-foot { padding: 12px 24px; }
+.wt-arch { min-height: 38px; padding: 0 18px; border-radius: 12px; font-size: 13px; }
+@media (max-width: 860px) {
+  .rdy, .wt.wt-slim { margin: 10px 14px 0; }
+  .rdy { flex-wrap: wrap; }
+  .rdy-n { white-space: normal; }
+  .wt-idle { flex-wrap: wrap; }
+  .wt-idl { flex: 1 1 100%; } .wt-note { flex: 1 1 100%; } .wt-slim .wt-idle .btn { flex: 1 1 100%; justify-content: center; }
+  #tv-closeout tr.prow td.zp { flex: 1 1 100%; }
+  .wt-title { font-size: 20px; } .wt-hero { padding: 14px; gap: 12px; } .wt-body { padding: 12px 14px; grid-template-columns: 1fr; } .wt-foot { padding: 12px 14px; }
+  .wt-ring { width: 56px; height: 56px; }
+  .wt-card { padding: 0 14px; } .wt-card.det { padding: 0 14px 14px; } .wt-ov { left: -14px; right: -14px; }
+  .wt-row { grid-template-columns: 1fr; gap: 8px; }
+  .wt-rh, .wt-row > .wt-opts, .wt-row > .sel.wt-pick, .wt-hint { grid-column: 1; grid-row: auto; }
+  .wt-hint { margin-left: 0; }
+  .wt-row .sel.wt-pick { min-width: 0; width: 100%; max-width: 100%; }
+  .ck-key { padding: 10px 14px 0; justify-content: flex-start; }
+  .tv tr.prow td.ckc { flex: 0 0 calc(20% - 8px); min-width: 54px; text-align: center; }
+  .tv tr.prow td.ckc::before { text-align: center; letter-spacing: 0; text-transform: none; font-size: 10px; }
+  .tv tr.prow .ck { width: 36px; height: 36px; border-radius: 11px; }
+  .tv tr.prow .ck i { font-size: 18px; }
+}
 </style>
 </head>
 <body>
@@ -882,7 +999,7 @@ button.flag-btn:hover { background: var(--stp-alpha); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.5.2';
+const APP_VERSION = '1.6.0';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
@@ -1628,6 +1745,7 @@ function renderView() {
   const fn = { mine: viewMine, pipeline: viewPipeline, closeout: viewCloseout, finance: viewFinance, archive: viewArchive, timeline: viewEditCapacity, pods: viewPods, budgets: viewBudgets, codes: viewCodes, settings: viewSettings, board: viewPipeline }[S.view];
   c.className = 'content' + (FIXED[S.view] ? ' fixed' : '');
   c.innerHTML = fn ? fn() : '';
+  musicSync();
   const nv = $('#vb') || c;
   if (S.view === 'timeline' && !S._tlScrolled) { S._tlScrolled = true; scrollTimelineToToday(); }
   else if (same) { nv.scrollLeft = sx; nv.scrollTop = sy; }
@@ -1674,6 +1792,23 @@ ACT.updlock = async () => {
 };
 
 ACT.go = el => { closePop(); go(el.dataset.v); };
+/* 1.6.0: every search box gets a small cross that clears it. It appears once there is something to clear. */
+function enhanceSearch() {
+  document.querySelectorAll('.search').forEach(w => {
+    if (w.querySelector('.search-x')) return;
+    const inp = w.querySelector('input'); if (!inp) return;
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'search-x'; b.setAttribute('aria-label', 'Clear search'); b.title = 'Clear search'; b.innerHTML = '<i class="ti ti-x"></i>';
+    w.appendChild(b);
+    const sync = () => w.classList.toggle('has-val', !!inp.value);
+    inp.addEventListener('input', sync); sync();
+    b.addEventListener('click', e => { e.preventDefault(); inp.value = ''; sync(); inp.dispatchEvent(new Event('input', { bubbles: true })); inp.focus(); });
+  });
+}
+(function () {
+  let q = 0; const run = () => { q = 0; enhanceSearch(); };
+  const start = () => { enhanceSearch(); new MutationObserver(() => { if (!q) q = requestAnimationFrame(run); }).observe(document.body, { childList: true, subtree: true }); };
+  if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
+})();
 ACT.signout = () => signOut();
 ACT.reload = () => hardReload();
 ACT.theme = () => { closePop(); applyTheme(!isDark()); };
@@ -1685,7 +1820,7 @@ ACT.more = el => {
 
 /* ---------------- auth ---------------- */
 function onAuthLost() { if (!S.token) return; S.token = null; S.me = null; tokenDel(); closeModal(true); showLogin('You have been signed out. Your sign-in expired or was reset, so nothing was lost. Sign in again to carry on.', 'notice'); }
-function signOut() { S.token = null; S.me = null; tokenDel(); S._tlScrolled = false; seeded = false; S.wt = { on: false, ids: [], i: 0 }; closeDrawer(true); showLogin('You have signed out.', 'info'); }
+function signOut() { musicStop(true); S.token = null; S.me = null; tokenDel(); S._tlScrolled = false; seeded = false; S.wt = { on: false, ids: [], i: 0 }; closeDrawer(true); showLogin('You have signed out.', 'info'); }
 
 async function showLogin(msg, kind) {
   closeModal(); closePop();
@@ -1794,6 +1929,15 @@ function forceUpdate(v, tries) {
    The page only ever shows the CURRENT release line (APP_VERSION 1.4.x shows 1.4, and so on), so this list can keep growing without the page getting longer. */
 const FIX_MAX = 160;
 const WHATS_NEW = [
+  /* 1.6.0: a feature release with tweaks. Both entries carry 1.6.0: the tweaks lead the page and the headline features sit underneath. */
+  ['1.6.0', [
+    ['Every search box now has a small cross to clear it in one tap.', ['Oli']],
+    ['BOARD now uses Poppins and Nunito, a cleaner pair of fonts than Montserrat.', ['Gully']]
+  ]],
+  ['1.6.0', [
+    ['ti-music', 'Out processing music is back', 'Switch on Meeting mode and the Out processing music plays. It stops when you exit, and the Music button in the top bar mutes it. BOARD remembers your choice.', ['Michael']],
+    ['ti-layout-list', 'A tidier Out processing', 'Each checklist item is now a small coloured tick, so the table fits the screen with no sideways scrolling. Meeting mode is smaller too, and finished blocks fold away and turn grey.', ['Oli']]
+  ]],
   ['1.5.2', [
     ['The release notes pop-up is simpler: the version sits in the title, with no Current or New badges and no extra instructions.', ['Oli']]
   ]],
@@ -2018,7 +2162,7 @@ S._groups = {};
 /* 0.9.0: every column is centred except these three (and the control column) */
 const LEFT_COLS = { name: 1, client: 1, project_code: 1 };
 const isCentred = c => !LEFT_COLS[c.k] && c.k !== 'act';
-const colW = (tid, c) => Math.max(c.min || 60, (S.ui.widths[tid] || {})[c.k] || c.w);
+const colW = (tid, c) => c.fixed ? c.w : Math.max(c.min || 60, (S.ui.widths[tid] || {})[c.k] || c.w);   /* 1.6.0: fixed columns (the Out processing ticks) ignore saved widths */
 const curSort = tid => S.ui.sort[tid] || null;
 const cmpVals = (x, y) => (typeof x === 'number' && typeof y === 'number' ? x - y : String(x).localeCompare(String(y), 'en-GB', { numeric: true, sensitivity: 'base' }));
 function sortRows(rows, tid, val) {
@@ -2039,7 +2183,7 @@ function tableHTML(tid, colsIn, groups, rowFn, opt = {}) {
     const on = st && st.k === c.k, arrow = on ? `<i class="ti ${st.dir === 1 ? 'ti-arrow-up' : 'ti-arrow-down'}" style="color:var(--stp)"></i>` : '';
     const tc = isCentred(c) ? ' tc' : '';
     const inner = c.nosort ? `<div class="th-in${tc}" style="cursor:default"><span class="th-l">${esc(c.l)}</span></div>` : `<div class="th-in${tc}" data-act="colsort" data-t="${tid}" data-k="${c.k}" title="${esc(c.tip || c.l)}"><span class="th-l">${esc(c.l)}</span>${arrow}</div>`;
-    return `<th class="${c.sticky ? 'sticky' : ''}" style="${c.sticky ? `left:${c.left}px;` : ''}">${inner}${c.noresize ? '' : `<span class="rs" data-t="${tid}" data-k="${c.k}"></span>`}</th>`;
+    return `<th class="${c.sticky ? 'sticky' : ''}${c.chk ? ' ckc' : ''}" style="${c.sticky ? `left:${c.left}px;` : ''}">${inner}${c.noresize ? '' : `<span class="rs" data-t="${tid}" data-k="${c.k}"></span>`}</th>`;
   }).join('');
   let body = '';
   groups.forEach((g, gi) => {
@@ -2825,11 +2969,30 @@ const sinceCutoff = () => { const d = pd(todayStr()); return d && S.co.since ? y
 const isOutProc = st => /out[\s-]?proc/i.test(st || '');
 /* keeps out_at in step with the stage straight away. The server stamps the same date and its answer replaces this one. */
 function stampOut(p, from) { const was = isOutProc(from), is = isOutProc(p.stage); if (is && !was) p.out_at = todayStr(); else if (!is && was) p.out_at = ''; }
-function coBody() { return `<div id="wtWrap">${wtHTML()}</div><div id="coTable">${coTableHTML()}</div>`; }
+function coBody() { return `<div id="wtWrap">${wtHTML()}</div><div id="coTable">${S.wt.on ? '' : coTableHTML()}</div>`; }   /* 1.6.0: the table steps aside in Meeting mode */
+/* 1.6.0: every checklist item is a small coloured tick instead of a wide drop-down, so the table fits without sideways scrolling.
+   The tick is a real drop-down laid invisibly on top, so clicking it still opens the same choices. */
+const CO_SHORT = { budget_recon: 'Budget', wash_up: 'Wash-up', social: 'Social', referral: 'Referral', on_client_board: 'Client board', vimeo: 'Vimeo', website: 'Website', deck: 'Deck', archive: 'Assets', music_licensing: 'Music' };
+const coShort = (k, l) => CO_SHORT[k] || (String(l).length > 9 ? String(l).slice(0, 8) + '.' : String(l));
+const coChipCls = v => { const c = coClass(v); return c === 'co-ok' ? 'ck-d' : c === 'co-na' ? 'ck-n' : c === 'co-warn' ? 'ck-p' : c === 'co-bad' ? 'ck-s' : 'ck-b'; };
+const coChipIcon = v => ({ 'ck-d': 'ti-check', 'ck-n': 'ti-minus', 'ck-p': 'ti-clock', 'ck-s': 'ti-x', 'ck-b': '' })[coChipCls(v)];
+const coChipTip = (l, v) => `${l}: ${v || 'Not answered'}`;
+function coChip(p, k, l, list, v, ed) {
+  return `<label class="ck ${coChipCls(v)}" title="${esc(coChipTip(l, v))}"><i class="ti ${coChipIcon(v)}"></i><select class="ck-sel" data-chg="co" data-id="${p.id}" data-k="${k}" aria-label="${esc(l)}" ${ed ? '' : 'disabled'}>${coOptions(list, v)}</select></label>`;
+}
+function coChipSync(sel) {
+  const lab = sel.closest('.ck'); if (!lab) return;
+  const v = sel.value, l = sel.getAttribute('aria-label') || '';
+  lab.className = 'ck ' + coChipCls(v); lab.title = coChipTip(l, v);
+  const i = $('i', lab); if (i) i.className = 'ti ' + coChipIcon(v);
+}
+const coKey = () => `<div class="ck-key"><span><i class="ck ck-d sm"></i>Done</span><span><i class="ck ck-p sm"></i>In progress or awaiting</span><span><i class="ck ck-s sm"></i>Stuck</span><span><i class="ck ck-n sm"></i>N/A</span><span><i class="ck ck-b sm"></i>Not answered</span></div>`;
 function coTableHTML() {
+  /* one-off: the old wide columns left saved widths behind, so start the Out processing table fresh in 1.6.0 */
+  if (!store.get('board_co_w160')) { try { delete (S.ui.widths || {}).closeout; saveUI(); } catch (e) {} store.set('board_co_w160', '1'); }
   const q = norm(S.co.q), F = coFields(), ed = canEdit(), stages = coStagesShown();
-  const cols = withFirst([{ k: 'name', l: 'Project', w: 280, min: 140, sticky: 1 }, { k: 'out_at', l: 'Moved in', tip: 'The day the project moved into Out processing', w: 120, date: 1 }, { k: 'progress', l: 'Progress', w: 140 }, { k: 'invoicing', l: 'Invoicing', w: 180 }]
-    .concat(F.filter(([k]) => k !== 'lead_source').map(([k, l]) => ({ k, l, w: 150 }))).concat([{ k: 'size_location', l: 'Size + Location', w: 220 }, { k: 'act', l: '', w: 130, min: 100, nosort: 1, noresize: 1 }]));
+  const cols = withFirst([{ k: 'name', l: 'Project', w: 200, min: 140, sticky: 1 }, { k: 'out_at', l: 'Moved in', tip: 'The day the project moved into Out processing', w: 76, date: 1 }, { k: 'progress', l: 'Progress', w: 92 }, { k: 'invoicing', l: 'Invoicing', w: 130 }]
+    .concat(F.filter(([k]) => k !== 'lead_source').map(([k, l]) => ({ k, l: coShort(k, l), tip: l, w: 46, min: 44, chk: 1, fixed: 1, noresize: 1 }))).concat([{ k: 'size_location', l: 'Size + location', w: 104 }, { k: 'act', l: '', w: 96, min: 90, nosort: 1, noresize: 1 }]));
   const opts = S.cfg.closeout_options || {};
   const val = (p, k) => k === 'out_at' ? (p.out_at || '') : k === 'progress' ? coDoneCount(p) : k === 'invoicing' ? (invOf(p) ? INV_LABELS.indexOf(invOf(p)) + 1 : '') : norm(p[k]);
   const groups = stages.map(stage => {
@@ -2840,7 +3003,7 @@ function coTableHTML() {
     return { key: stage, title: stage, colour: stageColour(stage), items, total: all.length };
   });
   const sc = $('#sortChip'); if (sc) sc.innerHTML = sortChip('closeout');
-  return tableHTML('closeout', cols, groups, (p, g, cs) => {
+  return coKey() + tableHTML('closeout', cols, groups, (p, g, cs) => {
     const done = coDoneCount(p);
     return `<tr class="prow" data-id="${p.id}">${cs.map(c => {
       if (c.k === 'name') return td(c, g, `<div class="nm co-name" style="cursor:pointer;overflow:hidden;text-overflow:ellipsis" data-act="open" data-id="${p.id}">${esc(p.name)}</div><div class="nm-sub">${esc(p.client)}</div><div class="co-flags">${coFlagsInner(p, ed)}</div>`);
@@ -2850,7 +3013,7 @@ function coTableHTML() {
       if (c.k === 'size_location') return td(c, g, `<input class="cell-inp" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="-">`);
       if (c.k === 'act') return td(c, g, ed ? `<button class="btn btn-ghost btn-sm co-arch${canArchive(p) ? '' : ' is-locked'}" data-act="archive" data-id="${p.id}" title="${esc(coTip(p))}"><i class="ti ${canArchive(p) ? 'ti-archive' : 'ti-lock'}"></i>Archive</button>` : '');
       const v = p[c.k] || '', list = (opts[c.k] || []).slice(); if (v && !list.includes(v)) list.push(v);
-      return td(c, g, `<select class="sel co-sel ${coClass(v)}" data-chg="co" data-id="${p.id}" data-k="${c.k}" ${ed ? '' : 'disabled'}>${coOptions(list, v)}</select>`);
+      return td(c, g, coChip(p, c.k, c.tip, list, v, ed), 'ckc');
     }).join('')}</tr>`;
   }) + `<div class="page-end"></div>`;
 }
@@ -2871,7 +3034,8 @@ function coAfterChange(id) {
 INP.co = el => {
   const id = el.dataset.id, k = el.dataset.k, p = projectById(id); if (!p) return;
   saveFields(id, { [k]: el.value }, null, true);
-  if (el.tagName === 'SELECT') el.className = 'sel co-sel ' + coClass(el.value);
+  if (el.classList.contains('ck-sel')) coChipSync(el);
+  else if (el.classList.contains('co-sel')) el.className = 'sel co-sel ' + coClass(el.value);
   coAfterChange(id);
   const w = $('#wtWrap'); if (w) w.innerHTML = wtHTML();
 };
@@ -2887,19 +3051,52 @@ ACT.cogen = async el => {
 };
 
 /* ---- meeting mode: one project at a time. Back and Next live in the top bar so they never move. ---- */
+/* ---- 1.6.0: Out processing music. It plays only while Meeting mode is on, stops on exit, and the Music button mutes it.
+   The file lives in an audio folder next to index.html. If it is missing, the button hides and nothing else is affected. ---- */
+const MUSIC = { src: 'audio/out-processing-music.mp3', vol: 0.35, el: null, bad: false, fade: null };
+const musicOff = () => store.get('board_music_off') === '1';
+function musicFade(a, to, ms, done) {
+  clearInterval(MUSIC.fade); const from = a.volume, t0 = Date.now();
+  MUSIC.fade = setInterval(() => {
+    const k = Math.min(1, (Date.now() - t0) / ms); try { a.volume = Math.max(0, Math.min(1, from + (to - from) * k)); } catch (e) {}
+    if (k >= 1) { clearInterval(MUSIC.fade); if (done) done(); }
+  }, 40);
+}
+function musicPlay() {
+  if (musicOff() || MUSIC.bad) return;
+  try {
+    if (!MUSIC.el) {
+      const a = new Audio(MUSIC.src); a.loop = true; a.preload = 'auto'; a.volume = 0;
+      a.addEventListener('error', () => { MUSIC.bad = true; MUSIC.el = null; const b = $('#musicBtn'); if (b) b.remove(); });
+      MUSIC.el = a;
+    }
+    const a = MUSIC.el; if (!a.paused) return;
+    const pr = a.play(); if (pr && pr.catch) pr.catch(() => {});
+    musicFade(a, MUSIC.vol, 900);
+  } catch (e) {}
+}
+function musicStop(now) {
+  const a = MUSIC.el; if (!a) return;
+  try { if (now) { clearInterval(MUSIC.fade); a.pause(); a.currentTime = 0; } else musicFade(a, 0, 500, () => { a.pause(); a.currentTime = 0; }); } catch (e) {}
+}
+/* plays when Meeting mode is on and you are looking at Out processing, and nowhere else */
+function musicSync() { const want = S.view === 'closeout' && S.wt && S.wt.on && !musicOff() && !MUSIC.bad; const a = MUSIC.el; if (want && (!a || a.paused)) musicPlay(); else if (!want && a && !a.paused) musicStop(); }
+
 const wtQueue = () => S.wt.ids.map(projectById).filter(p => p && closeoutStages().includes(p.stage));
 function wtStart() {
   const stages = coStagesShown(), ids = [];
   stages.forEach(s => S.projects.filter(p => p.stage === s && !canArchive(p)).sort(bySort).forEach(p => ids.push(p.id)));
-  S.wt = { on: true, ids, i: 0 };
+  S.wt = { on: true, ids, i: 0, live: {}, pick: {} };
 }
-function wtRefresh() { const w = $('#wtWrap'); if (w) w.innerHTML = wtHTML(); const t = $('#coTable'); if (t) t.innerHTML = coTableHTML(); setVW(); }
+function wtRefresh() { const w = $('#wtWrap'); if (w) w.innerHTML = wtHTML(); const t = $('#coTable'); if (t) t.innerHTML = S.wt.on ? '' : coTableHTML(); musicSync(); setVW(); }
 function wtGo(d) {
   const n = wtQueue().length; S.wt.i = Math.max(0, Math.min(n, S.wt.i + d)); wtRefresh();
   const w = $('#wtWrap'), vb = $('#vb'); if (w && vb && vb.scrollTop > w.offsetTop) vb.scrollTop = 0;
 }
-ACT.wtstart = () => { wtStart(); wtRefresh(); };
-ACT.wtexit = () => { S.wt = { on: false, ids: [], i: 0 }; wtRefresh(); };
+ACT.wtstart = () => { wtStart(); wtRefresh(); musicPlay(); };   /* the click is what lets the browser play sound */
+ACT.wtexit = () => { S.wt = { on: false, ids: [], i: 0 }; musicStop(); wtRefresh(); };
+ACT.wtmusic = () => { store.set('board_music_off', musicOff() ? '0' : '1'); musicSync(); wtRefresh(); };
+ACT.wtcard = el => { const c = el.closest('.wt-card'); if (!c) return; S.wt.pick = S.wt.pick || {}; S.wt.pick[el.dataset.key] = !c.classList.contains('shut'); wtRefresh(); };
 ACT.wtgo = el => wtGo(Number(el.dataset.d));
 ACT.wtjump = el => { S.wt.i = Number(el.dataset.i); wtRefresh(); };
 ACT.wtpick = async el => {
@@ -2925,23 +3122,24 @@ function readyHTML() {
   const r = readyList(); if (!r.length) return '';
   const names = r.slice(0, 4).map(p => esc(p.name)).join(', ') + (r.length > 4 ? ` and ${r.length - 4} more` : '');
   return `<div class="rdy"><span class="rdy-i"><i class="ti ti-archive"></i></span>
-    <div class="rdy-t"><div class="lbl">Ready to archive</div><div class="rdy-b">${r.length} project${r.length === 1 ? ' is' : 's are'} finished</div><div class="muted rdy-n">${names}</div></div>
-    <button class="btn btn-primary" data-act="archiveready"><i class="ti ti-archive"></i>Review and archive</button></div>`;
+    <div class="rdy-t"><span class="rdy-b">${r.length} project${r.length === 1 ? ' is' : 's are'} finished</span><span class="muted rdy-n">${names}</span></div>
+    <button class="btn btn-primary btn-sm" data-act="archiveready"><i class="ti ti-archive"></i>Review and archive</button></div>`;
 }
 function wtHTML() { return (S.wt.on ? '' : readyHTML()) + wtCore(); }
 function wtCore() {
   const ed = canEdit(), F = coFields(), opts = S.cfg.closeout_options || {};
   if (!S.wt.on) {
     const n = coStagesShown().reduce((a, s) => a + S.projects.filter(p => p.stage === s && !canArchive(p)).length, 0);
-    return `<div class="wt"><div class="wt-idle"><div style="flex:1;min-width:220px"><div class="lbl">Meeting mode</div><div class="big">Out processing meeting</div>
-      <div class="muted">${n ? `${n} project${n === 1 ? '' : 's'} still ${n === 1 ? 'has' : 'have'} something open. Go through them one at a time with every question on screen.` : 'Nothing has questions open right now.'}</div></div>
-      <button class="btn btn-primary" data-act="wtstart" ${n && ed ? '' : 'disabled'}><i class="ti ti-player-play"></i>Start meeting mode</button></div></div>`;
+    const note = !MUSIC.bad && !musicOff() ? '<span class="wt-note"><i class="ti ti-volume"></i>Music plays in meeting mode</span>' : '';
+    return `<div class="wt wt-slim"><div class="wt-idle"><div class="wt-idl"><span class="lbl">Meeting mode</span><span class="wt-it">${n ? `${n} project${n === 1 ? '' : 's'} still ${n === 1 ? 'has' : 'have'} something open` : 'Nothing has questions open right now'}</span></div>
+      ${note}<button class="btn btn-primary btn-sm" data-act="wtstart" ${n && ed ? '' : 'disabled'}><i class="ti ti-player-play"></i>Start meeting mode</button></div></div>`;
   }
   const q = wtQueue(), n = q.length;
   const dots = q.map((p, i) => `<i class="${canArchive(p) ? 'done' : ''}${i === S.wt.i ? ' now' : ''}" data-act="wtjump" data-i="${i}" title="${esc(p.name)}"></i>`).join('');
   const atEnd = !n || S.wt.i >= n;
   const top = `<div class="wt-top"><button class="btn btn-plain" data-act="wtgo" data-d="-1" ${S.wt.i === 0 || !n ? 'disabled' : ''}><i class="ti ti-arrow-left"></i>Back</button>
     <div class="wt-mid"><div class="wt-mt"><span class="lbl">Meeting mode</span><span class="count">Project ${Math.min(S.wt.i + 1, Math.max(n, 1))} of ${n}</span></div><div class="wt-dots">${dots}</div></div>
+    ${MUSIC.bad ? '' : `<button class="btn btn-plain wt-music${musicOff() ? '' : ' on'}" id="musicBtn" data-act="wtmusic" aria-pressed="${musicOff() ? 'false' : 'true'}" title="${musicOff() ? 'Turn the music on' : 'Mute the music'}"><i class="ti ${musicOff() ? 'ti-volume-off' : 'ti-volume'}"></i>${musicOff() ? 'Music off' : 'Music on'}</button>`}
     <button class="btn btn-primary" data-act="wtgo" data-d="1" ${atEnd ? 'disabled' : ''}>${S.wt.i >= n - 1 ? 'Finish' : 'Next project'}<i class="ti ti-arrow-right"></i></button>
     <button class="btn btn-plain" data-act="wtexit"><i class="ti ti-x"></i>Exit</button></div>`;
   if (atEnd) {
@@ -2966,15 +3164,23 @@ function wtCore() {
   };
   const byKey = {}; F.forEach(f => { byKey[f[0]] = f; });
   const used = new Set();
+  /* 1.6.0: a block that is finished folds away and turns grey. A block you were filling in stays open until you move on, and your own click on its header always wins. */
+  const W = S.wt; W.live = W.live || {}; W.pick = W.pick || {};
+  const cardHTML = (title, icon, nd, nt, inner) => {
+    const key = p.id + ':' + title, finished = nt > 0 && nd === nt;
+    if (!finished) W.live[key] = 1;
+    const shut = key in W.pick ? W.pick[key] : (finished && !W.live[key]);
+    return `<section class="wt-card${finished ? ' done' : ''}${shut ? ' shut' : ''}"><div class="wt-ch"><button type="button" class="wt-ov" data-act="wtcard" data-key="${esc(key)}" aria-expanded="${shut ? 'false' : 'true'}" aria-label="${esc(title)}, ${nd} of ${nt} done"></button><span class="wt-ci"><i class="ti ${icon}"></i></span><h3>${esc(title)}</h3><span class="wt-cn${finished ? ' all' : ''}">${nd} of ${nt}</span><i class="ti ti-chevron-down wt-chev"></i></div>${inner}</section>`;
+  };
   const card = (title, icon, keys, withInv) => {
     const rows = keys.filter(k => byKey[k]).map(k => { used.add(k); return byKey[k]; });
     if (!rows.length && !withInv) return '';
     const nd = rows.filter(([k]) => coDone(p[k])).length + (withInv && invOk(p) ? 1 : 0), nt = rows.length + (withInv ? 1 : 0);
-    return `<section class="wt-card"><div class="wt-ch"><span class="wt-ci"><i class="ti ${icon}"></i></span><h3>${esc(title)}</h3><span class="wt-cn${nd === nt ? ' all' : ''}">${nd} of ${nt}</span></div>${withInv ? invRow : ''}${rows.map(fieldRow).join('')}</section>`;
+    return cardHTML(title, icon, nd, nt, (withInv ? invRow : '') + rows.map(fieldRow).join(''));
   };
   const cards = WT_GROUPS.map(([t, i, k, w]) => card(t, i, k, w));
   const extra = F.filter(f => !used.has(f[0]));   /* any item added in Settings that the groups do not know about */
-  const other = extra.length ? `<section class="wt-card"><div class="wt-ch"><span class="wt-ci"><i class="ti ti-list-check"></i></span><h3>Other</h3><span class="wt-cn${extra.every(([k]) => coDone(p[k])) ? ' all' : ''}">${extra.filter(([k]) => coDone(p[k])).length} of ${extra.length}</span></div>${extra.map(fieldRow).join('')}</section>` : '';
+  const other = extra.length ? cardHTML('Other', 'ti-list-check', extra.filter(([k]) => coDone(p[k])).length, extra.length, extra.map(fieldRow).join('')) : '';
   const details = `<section class="wt-card det"><div class="wt-ch"><span class="wt-ci"><i class="ti ti-package"></i></span><h3>Project details</h3></div>
     <div class="wt-codeRow"><label class="wt-lab"><span>Project code</span><input class="inp" data-chg="co" data-id="${p.id}" data-k="project_code" value="${esc(p.project_code)}" ${ed ? '' : 'disabled'} placeholder="CLIENT_ProjectTitle"></label>${ed && !hasCode(p) ? `<button class="btn btn-primary" style="min-height:44px;border-radius:12px" data-act="cogen" data-id="${p.id}">Generate</button>` : ''}</div>
     <label class="wt-lab"><span>Size and location</span><input class="inp" data-chg="co" data-id="${p.id}" data-k="size_location" value="${esc(p.size_location)}" ${ed ? '' : 'disabled'} placeholder="e.g. 2TB, Edit drive 3, Shelf B"></label></section>`;
