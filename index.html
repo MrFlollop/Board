@@ -999,7 +999,7 @@ h1, h2, h3, h4, .btn, .lbl, .big, .stage-title, .page-title, .brand-name, .brand
 const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
 /* ---------------------------------------------- */
 
-const APP_VERSION = '1.6.0';
+const APP_VERSION = '1.6.1';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
@@ -1929,6 +1929,9 @@ function forceUpdate(v, tries) {
    The page only ever shows the CURRENT release line (APP_VERSION 1.4.x shows 1.4, and so on), so this list can keep growing without the page getting longer. */
 const FIX_MAX = 160;
 const WHATS_NEW = [
+  ['1.6.1', [
+    ['If your browser blocks the Out processing music or the file will not load, the Music button now says so, and Play music starts it.', ['Oli']]
+  ]],
   /* 1.6.0: a feature release with tweaks. Both entries carry 1.6.0: the tweaks lead the page and the headline features sit underneath. */
   ['1.6.0', [
     ['Every search box now has a small cross to clear it in one tap.', ['Oli']],
@@ -3053,8 +3056,15 @@ ACT.cogen = async el => {
 /* ---- meeting mode: one project at a time. Back and Next live in the top bar so they never move. ---- */
 /* ---- 1.6.0: Out processing music. It plays only while Meeting mode is on, stops on exit, and the Music button mutes it.
    The file lives in an audio folder next to index.html. If it is missing, the button hides and nothing else is affected. ---- */
-const MUSIC = { src: 'audio/out-processing-music.mp3', vol: 0.35, el: null, bad: false, fade: null };
+const MUSIC = { src: 'audio/out-processing-music.mp3', vol: 0.35, el: null, bad: false, blocked: false, fade: null };
 const musicOff = () => store.get('board_music_off') === '1';
+/* 1.6.1: the button says what is happening. Music on, Music off, Play music (the browser blocked the sound, press to start) or Music unavailable (the file did not load). */
+function musicBtnHTML() {
+  if (MUSIC.bad) return `<button class="btn btn-plain wt-music" id="musicBtn" disabled title="The music file could not be loaded"><i class="ti ti-volume-off"></i>Music unavailable</button>`;
+  const off = musicOff(), blk = MUSIC.blocked && !off, quiet = off || blk;
+  return `<button class="btn btn-plain wt-music${quiet ? '' : ' on'}" id="musicBtn" data-act="wtmusic" aria-pressed="${quiet ? 'false' : 'true'}" title="${off ? 'Turn the music on' : blk ? 'Your browser blocked the sound. Press to play it' : 'Mute the music'}"><i class="ti ${quiet ? 'ti-volume-off' : 'ti-volume'}"></i>${off ? 'Music off' : blk ? 'Play music' : 'Music on'}</button>`;
+}
+function musicBtnSync() { const b = $('#musicBtn'); if (b) b.outerHTML = musicBtnHTML(); }
 function musicFade(a, to, ms, done) {
   clearInterval(MUSIC.fade); const from = a.volume, t0 = Date.now();
   MUSIC.fade = setInterval(() => {
@@ -3067,20 +3077,30 @@ function musicPlay() {
   try {
     if (!MUSIC.el) {
       const a = new Audio(MUSIC.src); a.loop = true; a.preload = 'auto'; a.volume = 0;
-      a.addEventListener('error', () => { MUSIC.bad = true; MUSIC.el = null; const b = $('#musicBtn'); if (b) b.remove(); });
+      a.addEventListener('error', () => {
+        const code = a.error ? a.error.code : 0; MUSIC.bad = true; MUSIC.el = null; MUSIC.blocked = false;
+        try { console.warn('BOARD music: could not load ' + MUSIC.src + ' (media error ' + code + ')'); } catch (e) {}
+        musicBtnSync(); try { toast('The Out processing music could not be loaded (error ' + code + ').'); } catch (e) {}
+      });
       MUSIC.el = a;
     }
     const a = MUSIC.el; if (!a.paused) return;
-    const pr = a.play(); if (pr && pr.catch) pr.catch(() => {});
+    const pr = a.play();
+    if (pr && pr.then) pr.then(() => { if (MUSIC.blocked) { MUSIC.blocked = false; musicBtnSync(); } }).catch(err => {
+      if (!err || err.name === 'AbortError' || MUSIC.bad) return;   /* an AbortError just means it was stopped while starting */
+      MUSIC.blocked = true; try { console.warn('BOARD music: play was refused (' + err.name + ': ' + err.message + ')'); } catch (e) {}
+      musicBtnSync(); try { toast(err.name === 'NotAllowedError' ? 'Your browser blocked the music. Press Play music to start it.' : 'The music would not start (' + err.name + ').'); } catch (e) {}
+    });
     musicFade(a, MUSIC.vol, 900);
-  } catch (e) {}
+  } catch (e) { try { console.warn('BOARD music:', e); } catch (x) {} }
 }
 function musicStop(now) {
+  MUSIC.blocked = false;
   const a = MUSIC.el; if (!a) return;
   try { if (now) { clearInterval(MUSIC.fade); a.pause(); a.currentTime = 0; } else musicFade(a, 0, 500, () => { a.pause(); a.currentTime = 0; }); } catch (e) {}
 }
 /* plays when Meeting mode is on and you are looking at Out processing, and nowhere else */
-function musicSync() { const want = S.view === 'closeout' && S.wt && S.wt.on && !musicOff() && !MUSIC.bad; const a = MUSIC.el; if (want && (!a || a.paused)) musicPlay(); else if (!want && a && !a.paused) musicStop(); }
+function musicSync() { const want = S.view === 'closeout' && S.wt && S.wt.on && !musicOff() && !MUSIC.bad && !MUSIC.blocked; const a = MUSIC.el; if (want && (!a || a.paused)) musicPlay(); else if (!want && a && !a.paused) musicStop(); }
 
 const wtQueue = () => S.wt.ids.map(projectById).filter(p => p && closeoutStages().includes(p.stage));
 function wtStart() {
@@ -3095,7 +3115,11 @@ function wtGo(d) {
 }
 ACT.wtstart = () => { wtStart(); wtRefresh(); musicPlay(); };   /* the click is what lets the browser play sound */
 ACT.wtexit = () => { S.wt = { on: false, ids: [], i: 0 }; musicStop(); wtRefresh(); };
-ACT.wtmusic = () => { store.set('board_music_off', musicOff() ? '0' : '1'); musicSync(); wtRefresh(); };
+ACT.wtmusic = () => {
+  /* a click here is a fresh tap, so it can start sound the browser blocked earlier */
+  if (!musicOff() && (MUSIC.blocked || (MUSIC.el && MUSIC.el.paused))) { MUSIC.blocked = false; musicPlay(); musicBtnSync(); return; }
+  store.set('board_music_off', musicOff() ? '0' : '1'); MUSIC.blocked = false; musicSync(); wtRefresh();
+};
 ACT.wtcard = el => { const c = el.closest('.wt-card'); if (!c) return; S.wt.pick = S.wt.pick || {}; S.wt.pick[el.dataset.key] = !c.classList.contains('shut'); wtRefresh(); };
 ACT.wtgo = el => wtGo(Number(el.dataset.d));
 ACT.wtjump = el => { S.wt.i = Number(el.dataset.i); wtRefresh(); };
@@ -3139,7 +3163,7 @@ function wtCore() {
   const atEnd = !n || S.wt.i >= n;
   const top = `<div class="wt-top"><button class="btn btn-plain" data-act="wtgo" data-d="-1" ${S.wt.i === 0 || !n ? 'disabled' : ''}><i class="ti ti-arrow-left"></i>Back</button>
     <div class="wt-mid"><div class="wt-mt"><span class="lbl">Meeting mode</span><span class="count">Project ${Math.min(S.wt.i + 1, Math.max(n, 1))} of ${n}</span></div><div class="wt-dots">${dots}</div></div>
-    ${MUSIC.bad ? '' : `<button class="btn btn-plain wt-music${musicOff() ? '' : ' on'}" id="musicBtn" data-act="wtmusic" aria-pressed="${musicOff() ? 'false' : 'true'}" title="${musicOff() ? 'Turn the music on' : 'Mute the music'}"><i class="ti ${musicOff() ? 'ti-volume-off' : 'ti-volume'}"></i>${musicOff() ? 'Music off' : 'Music on'}</button>`}
+    ${musicBtnHTML()}
     <button class="btn btn-primary" data-act="wtgo" data-d="1" ${atEnd ? 'disabled' : ''}>${S.wt.i >= n - 1 ? 'Finish' : 'Next project'}<i class="ti ti-arrow-right"></i></button>
     <button class="btn btn-plain" data-act="wtexit"><i class="ti ti-x"></i>Exit</button></div>`;
   if (atEnd) {
