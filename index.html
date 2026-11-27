@@ -8,7 +8,7 @@
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="color-scheme" content="light dark">
-<script>try{if(localStorage.getItem("board_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");document.querySelector('meta[name="theme-color"]').setAttribute("content","#151518");}}catch(e){}</script>
+<script>try{var ns=localStorage.getItem("board_ns@"+location.pathname)||"";if(localStorage.getItem(ns+"board_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");document.querySelector('meta[name="theme-color"]').setAttribute("content","#151518");}}catch(e){}</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="BOARD">
@@ -984,6 +984,34 @@ h1, h2, h3, h4, .btn, .lbl, .big, .stage-title, .page-title, .brand-name, .brand
   .tv tr.prow .ck { width: 36px; height: 36px; border-radius: 11px; }
   .tv tr.prow .ck i { font-size: 18px; }
 }
+/* ---------- 1.6.2: BOARD Playground. All of this sits behind :root[data-env="playground"], which the page sets only when the backend says it is the Playground. Live never matches any of it. ---------- */
+:root[data-env="playground"] { --stp: #6D28D9; --stp-hover: #5B21B6; --stp-light: #EDE9FE; --stp-alpha: rgba(109,40,217,0.12); }
+:root[data-env="playground"][data-theme="dark"] { --stp: #8B5CF6; --stp-hover: #A78BFA; --stp-light: rgba(139,92,246,0.18); --stp-alpha: rgba(139,92,246,0.24); }
+#pgBanner, #pgFrame, #pgRibbon { display: none; }
+:root[data-env="playground"] #pgBanner { display: block; position: fixed; top: 0; left: 0; right: 0; z-index: 2147483000; padding: calc(8px + var(--safe-t)) 16px 8px; text-align: center; background: #F5B301; color: #14110A; border-bottom: 3px solid #14110A; font: 600 13px/1.35 var(--font-body, system-ui, sans-serif); user-select: none; -webkit-user-select: none; }
+:root[data-env="playground"] #pgBanner b { font-family: var(--font-head, inherit); font-weight: 800; letter-spacing: .6px; }
+:root[data-env="playground"] #pgBanner .pgIc { width: 20px; height: 20px; vertical-align: -5px; margin-right: 8px; }
+:root[data-env="playground"] #pgFrame { display: block; position: fixed; inset: 0; z-index: 2147482900; pointer-events: none; box-shadow: inset 0 0 0 5px #F5B301, inset 0 0 0 7px #14110A; }
+:root[data-env="playground"] #pgRibbon { display: block; position: fixed; right: -52px; bottom: 34px; width: 210px; z-index: 2147482950; padding: 6px 0; text-align: center; transform: rotate(-45deg); background: #F5B301; color: #14110A; border-top: 2px solid #14110A; border-bottom: 2px solid #14110A; font: 800 11px/1 var(--font-head, system-ui, sans-serif); letter-spacing: 2.4px; pointer-events: none; user-select: none; }
+:root[data-env="playground"] #app, :root[data-env="playground"] .login, :root[data-env="playground"] .scrim, :root[data-env="playground"] .drawer, :root[data-env="playground"] .lk-anim, :root[data-env="playground"] #updGate { top: var(--pg-h, 46px); }
+:root[data-env="playground"] .modal { top: calc(50% + var(--pg-h, 46px) / 2); max-height: calc(100vh - var(--pg-h, 46px) - 24px); }
+.pg-big { display: block; margin: 0 0 16px; padding: 14px 18px; border-radius: 12px; background: #F5B301; color: #14110A; border: 3px solid #14110A; text-align: center; font: 900 30px/1.05 var(--font-head, system-ui, sans-serif); letter-spacing: 3px; text-transform: uppercase; }
+.pg-big small { display: block; margin-top: 6px; font: 700 12px/1.3 var(--font-body, system-ui, sans-serif); letter-spacing: .4px; text-transform: none; }
+.pg-pill { display: inline-block; margin-left: 8px; background: #F5B301; color: #14110A; border-radius: var(--r-pill, 9999px); padding: 2px 10px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; vertical-align: 1px; }
+:root[data-env="playground"] .lockbar { background: linear-gradient(100deg, #6D28D9 0%, #8B5CF6 26%, #6D28D9 48%, #5B21B6 76%, #6D28D9 100%) 0 0 / 900px 100% repeat-x; text-shadow: 0 1px 2px rgba(30,0,80,.4); }
+:root[data-env="playground"] .lk-anim { background: radial-gradient(circle at 50% 42%, #A78BFA 0%, #6D28D9 38%, #3B1580 100%); }
+:root[data-env="playground"] #updGate { background: #0F0A1E; }
+:root[data-env="playground"] #updGate .upd-dot, :root[data-env="playground"] .rn-new { background: #6D28D9 !important; }
+:root[data-env="playground"] #updGate .upd-card { box-shadow: 0 0 0 1px rgba(139,92,246,.4), 0 0 60px rgba(139,92,246,.35), 0 20px 60px rgba(0,0,0,.45); }
+:root[data-env="playground"] .scrim.m.hs { background: #0F0A1E; }
+:root[data-env="playground"] .modal.hs-in { box-shadow: 0 0 0 1px rgba(139,92,246,.4), 0 0 60px rgba(139,92,246,.3), 0 20px 60px rgba(0,0,0,.45); }
+:root[data-env="playground"] .hs-hint { color: #C4B5FD; }
+@media (max-width: 760px) {
+  :root[data-env="playground"] #pgBanner { font-size: 11.5px; padding: calc(6px + var(--safe-t)) 10px 6px; }
+  :root[data-env="playground"] #pgRibbon { bottom: 92px; }
+  .pg-big { font-size: 24px; }
+}
+@media print { #pgBanner, #pgFrame, #pgRibbon { display: none !important; } }
 </style>
 </head>
 <body>
@@ -995,11 +1023,11 @@ h1, h2, h3, h4, .btn, .lbl, .big, .stage-title, .page-title, .brand-name, .brand
    BOARD 1.0.0. Core: config, state, colours, API, queue, shell, login, routing
    ================================================================ */
 
-/* ---- CONFIG: your Apps Script web app URL ---- */
-const API_URL = 'https://script.google.com/macros/s/AKfycbxqCrv3C8g-SVftuHg1eAfvq6F6QT-AeKQC0B69qtt3d7ioOSnUYL0Jx4kmrf9aI1glEg/exec';
-/* ---------------------------------------------- */
-
-const APP_VERSION = '1.6.1';
+/* ---- CONFIG (1.6.2): the Apps Script web app URL now lives in config.json beside index.html, as {"api_url": "https://script.google.com/macros/s/.../exec"}.
+   index.html and the backend are identical in every environment. Which environment this is comes from the backend (env in its replies).
+   config.json may also carry "env" (leave it out for live). It only decides which saved-state keys this browser uses, and it is checked against the backend. ---- */
+let API = '';
+const APP_VERSION = '1.6.2';
 /* 1.0.0: the launch welcome shows once to each person on their first sign-in at this version. Patch builds (1.0.1 and so on) do not repeat it.
    Change this number when you want a big welcome like this again. */
 const WELCOME_VER = '1.0.0';
@@ -1012,17 +1040,24 @@ const LOGO_DARK = 'logo-dark.png';
 const LOGO_LIGHT = 'logo-light.png';
 const POLL_MS = 20000;   /* 0.9.0: each browser checks for changes about this often, with a little random spread so ten people never all ask in the same second */
 const LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-const API = (LOCAL && new URLSearchParams(location.search).get('api')) || API_URL;
 
+/* 1.6.2: environments. CFG_ENV is what config.json says, ENV is what is in force. NS is put in front of every saved-state key, so two environments on one web address never share a theme,
+   a sign-in or anything else. Live has no prefix, so its keys are exactly what they were before 1.6.2 and nobody is signed out. Anything else gets "<env>_". */
+let CFG_ENV = 'live', ENV = 'live', NS = '', cfgErr = '';
+const isPG = () => ENV === 'playground';
+const nsOf = e => (e && e !== 'live' ? e + '_' : '');
+const pgBig = () => isPG() ? '<div class="pg-big">PLAYGROUND<small>Test data only. Nothing here is real.</small></div>' : '';
+const pgTag = () => isPG() ? '<span class="pg-pill">PLAYGROUND</span>' : '';
+const setTitle = t => { document.title = (isPG() ? 'PLAYGROUND ' : '') + t; };
 const store = {
-  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
-  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
-  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  get(k) { try { return localStorage.getItem(NS + k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(NS + k, v); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(NS + k); } catch (e) {} }
 };
 const sstore = {
-  get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
-  set(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} },
-  del(k) { try { sessionStorage.removeItem(k); } catch (e) {} }
+  get(k) { try { return sessionStorage.getItem(NS + k); } catch (e) { return null; } },
+  set(k, v) { try { sessionStorage.setItem(NS + k, v); } catch (e) {} },
+  del(k) { try { sessionStorage.removeItem(NS + k); } catch (e) {} }
 };
 const tokenGet = () => store.get('board_token') || sstore.get('board_token');
 const tokenDel = () => { store.del('board_token'); sstore.del('board_token'); };
@@ -1047,9 +1082,8 @@ const S = {
   clients: null, codes: { mode: 'existing', client: '', title: '', newName: '', newCode: '', tab: 'generate', q: '' },
   settingsTab: 'people', health: null,
   drawer: null, draft: null, dragging: false, stale: false, syncState: 'saved', lastSync: null,
-  ui: Object.assign({ widths: {}, sort: {}, collapsed: {} }, jparse(store.get('board_ui'), {}))
+  ui: { widths: {}, sort: {}, collapsed: {} }   /* 1.6.2: filled from this environment's saved state by initEnv() once config.json is read */
 };
-['board_fx', 'board_ep', 'board_lock'].forEach(k => store.del(k));
 function saveUI() { store.set('board_ui', JSON.stringify(S.ui)); }
 /* 0.9.0: the server's clock, so the stand-up timer is right even if this computer's clock is out */
 const nowMs = () => Date.now() + (S.clockOff || 0);
@@ -1398,7 +1432,7 @@ function hyperspace(host, opts) {
   const cv = document.createElement('canvas'); cv.className = 'hs-cv'; cv.setAttribute('aria-hidden', 'true');
   host.insertBefore(cv, host.firstChild);
   const ctx = cv.getContext && cv.getContext('2d'); if (!ctx) return;
-  const dpr = Math.min(window.devicePixelRatio || 1, 1.5), COLS = ['255,80,190', '255,138,212', '255,255,255', '217,62,166'], BG = '26,10,22';
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5), COLS = isPG() ? ['139,92,246', '196,181,253', '255,255,255', '109,40,217'] : ['255,80,190', '255,138,212', '255,255,255', '217,62,166'], BG = isPG() ? '15,10,30' : '26,10,22';
   let w = 0, h = 0, maxR = 0;
   const size = () => { w = host.clientWidth || innerWidth; h = host.clientHeight || innerHeight; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.fillStyle = 'rgb(' + BG + ')'; ctx.fillRect(0, 0, w, h); maxR = Math.hypot(w, h) / 2 + 24; };
   size();
@@ -1437,8 +1471,80 @@ function warpScrim() {
 }
 
 /* ---------------- API ---------------- */
+
+/* ---------------- 1.6.2: config.json and the environment ---------------- */
+async function loadConfig() {
+  if (API) return true;
+  const q = new URLSearchParams(location.search);
+  let cfg = null, why = '';
+  try {
+    const r = await fetch('config.json', { cache: 'no-store' });
+    if (!r.ok) why = r.status === 404 ? 'config.json is missing. It should sit next to index.html.' : 'config.json could not be loaded (error ' + r.status + ').';
+    else { try { cfg = await r.json(); } catch (e) { why = 'config.json is not valid JSON.'; } }
+  } catch (e) { why = 'config.json could not be loaded. ' + (location.protocol === 'file:' ? 'Open BOARD from its web address, not from a file.' : 'Check the connection and reload.'); }
+  let url = cfg && typeof cfg.api_url === 'string' ? cfg.api_url.trim() : '';
+  let env = cfg && typeof cfg.env === 'string' ? cfg.env.trim().toLowerCase() : '';
+  const local = LOCAL && !!q.get('api');   /* local testing only: ?api=...&env=... overrides config.json on localhost, as ?api= always did */
+  if (local) { url = q.get('api'); env = String(q.get('env') || '').toLowerCase(); why = ''; }
+  if (!why && !url) why = 'config.json has no api_url.';
+  if (!why && !local && !/^https:\/\/script\.google\.com\/macros\/(?:a\/[^\/]+\/)?s\/[A-Za-z0-9_-]+\/exec$/.test(url)) why = 'The api_url in config.json is not an Apps Script web app address (it should start https://script.google.com/macros/ and end /exec).';
+  if (!why && env && !/^[a-z0-9-]{1,20}$/.test(env)) why = 'The env in config.json is not valid.';
+  if (why) { cfgErr = why; return false; }
+  API = url; CFG_ENV = env || 'live'; ENV = CFG_ENV; NS = nsOf(ENV);
+  initEnv();
+  return true;
+}
+function initEnv() {
+  /* remembers which prefix this web address uses, so the very first paint of the next visit can read the right theme key */
+  try { if (NS) localStorage.setItem('board_ns@' + location.pathname, NS); else localStorage.removeItem('board_ns@' + location.pathname); } catch (e) {}
+  S.ui = Object.assign({ widths: {}, sort: {}, collapsed: {} }, jparse(store.get('board_ui'), {}));
+  ['board_fx', 'board_ep', 'board_lock'].forEach(k => store.del(k));
+  const dark = store.get('board_theme') === 'dark';
+  if (dark !== isDark()) applyTheme(dark);   /* the head script may have guessed from another environment's key on a very first visit */
+  applyEnv();
+}
+function applyEnv() {
+  const root = document.documentElement;
+  if (isPG()) root.setAttribute('data-env', 'playground'); else { root.removeAttribute('data-env'); root.style.removeProperty('--pg-h'); }
+  const t = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (t) t.setAttribute('content', isPG() ? 'BOARD Playground' : 'BOARD');
+  setTitle('\u{1F7E2} BOARD');
+  pgGuard();
+}
+/* The banner, frame and ribbon are added to <body>, outside #app, so no screen redraw can remove them, and they sit above every other layer (the Update lock, the reload cover, pop-ups, celebrations). They have no close button. If anything removes them they come straight back. */
+let pgObs = null;
+function pgEnsure() {
+  const b = document.body; if (!b) return;
+  const ids = ['pgBanner', 'pgFrame', 'pgRibbon'];
+  if (!isPG()) { ids.forEach(id => { const e = document.getElementById(id); if (e) e.remove(); }); return; }
+  if (!document.getElementById('pgBanner')) { const d = document.createElement('div'); d.id = 'pgBanner'; d.setAttribute('role', 'alert'); d.innerHTML = '<img class="pgIc" src="board-favicon.png" alt=""><b>BOARD PLAYGROUND. TEST DATA ONLY.</b> Nothing here is real, it can be reset at any time, and it is not for real work.'; b.appendChild(d); }
+  if (!document.getElementById('pgFrame')) { const d = document.createElement('div'); d.id = 'pgFrame'; d.setAttribute('aria-hidden', 'true'); b.appendChild(d); }
+  if (!document.getElementById('pgRibbon')) { const d = document.createElement('div'); d.id = 'pgRibbon'; d.setAttribute('aria-hidden', 'true'); d.textContent = 'PLAYGROUND'; b.appendChild(d); }
+  const h = document.getElementById('pgBanner').offsetHeight;
+  if (h && document.documentElement.style.getPropertyValue('--pg-h') !== h + 'px') document.documentElement.style.setProperty('--pg-h', h + 'px');
+}
+function pgGuard() {
+  pgEnsure();
+  if (!isPG() || pgObs) return;
+  pgObs = new MutationObserver(pgEnsure); pgObs.observe(document.body, { childList: true });
+  addEventListener('resize', pgEnsure); setInterval(pgEnsure, 1500);
+}
+/* The backend puts its environment in every reply. If it is not the one config.json names, BOARD stops rather than show one environment's data with the other's labels (or share its saved state).
+   strict = this reply must say (bootstrap, the sign-in screen's check, the live link). An older backend that says nothing counts as live. */
+function confirmEnv(srv, strict) {
+  if (srv === undefined || srv === null || srv === '') { if (!strict) return; srv = 'live'; }
+  srv = String(srv).toLowerCase();
+  if (srv !== ENV) envHalt(srv);
+}
+function envHalt(srv) {
+  S.halted = true; clearTimeout(bootRetryT);
+  const said = CFG_ENV; ENV = srv; applyEnv();
+  const app = $('#app');
+  if (app) app.innerHTML = `<div class="skeleton" style="padding:24px">${brandRow()}${pgBig()}<div style="max-width:470px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.6;color:var(--color-text-primary)"><b style="font-size:18px">BOARD cannot start</b><br>config.json says this page belongs to <b>${esc(said)}</b>, but the backend it is connected to says it is <b>${esc(srv)}</b>. Nothing has been loaded or saved. Put the right config.json beside this index.html (config-live.json or config-playground.json, renamed to config.json) and reload.</div></div>`;
+  throw new Error('BOARD cannot start: config.json and the backend do not match.');
+}
 let leaving = false;   /* 1.2.2: true while the tab is closing, so the last saves go straight out */
 async function api(action, params = {}, timeoutMs = 40000, keep = false) {
+  if (S.halted) throw new Error('BOARD cannot start: config.json and the backend do not match.');
   if (!API) throw new Error('No backend connected yet');
   const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), timeoutMs);
   let res, slow = false; const t0 = Date.now();
@@ -1450,6 +1556,7 @@ async function api(action, params = {}, timeoutMs = 40000, keep = false) {
   } catch (e) { throw new Error(e.name === 'AbortError' ? 'The server took too long to answer' : 'Cannot reach the server'); }
   finally { clearTimeout(to); clearTimeout(slowT); if (slow && S.syncState === 'slow') setSync(inflight ? 'saving' : 'saved'); }
   let data; try { data = await res.json(); } catch (e) { throw new Error('The server sent something unexpected'); }
+  confirmEnv(data && data.env, action === 'bootstrap');   /* 1.6.2: checked before anything else, so a mismatched sign-in is never cleared or kept */
   const t1 = Date.now();
   if (data && data.server_ms && t1 - t0 < 4000) S.clockOff = data.server_ms - (t0 + t1) / 2;   /* only trust the reading when the request was quick */
   if (!data.ok) {
@@ -1468,7 +1575,7 @@ async function apiRetry(action, params, keep) {
 }
 async function apiPublic(key) {
   const res = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=public_live&key=' + encodeURIComponent(key));
-  const data = await res.json(); if (!data.ok) throw new Error(data.error || 'Link not valid'); return data;
+  const data = await res.json(); confirmEnv(data && data.env, true); if (!data.ok) throw new Error(data.error || 'Link not valid'); return data;
 }
 
 /* ---------------- connection status ---------------- */
@@ -1627,7 +1734,7 @@ function renderShell() {
         <div class="userchip">${av(S.me.id, 'av-lg')}<div><div class="nm">${esc(S.me.name)}</div><div class="rl">${esc(S.me.access)}</div></div>
           <button class="icon-btn" style="margin-left:auto" data-act="mypass" title="Change my passcode"><i class="ti ti-key"></i></button>
           <button class="icon-btn" data-act="signout" title="Sign out"><i class="ti ti-logout"></i></button></div>
-        <div class="ver">v${APP_VERSION}</div>
+        <div class="ver">v${APP_VERSION}${pgTag()}</div>
         <div class="tagline tagline-i">${LOVE}</div>
       </div>
     </nav>
@@ -1641,7 +1748,7 @@ function renderShell() {
       ${(seesMoney() ? [['mine', 'Mine'], ['pipeline', 'Board'], ['closeout', 'Out'], ['finance', 'Finance']] : [['mine', 'Mine'], ['pipeline', 'Board'], ['timeline', 'Capacity']]).map(([id, l]) => { const n = NAV.find(x => x.id === id); return `<button data-act="go" data-v="${id}" data-nav="${id}"><i class="ti ${n.icon}"></i>${l}</button>`; }).join('')}
       <button data-act="more" data-nav="more"><i class="ti ti-menu-2"></i>More</button>
     </div>`;
-  document.title = '\u{1F7E2} BOARD';
+  setTitle('\u{1F7E2} BOARD');
   setSync(S.syncState === 'saving' ? 'saving' : 'saved');
   lockWas = null; renderLockUI(); lockWas = lockKey(); renderHealthBar();
 }
@@ -1828,10 +1935,10 @@ async function showLogin(msg, kind) {
     <div class="login">
       <div class="lg-left">${brandRow(true)}
         <div class="lg-hero">If it’s not on the board,<em>it doesn’t exist.</em></div>
-        <div class="lg-foot">Project board · v${APP_VERSION}</div>
+        <div class="lg-foot">Project board · v${APP_VERSION}${pgTag()}</div>
       </div>
       <div class="lg-right"><form class="lg-form" id="loginForm" autocomplete="on">
-        <h2>Sign in</h2>
+        ${pgBig()}<h2>Sign in</h2>
         ${kind === 'notice' && msg ? `<div class="lg-notice"><i class="ti ti-alert-circle"></i><div><b>Please sign in again</b><br>${esc(msg)}</div></div>` : ''}
         <p id="lgNote">Sign in with your full name and your own passcode.</p>
         <div class="field"><span class="lbl">Full name</span><input class="inp" id="lgUser" name="username" autocomplete="username" autocapitalize="words" spellcheck="false"></div>
@@ -1842,7 +1949,7 @@ async function showLogin(msg, kind) {
         <div class="tagline tagline-i love">${LOVE}</div>
       </form></div>
     </div>`;
-  document.title = '\u{1F7E2} BOARD';
+  setTitle('\u{1F7E2} BOARD');
   $('#loginForm').addEventListener('submit', async e => {
     e.preventDefault(); if (!$('#lgUser').value.trim() || !$('#lgPass').value) { const m0 = $('#lgErr'); m0.className = 'lg-msg err'; m0.textContent = 'Enter your full name and passcode'; return; }
     const b = $('#lgBtn'); b.disabled = true; const m = $('#lgErr'); m.className = 'lg-msg'; m.textContent = '';
@@ -1851,16 +1958,17 @@ async function showLogin(msg, kind) {
       S.token = d.token; tokenSet(d.token, $('#lgRem').checked); await loadApp();
     } catch (err) { m.className = 'lg-msg err'; m.textContent = err.message; b.disabled = false; }
   });
-  if (!API) { $('#lgNote').innerHTML = '<b>No backend connected.</b> Paste your Apps Script web app URL into <code>API_URL</code> at the top of index.html.'; return; }
+  if (!API) { $('#lgNote').innerHTML = '<b>BOARD is not connected to a backend.</b> ' + esc(cfgErr || 'config.json could not be read.') + ' It should look like <code>{"api_url": "https://script.google.com/macros/s/.../exec"}</code>.'; $('#lgBtn').disabled = true; return; }
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'action=ping').then(x => x.json());
+    confirmEnv(r && r.env, true);   /* 1.6.2 */
     if (r && Number(r.schema_version || 0) < MIN_SCHEMA && $('#lgNote')) $('#lgNote').innerHTML = `<b>The backend needs updating.</b> It is on ${esc(r.server_version || 'an old version')} and this BOARD needs ${NEED_VER}. Oli: update Code.gs and run upgradeTo130().`;
     else if (r && vcmp(r.server_version, APP_VERSION) > 0 && !forceUpdate(r.server_version) && $('#lgNote')) $('#lgNote').innerHTML = `<b>This is an old copy of BOARD.</b> Version ${esc(r.server_version)} is out. Reload the page before signing in.`;
   } catch (e) {}
 }
 async function fetchLogin(user, pass) {
   const res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'login', user, pass, cv: APP_VERSION }) }).catch(() => { throw new Error('Cannot reach the server'); });
-  const d = await res.json(); if (!d.ok) throw new Error(d.error || 'Could not sign in'); return d;
+  const d = await res.json(); confirmEnv(d && d.env); if (!d.ok) throw new Error(d.error || 'Could not sign in'); return d;
 }
 
 async function loadApp() {
@@ -1883,7 +1991,7 @@ function showUpdateScreen(newV) {
   try { closeModal(true); closePop(); } catch (e) {}
   const v = newV ? ` to version ${esc(newV)}` : '';
   const el = document.createElement('div'); el.id = 'updGate';
-  el.innerHTML = `<div class="upd-card">${brandRow()}<div class="upd-dot"><i class="ti ti-refresh"></i></div><h2>BOARD has been updated${v}</h2><p>You are on an older copy (${esc(APP_VERSION)}). Reload to carry on. Your saved changes are safe, and you stay signed in.</p><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD now</button><div class="muted" style="font-size:12.5px;margin-top:10px">Reloading by itself in <span id="updCount">30</span> seconds.</div></div>`;
+  el.innerHTML = `<div class="upd-card">${brandRow()}${pgBig()}<div class="upd-dot"><i class="ti ti-refresh"></i></div><h2>BOARD has been updated${v}</h2><p>You are on an older copy (${esc(APP_VERSION)}). Reload to carry on. Your saved changes are safe, and you stay signed in.</p><button class="btn btn-primary btn-lg" data-act="reload"><i class="ti ti-refresh"></i>Reload BOARD now</button><div class="muted" style="font-size:12.5px;margin-top:10px">Reloading by itself in <span id="updCount">30</span> seconds.</div></div>`;
   document.body.appendChild(el);
   hyperspace(el, { jump: true });   /* 1.5.0 */
   /* 1.1.4: if BOARD has already reloaded itself twice in the last 10 minutes and is still being told to update, it stops and explains, instead of looping */
@@ -1929,6 +2037,9 @@ function forceUpdate(v, tries) {
    The page only ever shows the CURRENT release line (APP_VERSION 1.4.x shows 1.4, and so on), so this list can keep growing without the page getting longer. */
 const FIX_MAX = 160;
 const WHATS_NEW = [
+  ['1.6.2', [
+    ['Behind the scenes: there is now a BOARD Playground for testing new things before they reach everyone.', ['Oli']]
+  ]],
   ['1.6.1', [
     ['If your browser blocks the Out processing music or the file will not load, the Music button now says so, and Play music starts it.', ['Oli']]
   ]],
@@ -2069,7 +2180,7 @@ function notesModal(seen, closeLabel, warp) {
   const line = lineOf(APP_VERSION);
   if (!WHATS_NEW.some(g => lineOf(g[0]) === line)) return false;
   const hasFixes = lineGroups(line).fixes.length > 0;
-  openModal(`<h3>What's new in BOARD<span class="rn-vpill">v${esc(APP_VERSION)}</span></h3>
+  openModal(`<h3>What's new in BOARD<span class="rn-vpill">v${esc(APP_VERSION)}</span>${pgTag()}</h3>
     <div class="rn-list">${notesBlock(line, seen)}</div>
     <div class="actions"><button class="btn btn-plain" data-act="feedback"><i class="ti ti-message-circle"></i>Send feedback</button><button class="btn btn-primary" data-act="closemodal">${closeLabel}</button></div>`, warp ? 'wide hs-in' : 'wide');
   if (warp) warpScrim();   /* 1.5.0: the pink hyperspace jump behind the pop-up. Clicking anywhere outside the box closes it. */
@@ -2113,6 +2224,7 @@ ACT.releasenotes = () => { closePop(); notesModal(null, 'Close'); };
 
 /* ---------------- boot ---------------- */
 async function boot() {
+  if (!await loadConfig()) return showLogin();   /* 1.6.2: no config.json, no backend. The sign-in screen says so. */
   const q = new URLSearchParams(location.search);
   if (q.get('view') === 'live' && q.get('k')) { return startReadonly(q.get('k')); }
   if (q.get('v')) { q.delete('v'); try { history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); } catch (e) {} }
@@ -2121,7 +2233,7 @@ async function boot() {
   if (S.token && API) {
     try { await loadApp(); return; }
     catch (e) {
-      if (S.updating || !S.token) return;   /* update screen, or a real expired session (onAuthLost has already shown sign-in) */
+      if (S.updating || S.halted || !S.token) return;   /* update screen, a config mismatch, or a real expired session (onAuthLost has already shown sign-in) */
       return showConnectScreen(e.message);  /* 1.1.1: anything else (slow server, mid-update, no wifi) keeps you signed in */
     }
   }
@@ -2131,7 +2243,7 @@ async function boot() {
 let bootRetryT = null;
 function showConnectScreen(why) {
   clearTimeout(bootRetryT);
-  $('#app').innerHTML = `<div class="skeleton" style="padding:24px">${brandRow()}<div style="max-width:420px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.6;color:var(--color-text-primary)"><b style="font-size:18px">BOARD could not load just now</b><br>You are still signed in. This usually happens for a minute while BOARD is being updated, or when the connection drops. Trying again in <span id="bootCount">15</span> seconds.<div class="muted" style="font-size:12.5px;margin-top:6px">${esc(why || '')}</div></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary btn-lg" data-act="bootretry"><i class="ti ti-refresh"></i>Try again now</button><button class="btn btn-plain" data-act="bootsignin">Sign in as someone else</button></div></div>`;
+  $('#app').innerHTML = `<div class="skeleton" style="padding:24px">${brandRow()}${pgBig()}<div style="max-width:420px;text-transform:none;letter-spacing:0;font-size:14px;line-height:1.6;color:var(--color-text-primary)"><b style="font-size:18px">BOARD could not load just now</b><br>You are still signed in. This usually happens for a minute while BOARD is being updated, or when the connection drops. Trying again in <span id="bootCount">15</span> seconds.<div class="muted" style="font-size:12.5px;margin-top:6px">${esc(why || '')}</div></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary btn-lg" data-act="bootretry"><i class="ti ti-refresh"></i>Try again now</button><button class="btn btn-plain" data-act="bootsignin">Sign in as someone else</button></div></div>`;
   let n = 15;
   const tick = () => { n--; const c = $('#bootCount'); if (!c) return; if (n <= 0) return boot(); c.textContent = n; bootRetryT = setTimeout(tick, 1000); };
   bootRetryT = setTimeout(tick, 1000);
@@ -4403,7 +4515,7 @@ async function startReadonly(key) {
   $('#app').innerHTML = `<div class="main">
     <div class="topbar">${logoHTML()}${brandName()}<h1 class="page-title" style="margin-left:6px">Live projects</h1><span class="pill pill-ro">Read only</span><span class="spacer"></span></div>
     <div class="content-wrap"><div class="content" id="content"><div class="skeleton">Loading live projects</div></div></div></div>`;
-  document.title = '\u{1F7E2} BOARD live';
+  setTitle('\u{1F7E2} BOARD live');
   try {
     const d = await apiPublic(key); S.version = d.version; loadPublic(d);
     if (!location.hash || location.hash === '#') location.hash = '#/board'; else route();
